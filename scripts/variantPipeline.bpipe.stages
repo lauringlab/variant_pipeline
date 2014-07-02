@@ -1,0 +1,81 @@
+
+// fastqc generates two zipped directory files using a custom naming convention
+// input: two *.fastq files
+// output: two *_fastqc.zip files
+fastqc = {
+    doc "Run FASTQC to generate QC metrics for the fastq files"
+    output.dir = "01-fastqc"
+    output_dir = "01-fastqc"
+    produce("${output_dir}/*_fastqc.zip") {
+        exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
+        exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
+    }
+}
+
+
+
+// pydmx generates a directory of demultiplexed fastqs named using the specified barcode file
+//     it requires python2.7
+// input: two *.fastq files and a bars.csv file
+// intermediate output: 
+//        trimmed: two fastq files derived from original fastq pairs trimmed to shortest sequence in the pair
+//        multiplexed: two fastqs with control sequences removed and duplication consolidated along with a summary text file
+//   final output:
+//        demultiplexed: a pair of fastq files for each barcoded sample (defined by specific barcode file)
+pydmx = {
+    doc "Runs pydmx to reformat the fastq header and generate consensus sequence"
+    out_dir = "02-pydmx/demultiplexed"
+    output.dir = "02-pydmx/demultiplexed"
+    produce("${out_dir}/*.fastq") {
+        exec "python2.7 ${PYDMX} -l $input1.fastq -r $input2.fastq -b ${BARS} -o 02-pydmx "
+    }
+}
+
+
+// input: 'r1' and 'r2' fastq files
+// output: a *.sam file
+bowtie2 = {
+    doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
+    output.dir = "03-align"
+    produce ("03-align/*.sam") {
+        exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03-align/" + new File(input1).name.split("\\.[12]\\.fastq")[0] + '.sam'
+    }
+}
+
+
+picard_sortsam = {
+    doc "Sort SAM file so that its in reference order and convert to BAM."
+    tmp_dir    = "./tmp"
+    output.dir = "03-align"
+    transform("bam") {
+        exec """
+            java -Xmx1g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/SortSam.jar 
+            SO=coordinate 
+            INPUT=$input.sam 
+            OUTPUT=$output 
+            VALIDATION_STRINGENCY=LENIENT 
+            CREATE_INDEX=true
+        """
+    }
+}
+
+
+picard_markdups = {
+    doc "Mark duplicates but do not remove."
+    tmp_dir    = "./tmp"
+    output.dir = "04-mark_duplicates"
+    filter("marked") {
+        exec """
+            java -Xmx1g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/MarkDuplicates.jar 
+            INPUT=$input.bam 
+            OUTPUT=$output 
+            REMOVE_DUPLICATES=false 
+            CREATE_INDEX=true 
+            METRICS_FILE=${output}-picard.out.metrics 
+            VALIDATION_STRINGENCY=LENIENT
+        """
+    }
+}
+
+
+

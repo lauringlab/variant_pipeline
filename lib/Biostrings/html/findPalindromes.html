@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Searching a sequence for palindromes or complemented...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for findPalindromes {Biostrings}"><tr><td>findPalindromes {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Searching a sequence for palindromes or complemented palindromes</h2>
+
+<h3>Description</h3>
+
+<p>The <code>findPalindromes</code> and <code>findComplementedPalindromes</code>
+functions can be used to find palindromic or complemented palindromic
+regions in a sequence.
+</p>
+<p><code>palindromeArmLength</code>, <code>palindromeLeftArm</code>,
+<code>palindromeRightArm</code>,
+<code>complementedPalindromeArmLength</code>, <code>complementedPalindromeLeftArm</code>
+and <code>complementedPalindromeRightArm</code> are utility functions for
+operating on palindromic or complemented palindromic sequences.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+findPalindromes(subject, min.armlength=4, max.looplength=1, min.looplength=0, max.mismatch=0)
+palindromeArmLength(x, max.mismatch=0, ...)
+palindromeLeftArm(x, max.mismatch=0, ...)
+palindromeRightArm(x, max.mismatch=0, ...)
+
+findComplementedPalindromes(subject, min.armlength=4, max.looplength=1, min.looplength=0, max.mismatch=0)
+complementedPalindromeArmLength(x, max.mismatch=0, ...)
+complementedPalindromeLeftArm(x, max.mismatch=0, ...)
+complementedPalindromeRightArm(x, max.mismatch=0, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>subject</code></td>
+<td>
+
+<p>An <a href="XString-class.html">XString</a> object containing the subject string,
+or an <a href="XStringViews-class.html">XStringViews</a> object.
+</p>
+</td></tr>
+<tr valign="top"><td><code>min.armlength</code></td>
+<td>
+
+<p>An integer giving the minimum length of the arms of the palindromes
+(or complemented palindromes) to search for.
+</p>
+</td></tr>
+<tr valign="top"><td><code>max.looplength</code></td>
+<td>
+
+<p>An integer giving the maximum length of &quot;the loop&quot; (i.e the sequence
+separating the 2 arms) of the palindromes (or complemented palindromes)
+to search for.
+Note that by default (<code>max.looplength=1</code>), <code>findPalindromes</code>
+will search for strict palindromes (or complemented palindromes) only.
+</p>
+</td></tr>
+<tr valign="top"><td><code>min.looplength</code></td>
+<td>
+
+<p>An integer giving the minimum length of &quot;the loop&quot; of the palindromes
+(or complemented palindromes) to search for.
+</p>
+</td></tr>
+<tr valign="top"><td><code>max.mismatch</code></td>
+<td>
+
+<p>The maximum number of mismatching letters allowed between the 2 arms of
+the palindromes (or complemented palindromes) to search for.
+</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>An <a href="XString-class.html">XString</a> object containing a 2-arm palindrome
+or complemented palindrome, or an <a href="XStringViews-class.html">XStringViews</a> object containing
+a set of 2-arm palindromes or complemented palindromes.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Additional arguments to be passed to or from methods.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>findPalindromes</code> function finds palindromic substrings in a subject
+string. The palindromes that can be searched for are either strict palindromes
+or 2-arm palindromes (the former being a particular case of the latter) i.e.
+palindromes where the 2 arms are separated by an arbitrary sequence called
+&quot;the loop&quot;.
+</p>
+<p>Use the <code>findComplementedPalindromes</code> function to find complemented
+palindromic substrings in a <a href="DNAString-class.html">DNAString</a> subject (in a complemented
+palindrome the 2 arms are reverse-complementary sequences).
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>findPalindromes</code> and <code>findComplementedPalindromes</code> return an
+<a href="XStringViews-class.html">XStringViews</a> object containing all palindromes (or complemented
+palindromes) found in <code>subject</code> (one view per palindromic substring
+found).
+</p>
+<p><code>palindromeArmLength</code> and <code>complementedPalindromeArmLength</code> return
+the arm length (integer) of the 2-arm palindrome (or complemented palindrome)
+<code>x</code>.
+It will raise an error if <code>x</code> has no arms. Note that any sequence could
+be considered a 2-arm palindrome if we were OK with arms of length 0 but we
+are not: <code>x</code> must have arms of length greater or equal to 1 in order to
+be considered a 2-arm palindrome. The same apply to 2-arm complemented
+palindromes.
+When applied to an <a href="XStringViews-class.html">XStringViews</a> object <code>x</code>,
+<code>palindromeArmLength</code> and <code>complementedPalindromeArmLength</code> behave
+in a vectorized fashion by returning an integer vector of the same length
+as <code>x</code>.
+</p>
+<p><code>palindromeLeftArm</code> and <code>complementedPalindromeLeftArm</code> return an
+object of the same class as the original object <code>x</code> and containing the
+left arm of <code>x</code>.
+</p>
+<p><code>palindromeRightArm</code> does the same as <code>palindromeLeftArm</code> but on
+the right arm of <code>x</code>.
+</p>
+<p>Like <code>palindromeArmLength</code>, both <code>palindromeLeftArm</code> and
+<code>palindromeRightArm</code> will raise an error if <code>x</code> has no arms.
+Also, when applied to an <a href="XStringViews-class.html">XStringViews</a> object <code>x</code>, both behave
+in a vectorized fashion by returning an <a href="XStringViews-class.html">XStringViews</a> object of the
+same length as <code>x</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="maskMotif.html">maskMotif</a></code>,
+<code><a href="matchPattern.html">matchPattern</a></code>,
+<code><a href="matchLRPatterns.html">matchLRPatterns</a></code>,
+<code><a href="matchProbePair.html">matchProbePair</a></code>,
+<a href="XStringViews-class.html">XStringViews-class</a>,
+<a href="DNAString-class.html">DNAString-class</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## Note that complemented palindromes (like palindromes) can be nested
+  findComplementedPalindromes(DNAString("ACGTTNAACGT-ACGTTNAACGT"))
+
+  ## A real use case
+  library(BSgenome.Dmelanogaster.UCSC.dm3)
+  chrX &lt;- Dmelanogaster$chrX
+  chrX_pals &lt;- findComplementedPalindromes(chrX, min.armlength=50, max.looplength=20)
+  complementedPalindromeArmLength(chrX_pals)  # 251
+
+  ## Of course, whitespaces matter
+  palindromeArmLength(BString("was it a car or a cat I saw"))
+
+  ## Note that the 2 arms of a strict palindrome (or strict complemented
+  ## palindrome) are equal to the full sequence.
+  palindromeLeftArm(BString("Delia saw I was aileD"))
+  complementedPalindromeLeftArm(DNAString("N-ACGTT-AACGT-N"))
+  palindromeLeftArm(DNAString("N-AAA-N-N-TTT-N"))
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

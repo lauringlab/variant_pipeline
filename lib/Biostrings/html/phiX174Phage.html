@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Versions of bacteriophage phiX174 complete genome and sample...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for phiX174Phage {Biostrings}"><tr><td>phiX174Phage {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Versions of bacteriophage phiX174 complete genome and sample short reads</h2>
+
+<h3>Description</h3>
+
+<p>Six versions of the complete genome for bacteriophage <i>&phi;</i> X174 as well
+as a small number of Solexa short reads, qualities associated with those short
+reads, and counts for the number times those short reads occurred.
+</p>
+
+
+<h3>Details</h3>
+
+<p>The <code>phiX174Phage</code> object is a <code>DNAStringSet</code> containing the
+following six naturally occurring versions of the bacteriophage <i>&phi;</i> X174
+genome cited in Smith et al.:
+</p>
+
+<dl>
+<dt>Genbank:</dt><dd><p>The version of the genome from GenBank (NC\_001422.1, GI:9626372).</p>
+</dd>
+<dt>RF70s:</dt><dd><p>A preparation of <i>&phi;</i> X double-stranded replicative form (RF) of DNA
+by Clyde A. Hutchison III from the late 1970s.</p>
+</dd>
+<dt>SS78:</dt><dd><p>A preparation of <i>&phi;</i> X virion single-stranded DNA from 1978.</p>
+</dd>
+<dt>Bull:</dt><dd><p>The sequence of wild-type <i>&phi;</i> X used by Bull et al.</p>
+</dd>
+<dt>G'97:</dt><dd><p>The <i>&phi;</i> X replicative form (RF) of DNA from Bull et al.</p>
+</dd>
+<dt>NEB'03:</dt><dd><p>A <i>&phi;</i> X replicative form (RF) of DNA from New England BioLabs (NEB).</p>
+</dd>  
+</dl>
+
+<p>The <code>srPhiX174</code> object is a <code>DNAStringSet</code> containing short reads
+from a Solexa machine.
+</p>
+<p>The <code>quPhiX174</code> object is a <code>BStringSet</code> containing Solexa quality
+scores associated with <code>srPhiX174</code>.
+</p>
+<p>The <code>wtPhiX174</code> object is an integer vector containing counts associated
+with <code>srPhiX174</code>.
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.genome.jp/dbget-bin/www_bget?refseq+NC_001422">http://www.genome.jp/dbget-bin/www_bget?refseq+NC_001422</a>
+</p>
+<p>Bull, J. J., Badgett, M. R., Wichman, H. A., Huelsenbeck, Hillis, D. M., Gulati, A., Ho, C. &amp; Molineux, J.
+(1997) Genetics 147, 1497-1507.
+</p>
+<p>Smith, Hamilton O.; Clyde A. Hutchison, Cynthia Pfannkoch, J. Craig Venter (2003-12-23).
+&quot;Generating a synthetic genome by whole genome assembly: {phi}X174 bacteriophage from synthetic oligonucleotides&quot;.
+Proceedings of the National Academy of Sciences 100 (26): 15440-15445. doi:10.1073/pnas.2237126100.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(phiX174Phage)
+nchar(phiX174Phage)
+genBankPhage &lt;- phiX174Phage[[1]]
+genBankSubstring &lt;- substring(genBankPhage, 2793-34, 2811+34)
+
+data(srPhiX174)
+srPhiX174
+quPhiX174
+summary(wtPhiX174)
+
+alignPhiX174 &lt;-
+  pairwiseAlignment(srPhiX174, genBankSubstring,
+                    patternQuality = SolexaQuality(quPhiX174),
+                    subjectQuality = SolexaQuality(99L),
+                    type = "global-local")
+summary(alignPhiX174, weight = wtPhiX174)
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

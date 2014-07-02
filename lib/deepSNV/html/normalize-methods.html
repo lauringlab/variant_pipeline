@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Normalize nucleotide counts.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for normalize {deepSNV}"><tr><td>normalize {deepSNV}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Normalize nucleotide counts.</h2>
+
+<h3>Description</h3>
+
+<p>This functions performs a <code><a href="../../stats/html/loess.html">loess</a></code>
+normalization of the nucleotide. This experimental
+feature can be used to compare experiments from different
+libraries or sequencing runs that may have differing
+noise characteristics.
+</p>
+<p>Normalize nucleotide counts.
+</p>
+<p>Normalize nucleotide counts.
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>test</code></td>
+<td>
+<p>Either an <code><a href="deepSNV-class.html">deepSNV-class</a></code> object
+or a named matrix with nucleotide counts.</p>
+</td></tr>
+<tr valign="top"><td><code>control</code></td>
+<td>
+<p>Missing if test is an
+<code>link{deepSNV-class}</code> object, otherwise a matrix
+with nucleotide counts.</p>
+</td></tr>
+<tr valign="top"><td><code>round</code></td>
+<td>
+<p>Logical. Should normalized counts be rounded
+to integers? Default=TRUE</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Parameters passed to <code><a href="../../stats/html/loess.html">loess</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="deepSNV-class.html">deepSNV-class</a></code> object.
+</p>
+
+
+<h3>Note</h3>
+
+<p>This feature is somewhat experimental and the results
+should be treated with care. Sometimes it can be better
+to leave the data unnormalized and use a model with
+greater dispersion instead.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Moritz Gerstung
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(phiX, package = "deepSNV")
+plot(phiX)
+phiN &lt;- normalize(phiX, round = TRUE)
+plot(phiN)
+</pre>
+
+<hr><div align="center">[Package <em>deepSNV</em> version 1.10.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

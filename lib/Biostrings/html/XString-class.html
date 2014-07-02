@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: BString objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for XString-class {Biostrings}"><tr><td>XString-class {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>BString objects</h2>
+
+<h3>Description</h3>
+
+<p>The BString class is a general container for storing
+a big string (a long sequence of characters) and for making its
+manipulation easy and efficient.
+</p>
+<p>The <a href="DNAString-class.html">DNAString</a>, <a href="RNAString-class.html">RNAString</a> and <a href="AAString-class.html">AAString</a> classes are
+similar containers but with the more biology-oriented purpose of storing
+a DNA sequence (<a href="DNAString-class.html">DNAString</a>), an RNA sequence (<a href="RNAString-class.html">RNAString</a>),
+or a sequence of amino acids (<a href="AAString-class.html">AAString</a>).
+</p>
+<p>All those containers derive directly (and with no additional slots)
+from the XString virtual class.
+</p>
+
+
+<h3>Details</h3>
+
+<p>The 2 main differences between an XString object and a standard character
+vector are: (1) the data stored in an XString object are not copied on
+object duplication and (2) an XString object can only store
+a single string (see the <a href="XStringSet-class.html">XStringSet</a> container for an
+efficient way to store a big collection of strings in a single object).
+</p>
+<p>Unlike the <a href="DNAString-class.html">DNAString</a>, <a href="RNAString-class.html">RNAString</a> and <a href="AAString-class.html">AAString</a>
+containers that accept only a predefined set of letters (the alphabet),
+a BString object can be used for storing any single string based on a
+single-byte character set.
+</p>
+
+
+<h3>Constructor-like functions and generics</h3>
+
+<p>In the code snippet below,
+<code>x</code> can be a single string (character vector of length 1)
+or an XString object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>BString(x="", start=1, nchar=NA)</code>:
+Tries to convert <code>x</code> into a BString object by reading
+<code>nchar</code> letters starting at position <code>start</code> in <code>x</code>.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Accessor methods</h3>
+
+<p>In the code snippets below, <code>x</code> is an XString object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>alphabet(x)</code>:
+<code>NULL</code> for a <code>BString</code> object.
+See the corresponding man pages when <code>x</code> is a 
+<a href="DNAString-class.html">DNAString</a>, <a href="RNAString-class.html">RNAString</a> or <a href="AAString-class.html">AAString</a> object.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>length(x)</code> or <code>nchar(x)</code>:
+Get the length of an XString object, i.e., its number of letters.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Coercion</h3>
+
+<p>In the code snippets below, <code>x</code> is an XString object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>as.character(x)</code>:
+Converts <code>x</code> to a character string.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>toString(x)</code>:
+Equivalent to <code>as.character(x)</code>.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Subsetting</h3>
+
+<p>In the code snippets below, <code>x</code> is an XString object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>x[i]</code>:
+Return a new XString object made of the selected letters (subscript
+<code>i</code> must be an NA-free numeric vector specifying the positions of
+the letters to select).
+The returned object belongs to the same class as <code>x</code>.
+</p>
+<p>Note that, unlike <code>subseq</code>, <code>x[i]</code> does copy the sequence
+data and therefore will be very inefficient for extracting a big number
+of letters (e.g. when <code>i</code> contains millions of positions).
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Equality</h3>
+
+<p>In the code snippets below, <code>e1</code> and <code>e2</code> are XString objects.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>e1 == e2</code>:
+<code>TRUE</code> if <code>e1</code> is equal to <code>e2</code>.
+<code>FALSE</code> otherwise.
+</p>
+<p>Comparison between two XString objects of different base types (e.g.
+a BString object and a <a href="DNAString-class.html">DNAString</a> object) is not supported
+with one exception: a <a href="DNAString-class.html">DNAString</a> object and an <a href="RNAString-class.html">RNAString</a>
+object can be compared (see <a href="RNAString-class.html">RNAString-class</a> for more details
+about this).
+</p>
+<p>Comparison between a BString object and a character string
+is also supported (see examples below).
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>e1 != e2</code>:
+Equivalent to <code>!(e1 == e2)</code>.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../XVector/html/subseq.html">subseq</a></code>,
+<code><a href="letter.html">letter</a></code>,
+<a href="DNAString-class.html">DNAString-class</a>,
+<a href="RNAString-class.html">RNAString-class</a>,
+<a href="AAString-class.html">AAString-class</a>,
+<a href="XStringSet-class.html">XStringSet-class</a>,
+<a href="XStringViews-class.html">XStringViews-class</a>,
+<code><a href="reverseComplement.html">reverseComplement</a></code>,
+<code><a href="../../XVector/html/compact.html">compact</a></code>,
+<a href="../../XVector/html/XVector%2dclass.html">XVector-class</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+b &lt;- BString("I am a BString object")
+b
+length(b)
+
+## Extracting a linear subsequence:
+subseq(b)
+subseq(b, start=3)
+subseq(b, start=-3)
+subseq(b, end=-3)
+subseq(b, end=-3, width=5)
+
+## Subsetting:
+b2 &lt;- b[length(b):1]       # better done with reverse(b)
+
+as.character(b2)
+
+b2 == b                    # FALSE
+b2 == as.character(b2)     # TRUE
+
+## b[1:length(b)] is equal but not identical to b!
+b == b[1:length(b)]        # TRUE
+identical(b, 1:length(b))  # FALSE
+## This is because subsetting an XString object with [ makes a copy
+## of part or all its sequence data. Hence, for the resulting object,
+## the internal slot containing the memory address of the sequence
+## data differs from the original. This is enough for identical() to
+## see the 2 objects as different.
+
+## Compacting. As a particular type of XVector objects, XString
+## objects can optionally be compacted. Compacting is done typically
+## before serialization. See ?compact for more information.
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Find &quot;theoretical amplicons&quot; mapped to a probe pair</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for matchProbePair {Biostrings}"><tr><td>matchProbePair {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Find &quot;theoretical amplicons&quot; mapped to a probe pair</h2>
+
+<h3>Description</h3>
+
+<p>In the context of a computer-simulated PCR experiment, one wants to find
+the amplicons mapped to a given primer pair.
+The <code>matchProbePair</code> function can be used for this: given a forward and a
+reverse probe (i.e. the chromosome-specific sequences of the forward and
+reverse primers used for the experiment) and a target sequence (generally a
+chromosome sequence), the <code>matchProbePair</code> function will return all
+the &quot;theoretical amplicons&quot; mapped to this probe pair.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+matchProbePair(Fprobe, Rprobe, subject, algorithm="auto", logfile=NULL, verbose=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>Fprobe</code></td>
+<td>
+
+<p>The forward probe.
+</p>
+</td></tr>
+<tr valign="top"><td><code>Rprobe</code></td>
+<td>
+
+<p>The reverse probe.
+</p>
+</td></tr>
+<tr valign="top"><td><code>subject</code></td>
+<td>
+
+<p>A <a href="DNAString-class.html">DNAString</a> object (or an <a href="XStringViews-class.html">XStringViews</a> object
+with a <a href="DNAString-class.html">DNAString</a> subject) containing the target sequence.
+</p>
+</td></tr>
+<tr valign="top"><td><code>algorithm</code></td>
+<td>
+
+<p>One of the following: <code>"auto"</code>, <code>"naive-exact"</code>,
+<code>"naive-inexact"</code>, <code>"boyer-moore"</code> or <code>"shift-or"</code>.
+See <code><a href="matchPattern.html">matchPattern</a></code> for more information.
+</p>
+</td></tr>
+<tr valign="top"><td><code>logfile</code></td>
+<td>
+
+<p>A file used for logging.
+</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+
+<p><code>TRUE</code> or <code>FALSE</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>matchProbePair</code> function does the following: (1) find all
+the &quot;plus hits&quot; i.e. the Fprobe and Rprobe matches on the &quot;plus&quot; strand,
+(2) find all the &quot;minus hits&quot; i.e. the Fprobe and Rprobe matches on the
+&quot;minus&quot; strand and (3) from the set of all (plus\_hit, minus\_hit) pairs,
+extract and return the subset of &quot;reduced matches&quot; i.e. the (plus\_hit, minus\_hit)
+pairs such that (a) plus\_hit &lt;= minus\_hit and (b) there are no hits (plus
+or minus) between plus\_hit and minus\_hit.
+This set of &quot;reduced matches&quot; is the set of &quot;theoretical amplicons&quot;.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An <a href="XStringViews-class.html">XStringViews</a> object containing the set of &quot;theoretical amplicons&quot;.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="matchPattern.html">matchPattern</a></code>,
+<code><a href="matchLRPatterns.html">matchLRPatterns</a></code>,
+<code><a href="findPalindromes.html">findPalindromes</a></code>,
+<code><a href="reverseComplement.html">reverseComplement</a></code>,
+<a href="XStringViews-class.html">XStringViews-class</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  library(BSgenome.Dmelanogaster.UCSC.dm3)
+  subject &lt;- Dmelanogaster$chr3R
+
+  ## With 20-nucleotide forward and reverse probes:
+  Fprobe &lt;- "AGCTCCGAGTTCCTGCAATA"
+  Rprobe &lt;- "CGTTGTTCACAAATATGCGG"
+  matchProbePair(Fprobe, Rprobe, subject) # 1 "theoretical amplicon"
+
+  ## With shorter forward and reverse probes, the risk of having multiple
+  ## "theoretical amplicons" increases:
+  Fprobe &lt;- "AGCTCCGAGTTCC"
+  Rprobe &lt;- "CGTTGTTCACAA"
+  matchProbePair(Fprobe, Rprobe, subject) # 2 "theoretical amplicons"
+  Fprobe &lt;- "AGCTCCGAGTT"
+  Rprobe &lt;- "CGTTGTTCACA"
+  matchProbePair(Fprobe, Rprobe, subject) # 9 "theoretical amplicons"
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

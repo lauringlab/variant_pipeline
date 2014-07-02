@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Estimate the Dispersion factor in a beta-binomial model.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for estimateDispersion {deepSNV}"><tr><td>estimateDispersion {deepSNV}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Estimate the Dispersion factor in a beta-binomial model.</h2>
+
+<h3>Description</h3>
+
+<p>This function estimates the dispersion factor in a
+beta-binomial model of the nucleotide counts. This model
+assumes that the count for nucleotide j at position i is
+distributed after a beta-binomial <i>X_ib ~ BB(n_i;
+  alpha, beta_ij)</i>, where <i>n_i</i> is the coverage.
+The base and nucleotide specific parameter
+<i>beta_ij</i> is estimated from the local
+mean by the method-of-moments estimate,
+<i>alpha</i> is a shared overdispersion parameter.
+It is estimated via a numerical optimization of the
+likelihood under the null-hypothesis.
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>test</code></td>
+<td>
+<p>Either a deepSNV object, or a matrix with the
+test counts.</p>
+</td></tr>
+<tr valign="top"><td><code>control</code></td>
+<td>
+<p>Missing if test is a deepSNV object,
+otherwise missing.</p>
+</td></tr>
+<tr valign="top"><td><code>alternative</code></td>
+<td>
+<p>The alternative to be tested. One of
+&quot;greater&quot;, &quot;less&quot;, &quot;two-sided&quot; (default). If test is a
+deepSNV object, automatically taken from the
+corresponding slot if unspecified.</p>
+</td></tr>
+<tr valign="top"><td><code>interval</code></td>
+<td>
+<p>The interval to be screened for the
+overdispersion factor. Default (0,1000).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="deepSNV-class.html">deepSNV-class</a></code> object if the input was a
+deepSNV object. Otherwise the loglikelihood and the
+estimated parameter.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Moritz Gerstung
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("RCC", package="deepSNV")
+plot(RCC)
+summary(RCC)[,1:6]
+RCC.bb = estimateDispersion(RCC, alternative = "two.sided")
+summary(RCC.bb)
+</pre>
+
+<hr><div align="center">[Package <em>deepSNV</em> version 1.10.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

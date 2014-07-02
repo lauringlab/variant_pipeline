@@ -1,0 +1,39 @@
+Extract                 Subsetting for deepSNV objects.
+RCC                     Example RCC data
+RF                      Relative frequencies.
+bam2R                   Read nucleotide counts from a .bam file
+bbb                     Bayesian beta-binomal test, codename shearwater
+bf2Vcf                  Function to create a 'VCF' object with variant
+                        calls from an array of Bayes factors.
+consensusSequence       Calculate the consensus sequence.
+control                 Get control counts
+coordinates             Get coordinates
+deepSNV                 Test two matched deep sequencing experiments
+                        for low-frequency SNVs.
+deepSNV-class           deepSNV class.
+deepSNV-package         Detection of subclonal SNVs in deep sequencing
+                        experiments
+estimateDirichlet       Learn a base-specific Dirichlet prior.
+estimateDispersion      Estimate the Dispersion factor in a
+                        beta-binomial model.
+estimateRho             Helper function for estimating the dispersion
+                        factor rho
+loadAllData             Function to load all data from a list of bam
+                        files
+makePrior               Compute a prior from a COSMIC VCF object
+manhattanPlot           Manhattan plot.
+mcChunk                 Little helper function to split the count
+                        objects into a smaller digestible chunks and
+                        run function FUN on each subset
+normalize               Normalize nucleotide counts.
+p.combine               Combine two p-values
+p.val                   Get p-values
+phiX                    Example phiX data
+pi                      Example prior
+plot.deepSNV            Scatter plot of relative nucleotide
+                        frequencies.
+repeatMask              Mask homopolymeric repeats.
+show                    Show method for deepSNV objects
+summary                 Summary of a deepSNV object
+test                    Get test counts
+trueSNVs                Example .bam data and true SNVs.

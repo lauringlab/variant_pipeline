@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: PWM creating, matching, and related utilities</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for matchPWM {Biostrings}"><tr><td>matchPWM {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>PWM creating, matching, and related utilities</h2>
+
+<h3>Description</h3>
+
+<p>Position Weight Matrix (PWM) creating, matching, and related utilities
+for DNA data. (PWM for amino acid sequences are not supported.)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+PWM(x, type = c("log2probratio", "prob"),
+    prior.params = c(A=0.25, C=0.25, G=0.25, T=0.25))
+
+matchPWM(pwm, subject, min.score="80%", with.score=FALSE, ...)
+countPWM(pwm, subject, min.score="80%", ...)
+PWMscoreStartingAt(pwm, subject, starting.at=1)
+
+## Utility functions for basic manipulation of the Position Weight Matrix
+maxWeights(x)
+minWeights(x)
+maxScore(x)
+minScore(x)
+unitScale(x)
+## S4 method for signature 'matrix'
+reverseComplement(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>For <code>PWM</code>: a rectangular character vector or rectangular
+DNAStringSet object (&quot;rectangular&quot; means that all elements have the
+same number of characters) with no IUPAC ambiguity letters,
+or a Position Frequency Matrix represented as an integer matrix with
+row names containing at least A, C, G and T (typically the result of
+a call to <code><a href="letterFrequency.html">consensusMatrix</a></code>).
+</p>
+<p>For <code>maxWeights</code>, <code>minWeights</code>, <code>maxScore</code>, <code>minScore</code>,
+<code>unitScale</code> and <code>reverseComplement</code>: a Position Weight Matrix
+represented as a numeric matrix with row names A, C, G and T.
+</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+
+<p>The type of Position Weight Matrix, either &quot;log2probratio&quot; or &quot;prob&quot;.
+See Details section for more information.
+</p>
+</td></tr>
+<tr valign="top"><td><code>prior.params</code></td>
+<td>
+
+<p>A positive numeric vector, which represents the parameters of the
+Dirichlet conjugate prior, with names A, C, G, and T.
+See Details section for more information.
+</p>
+</td></tr>
+<tr valign="top"><td><code>pwm</code></td>
+<td>
+
+<p>A Position Weight Matrix represented as a numeric matrix with row
+names A, C, G and T.
+</p>
+</td></tr>
+<tr valign="top"><td><code>subject</code></td>
+<td>
+
+<p>Typically a <a href="DNAString-class.html">DNAString</a> object. A <a href="../../IRanges/html/Views.html">Views</a> object
+on a <a href="DNAString-class.html">DNAString</a> subject, a <a href="MaskedXString-class.html">MaskedDNAString</a> object, or
+a single character string, are also supported.
+</p>
+<p>IUPAC ambiguity letters in <code>subject</code> are ignored (i.e. assigned
+weight 0) with a warning.
+</p>
+</td></tr>
+<tr valign="top"><td><code>min.score</code></td>
+<td>
+
+<p>The minimum score for counting a match.
+Can be given as a character string containing a percentage (e.g.
+<code>"85%"</code>) of the highest possible score or as a single number.
+</p>
+</td></tr>
+<tr valign="top"><td><code>with.score</code></td>
+<td>
+
+<p><code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code>, then the score of each hit
+is included in the returned object in a metadata column named <code>score</code>.
+Say the returned object is <code>hits</code>, this metadata column can then be
+accessed with <code>mcols(hits)$score</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>starting.at</code></td>
+<td>
+
+<p>An integer vector specifying the starting positions of the
+Position Weight Matrix relatively to the subject.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Additional arguments for methods.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>PWM</code> function uses a multinomial model with a Dirichlet conjugate
+prior to calculate the estimated probability of base b at position i. As
+mentioned in the Arguments section, <code>prior.params</code> supplies the
+parameters for the DNA bases A, C, G, and T in the Dirichlet prior. These
+values result in a position independent initial estimate of the probabilities
+for the bases to be
+<code>priorProbs = prior.params/sum(prior.params)</code> and the
+posterior (data infused) estimate for the probabilities for the bases in each
+of the positions to be
+<code>postProbs = (consensusMatrix(x) + prior.params)/(length(x) + sum(prior.params))</code>.
+When <code>type = "log2probratio"</code>, the PWM = <code>unitScale(log2(postProbs/priorProbs))</code>.
+When <code>type = "prob"</code>, the PWM = <code>unitScale(postProbs)</code>.  
+</p>
+
+
+<h3>Value</h3>
+
+<p>A numeric matrix representing the Position Weight Matrix for <code>PWM</code>.
+</p>
+<p>A numeric vector containing the Position Weight Matrix-based scores
+for <code>PWMscoreStartingAt</code>.
+</p>
+<p>An <a href="XStringViews-class.html">XStringViews</a> object for <code>matchPWM</code>.
+</p>
+<p>A single integer for <code>countPWM</code>.
+</p>
+<p>A vector containing the max weight for each position in <code>pwm</code>
+for <code>maxWeights</code>.
+</p>
+<p>A vector containing the min weight for each position in <code>pwm</code>
+for <code>minWeights</code>.
+</p>
+<p>The highest possible score for a given Position Weight Matrix for
+<code>maxScore</code>.
+</p>
+<p>The lowest possible score for a given Position Weight Matrix for
+<code>minScore</code>.
+</p>
+<p>The modified numeric matrix given by
+<code>(x - minScore(x)/ncol(x))/(maxScore(x) - minScore(x))</code> for
+<code>unitScale</code>.
+</p>
+<p>A PWM obtained by reverting the column order in PWM <code>x</code> and by
+reassigning each row to its complementary nucleotide
+for <code>reverseComplement</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages and P. Aboyoun</p>
+
+
+<h3>References</h3>
+
+<p>Wasserman, WW, Sandelin, A., (2004) Applied bioinformatics for the
+identification of regulatory elements, Nat Rev Genet., 5(4):276-87.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="letterFrequency.html">consensusMatrix</a></code>,
+<code><a href="matchPattern.html">matchPattern</a></code>,
+<code><a href="reverseComplement.html">reverseComplement</a></code>,
+<a href="DNAString-class.html">DNAString-class</a>,
+<a href="XStringViews-class.html">XStringViews-class</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Data setup:
+data(HNF4alpha)
+library(BSgenome.Dmelanogaster.UCSC.dm3)
+chr3R &lt;- Dmelanogaster$chr3R
+chr3R
+
+## Create a PWM from a PFM or directly from a rectangular
+## DNAStringSet object:
+pfm &lt;- consensusMatrix(HNF4alpha)
+pwm &lt;- PWM(pfm)  # same as 'PWM(HNF4alpha)'
+
+## Perform some general routines on the PWM:
+round(pwm, 2)
+maxWeights(pwm)
+maxScore(pwm)
+reverseComplement(pwm)
+
+## Score the first 5 positions:
+PWMscoreStartingAt(pwm, chr3R, starting.at=1:5)
+
+## Match the plus strand:
+hits &lt;- matchPWM(pwm, chr3R)
+nhit &lt;- countPWM(pwm, chr3R)  # same as 'length(hits)'
+
+## Use 'with.score=TRUE' to get the scores of the hits:
+hits &lt;- matchPWM(pwm, chr3R, with.score=TRUE)
+head(mcols(hits)$score)
+min(mcols(hits)$score / maxScore(pwm))  # should be &gt;= 0.8
+
+## The scores can also easily be post-calculated:
+scores &lt;- PWMscoreStartingAt(pwm, subject(hits), start(hits))
+
+## Match the minus strand:
+matchPWM(reverseComplement(pwm), chr3R)
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

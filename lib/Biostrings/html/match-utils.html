@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Utility functions operating on the matches returned by a...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for match-utils {Biostrings}"><tr><td>match-utils {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Utility functions operating on the matches returned by a
+high-level matching function</h2>
+
+<h3>Description</h3>
+
+<p>Miscellaneous utility functions operating on the matches returned by a
+high-level matching function like <code><a href="matchPattern.html">matchPattern</a></code>,
+<code><a href="matchPDict-exact.html">matchPDict</a></code>, etc...
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mismatch(pattern, x, fixed=TRUE)
+nmatch(pattern, x, fixed=TRUE)
+nmismatch(pattern, x, fixed=TRUE)
+## S4 method for signature 'MIndex'
+coverage(x, shift=0L, width=NULL, weight=1L)
+## S4 method for signature 'MaskedXString'
+coverage(x, shift=0L, width=NULL, weight=1L)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pattern</code></td>
+<td>
+
+<p>The pattern string.
+</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>An <a href="XStringViews-class.html">XStringViews</a> object for <code>mismatch</code> (typically, one returned
+by <code>matchPattern(pattern, subject)</code>).
+</p>
+<p>An <a href="MIndex-class.html">MIndex</a> object for <code>coverage</code>, or any object for
+which a <code>coverage</code> method is defined. See <code>?<a href="../../IRanges/html/coverage.html">coverage</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>fixed</code></td>
+<td>
+
+<p>See <code>?`<a href="lowlevel-matching.html">lowlevel-matching</a>`</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>shift, width</code></td>
+<td>
+
+<p>See <code>?<a href="../../IRanges/html/coverage.html">coverage</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>weight</code></td>
+<td>
+
+<p>An integer vector specifying how much each element in <code>x</code> counts.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>mismatch</code> function gives the positions of the mismatching
+letters of a given pattern relatively to its matches in a given subject.
+</p>
+<p>The <code>nmatch</code> and <code>nmismatch</code> functions give the number of
+matching and mismatching letters produced by the <code>mismatch</code> function.
+</p>
+<p>The <code>coverage</code> function computes the &quot;coverage&quot; of a subject
+by a given pattern or set of patterns.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>mismatch</code>:  a list of integer vectors.
+</p>
+<p><code>nmismatch</code>:  an integer vector containing the length of the vectors
+produced by <code>mismatch</code>.
+</p>
+<p><code>coverage</code>:  an <a href="../../IRanges/html/Rle%2dclass.html">Rle</a> object indicating
+the coverage of <code>x</code>.
+See <code>?<a href="../../IRanges/html/coverage.html">coverage</a></code> for the details.
+If <code>x</code> is an <a href="MIndex-class.html">MIndex</a> object, the coverage of a given position
+in the underlying sequence (typically the subject used during the search
+that returned <code>x</code>) is the number of matches (or hits) it belongs to.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="lowlevel-matching.html">lowlevel-matching</a>,
+<code><a href="matchPattern.html">matchPattern</a></code>,
+<code><a href="matchPDict-exact.html">matchPDict</a></code>,
+<a href="XString-class.html">XString-class</a>,
+<a href="XStringViews-class.html">XStringViews-class</a>,
+<a href="MIndex-class.html">MIndex-class</a>,
+<a href="../../IRanges/html/coverage.html">coverage</a>,
+<a href="align-utils.html">align-utils</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## ---------------------------------------------------------------------
+  ## mismatch() / nmismatch()
+  ## ---------------------------------------------------------------------
+  subject &lt;- DNAString("ACGTGCA")
+  m &lt;- matchPattern("NCA", subject, max.mismatch=1, fixed=FALSE)
+  mismatch("NCA", m)
+  nmismatch("NCA", m)
+
+  ## ---------------------------------------------------------------------
+  ## coverage()
+  ## ---------------------------------------------------------------------
+  coverage(m)
+
+  ## See ?matchPDict for examples of using coverage() on an MIndex object...
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

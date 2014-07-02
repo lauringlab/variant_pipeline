@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: PDict objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for PDict-class {Biostrings}"><tr><td>PDict-class {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>PDict objects</h2>
+
+<h3>Description</h3>
+
+<p>The PDict class is a container for storing a preprocessed dictionary of DNA
+patterns that can later be passed to the <code><a href="matchPDict-exact.html">matchPDict</a></code> function
+for fast matching against a reference sequence (the subject).
+</p>
+<p><code>PDict</code> is the constructor function for creating new PDict objects.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+PDict(x, max.mismatch=NA, tb.start=NA, tb.end=NA, tb.width=NA,
+         algorithm="ACtree2", skip.invalid.patterns=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>A character vector, a <a href="XStringSet-class.html">DNAStringSet</a> object or
+an <a href="XStringViews-class.html">XStringViews</a> object with a <a href="DNAString-class.html">DNAString</a> subject.
+</p>
+</td></tr>
+<tr valign="top"><td><code>max.mismatch</code></td>
+<td>
+
+<p>A single non-negative integer or <code>NA</code>. See the &quot;Allowing
+a small number of mismatching letters&quot; section below.
+</p>
+</td></tr>
+<tr valign="top"><td><code>tb.start,tb.end,tb.width</code></td>
+<td>
+
+<p>A single integer or <code>NA</code>. See the &quot;Trusted Band&quot; section below.
+</p>
+</td></tr>
+<tr valign="top"><td><code>algorithm</code></td>
+<td>
+
+<p><code>"ACtree2"</code> (the default) or <code>"Twobit"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>skip.invalid.patterns</code></td>
+<td>
+
+<p>This argument is not supported yet (and might in fact be replaced
+by the <code>filter</code> argument very soon).
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>THIS IS STILL WORK IN PROGRESS!
+</p>
+<p>If the original dictionary <code>x</code> is a character vector or
+an <a href="XStringViews-class.html">XStringViews</a> object with a <a href="DNAString-class.html">DNAString</a> subject,
+then the <code>PDict</code> constructor will first try to turn it
+into a <a href="XStringSet-class.html">DNAStringSet</a> object.
+</p>
+<p>By default (i.e. if <code>PDict</code> is called with <code>max.mismatch=NA</code>,
+<code>tb.start=NA</code>, <code>tb.end=NA</code> and <code>tb.width=NA</code>)
+the following limitations apply: (1) the original dictionary can only
+contain base letters (i.e. only As, Cs, Gs and Ts), therefore IUPAC
+ambiguity codes are not allowed; (2) all the
+patterns in the dictionary must have the same length (&quot;constant width&quot;
+dictionary); and (3) later <code>matchPdict</code> can only be used with
+<code>max.mismatch=0</code>.
+</p>
+<p>A Trusted Band can be used in order to relax these limitations (see
+the &quot;Trusted Band&quot; section below).
+</p>
+<p>If you are planning to use the resulting <code>PDict</code> object in order
+to do inexact matching where valid hits are allowed to have a small
+number of mismatching letters, then see the &quot;Allowing a small number
+of mismatching letters&quot; section below.
+</p>
+<p>Two preprocessing algorithms are currently supported:
+<code>algorithm="ACtree2"</code> (the default) and <code>algorithm="Twobit"</code>.
+With the <code>"ACtree2"</code> algorithm, all the oligonucleotides in the
+Trusted Band are stored in a 4-ary Aho-Corasick tree.
+With the <code>"Twobit"</code> algorithm, the 2-bit-per-letter
+signatures of all the oligonucleotides in the Trusted Band are computed
+and the mapping from these signatures to the 1-based position of the
+corresponding oligonucleotide in the Trusted Band is stored in a way that
+allows very fast lookup.
+Only PDict objects preprocessed with the <code>"ACtree2"</code> algo can then
+be used with <code>matchPdict</code> (and family) and with <code>fixed="pattern"</code>
+(instead of <code>fixed=TRUE</code>, the default), so that IUPAC ambiguity codes
+in the subject are treated as ambiguities. PDict objects obtained with the
+<code>"Twobit"</code> algo don't allow this.
+See <code>?`<a href="matchPDict-inexact.html">matchPDict-inexact</a>`</code> for more information about support
+of IUPAC ambiguity codes in the subject.
+</p>
+
+
+<h3>Trusted Band</h3>
+
+<p>What's a Trusted Band?
+</p>
+<p>A Trusted Band is a region defined in the original dictionary
+where the limitations described above will apply.
+</p>
+<p>Why use a Trusted Band?
+</p>
+<p>Because the limitations described above will apply to the Trusted Band only!
+For example the Trusted Band cannot contain IUPAC ambiguity codes but the
+&quot;head&quot; and the &quot;tail&quot; can (see below for what those are).
+Also with a Trusted Band, if <code>matchPdict</code> is called with a non-null
+<code>max.mismatch</code> value then mismatching letters will be allowed in the
+head and the tail. Or, if <code>matchPdict</code> is called with
+<code>fixed="subject"</code>, then IUPAC ambiguity codes in the head and the
+tail will be treated as ambiguities.
+</p>
+<p>How to specify a Trusted Band?
+</p>
+<p>Use the <code>tb.start</code>, <code>tb.end</code> and <code>tb.width</code> arguments of the
+<code>PDict</code> constructor in order to specify a Trusted Band.
+This will divide each pattern in the original dictionary into three parts:
+a left part, a middle part and a right part.
+The middle part is defined by its starting and ending nucleotide positions
+given relatively to each pattern thru the <code>tb.start</code>, <code>tb.end</code>
+and <code>tb.width</code> arguments. It must have the same length for all
+patterns (this common length is called the width of the Trusted Band).
+The left and right parts are defined implicitely: they are the
+parts that remain before (prefix) and after (suffix) the middle part,
+respectively.
+Therefore three <a href="XStringSet-class.html">DNAStringSet</a> objects result from this division:
+the first one is made of all the left parts and forms the head of the PDict
+object, the second one is made of all the middle parts and forms the Trusted
+Band of the PDict object, and the third one is made of all the right parts
+and forms the tail of the PDict object.
+</p>
+<p>In other words you can think of the process of specifying a Trusted Band 
+as drawing 2 vertical lines on the original dictionary (note that these
+2 lines are not necessarily straight lines but the horizontal space between
+them must be constant). When doing this, you are dividing the dictionary
+into three regions (from left to right): the head, the Trusted Band and the
+tail. Each of them is a <a href="XStringSet-class.html">DNAStringSet</a> object with the same number of
+elements than the original dictionary and the original dictionary could
+easily be reconstructed from those three regions.
+</p>
+<p>The width of the Trusted Band must be &gt;= 1 because Trusted Bands of
+width 0 are not supported.
+</p>
+<p>Finally note that calling <code>PDict</code> with <code>tb.start=NA</code>,
+<code>tb.end=NA</code> and <code>tb.width=NA</code> (the default) is equivalent
+to calling it with <code>tb.start=1</code>, <code>tb.end=-1</code> and
+<code>tb.width=NA</code>, which results in a full-width Trusted Band i.e.
+a Trusted Band that covers the entire dictionary (no head and no tail).
+</p>
+
+
+<h3>Allowing a small number of mismatching letters</h3>
+
+<p>[TODO]
+</p>
+
+
+<h3>Accessor methods</h3>
+
+<p>In the code snippets below,
+<code>x</code> is a PDict object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>length(x)</code>:
+The number of patterns in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>width(x)</code>:
+A vector of non-negative integers containing the number
+of letters for each pattern in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>names(x)</code>:
+The names of the patterns in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>head(x)</code>:
+The head of <code>x</code> or <code>NULL</code> if <code>x</code> has no head.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>tb(x)</code>:
+The Trusted Band defined on <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>tb.width(x)</code>:
+The width of the Trusted Band defined on <code>x</code>.
+Note that, unlike <code>width(tb(x))</code>, this is a single integer.
+And because the Trusted Band has a constant width, <code>tb.width(x)</code>
+is in fact equivalent to <code>unique(width(tb(x)))</code>,
+or to <code>width(tb(x))[1]</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>tail(x)</code>:
+The tail of <code>x</code> or <code>NULL</code> if <code>x</code> has no tail.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Subsetting methods</h3>
+
+<p>In the code snippets below,
+<code>x</code> is a PDict object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>x[[i]]</code>:
+Extract the i-th pattern from <code>x</code> as a <a href="DNAString-class.html">DNAString</a> object.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Other methods</h3>
+
+<p>In the code snippet below,
+<code>x</code> is a PDict object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>duplicated(x)</code>:
+[TODO]
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>patternFrequency(x)</code>:
+[TODO]
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages</p>
+
+
+<h3>References</h3>
+
+<p>Aho, Alfred V.; Margaret J. Corasick (June 1975). &quot;Efficient string
+matching: An aid to bibliographic search&quot;.
+Communications of the ACM 18 (6): 333-340.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="matchPDict-exact.html">matchPDict</a></code>,
+<code><a href="DNAString-class.html">DNA_ALPHABET</a></code>,
+<code><a href="IUPAC_CODE_MAP.html">IUPAC_CODE_MAP</a></code>,
+<a href="XStringSet-class.html">DNAStringSet-class</a>,
+<a href="XStringViews-class.html">XStringViews-class</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## ---------------------------------------------------------------------
+  ## A. NO HEAD AND NO TAIL (THE DEFAULT)
+  ## ---------------------------------------------------------------------
+  library(drosophila2probe)
+  dict0 &lt;- DNAStringSet(drosophila2probe)
+  dict0                                # The original dictionary.
+  length(dict0)                        # Hundreds of thousands of patterns.
+  unique(nchar(dict0))                 # Patterns are 25-mers.
+
+  pdict0 &lt;- PDict(dict0)               # Store the original dictionary in
+                                       # a PDict object (preprocessing).
+  pdict0
+  class(pdict0)
+  length(pdict0)                       # Same as length(dict0).
+  tb.width(pdict0)                     # The width of the (implicit)
+                                       # Trusted Band.
+  sum(duplicated(pdict0))
+  table(patternFrequency(pdict0))      # 9 patterns are repeated 3 times.
+  pdict0[[1]]
+  pdict0[[5]]
+
+  ## ---------------------------------------------------------------------
+  ## B. NO HEAD AND A TAIL
+  ## ---------------------------------------------------------------------
+  dict1 &lt;- c("ACNG", "GT", "CGT", "AC")
+  pdict1 &lt;- PDict(dict1, tb.end=2)
+  pdict1
+  class(pdict1)
+  length(pdict1)
+  width(pdict1)
+  head(pdict1)
+  tb(pdict1)
+  tb.width(pdict1)
+  width(tb(pdict1))
+  tail(pdict1)
+  pdict1[[3]]
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

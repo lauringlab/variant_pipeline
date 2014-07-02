@@ -1,0 +1,21 @@
+// Executable bpipe script for flu workflow.
+
+load 'variantPipeline.bpipe.config'
+
+// All the core pipeline stages in the pipeline
+load 'variantPipeline.bpipe.stages'
+
+done = {
+    exec "date"
+    exec "echo variantPipeline SUCCESS"
+}
+
+run  {
+    // Align each pair of input files separately in parallel
+    "%_*.fastq" * [ fastqc ]  +
+    //pydmx + 
+    "%_*.fastq" * [ bowtie2 ] + 
+    "%.sam" * [ picard_sortsam ] +
+    done
+}
+

@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Percent Sequence Identity</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for pid {Biostrings}"><tr><td>pid {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Percent Sequence Identity</h2>
+
+<h3>Description</h3>
+
+<p>Calculates the percent sequence identity for a pairwise sequence alignment.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pid(x, type="PID1")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a <code><a href="PairwiseAlignments-class.html">PairwiseAlignments</a></code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>one of percent sequence identity. One of <code>"PID1"</code>, <code>"PID2"</code>,
+<code>"PID3"</code>, and <code>"PID4"</code>. See Details for more information.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Since there is no universal definition of percent sequence identity, the <code>pid</code> function
+calculates this statistic in the following types:
+</p>
+
+<dl>
+<dt><code>"PID1"</code>:</dt><dd>
+<p>100 * (identical positions) / (aligned positions + internal gap positions)
+</p>
+</dd>
+<dt><code>"PID2"</code>:</dt><dd>
+<p>100 * (identical positions) / (aligned positions)
+</p>
+</dd>
+<dt><code>"PID3"</code>:</dt><dd>
+<p>100 * (identical positions) / (length shorter sequence)
+</p>
+</dd>
+<dt><code>"PID4"</code>:</dt><dd>
+<p>100 * (identical positions) / (average length of the two sequences)
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Value</h3>
+
+<p>A numeric vector containing the specified sequence identity measures.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>P. Aboyoun</p>
+
+
+<h3>References</h3>
+
+<p>A. May, Percent Sequence Identity: The Need to Be Explicit, Structure 2004, 12(5):737.
+</p>
+<p>G. Raghava and G. Barton, Quantification of the variation in percentage
+identity for protein sequence alignments, BMC Bioinformatics 2006, 7:415.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="pairwiseAlignment.html">pairwiseAlignment</a>,
+<a href="PairwiseAlignments-class.html">PairwiseAlignments-class</a>,
+<a href="match-utils.html">match-utils</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  s1 &lt;- DNAString("AGTATAGATGATAGAT")
+  s2 &lt;- DNAString("AGTAGATAGATGGATGATAGATA")
+
+  palign1 &lt;- pairwiseAlignment(s1, s2)
+  palign1
+  pid(palign1)
+
+  palign2 &lt;-
+    pairwiseAlignment(s1, s2,
+      substitutionMatrix =
+      nucleotideSubstitutionMatrix(match = 2, mismatch = 10, baseOnly = TRUE))
+  palign2
+  pid(palign2, type = "PID4")
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

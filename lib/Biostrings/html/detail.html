@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Show (display) detailed object content</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for detail {Biostrings}"><tr><td>detail {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Show (display) detailed object content</h2>
+
+<h3>Description</h3>
+
+<p>This is a variant of <code><a href="../../methods/html/show.html">show</a></code>, offering a more detailed
+display of object content.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+
+detail(x, ...)
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An object. The default simply invokes <code><a href="../../methods/html/show.html">show</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments. The default definition makes no use
+of these arguments.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>None; the function is invoked for its side effect (detailed display of
+object content).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Martin Morgan</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+origMAlign &lt;-
+  readDNAMultipleAlignment(filepath =
+                           system.file("extdata",
+                                       "msx2_mRNA.aln",
+                                       package="Biostrings"),
+                           format="clustal")
+detail(origMAlign)
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

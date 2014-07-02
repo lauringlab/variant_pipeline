@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Read nucleotide counts from a .bam file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for bam2R {deepSNV}"><tr><td>bam2R {deepSNV}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Read nucleotide counts from a .bam file</h2>
+
+<h3>Description</h3>
+
+<p>This function uses a C interface to read the nucleotide
+counts on each position of a .bam alignment. The counts
+of both strands are reported separately and nucleotides
+below a quality cutoff are masked. It is called by
+<code><a href="deepSNV-methods.html">deepSNV</a></code> to parse the alignments of the test
+and control experiments, respectively.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  bam2R(file, chr, start, stop, q = 25, s = 2,
+    head.clip = 0, max.depth = 1e+06, verbose = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>The name of the .bam file as a string.</p>
+</td></tr>
+<tr valign="top"><td><code>chr</code></td>
+<td>
+<p>The chromosome as a string.</p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p>The start position (1-indexed).</p>
+</td></tr>
+<tr valign="top"><td><code>stop</code></td>
+<td>
+<p>The end position (1-indexed).</p>
+</td></tr>
+<tr valign="top"><td><code>q</code></td>
+<td>
+<p>An optional cutoff for the nucleotide Phred
+quality. Default q = 25. Nucleotides with Q &lt; q will be
+masked by 'N'.</p>
+</td></tr>
+<tr valign="top"><td><code>s</code></td>
+<td>
+<p>Optional choice of the strand. Defaults to s = 2
+(both).</p>
+</td></tr>
+<tr valign="top"><td><code>head.clip</code></td>
+<td>
+<p>Should n nucleotides from the head of
+reads be clipped? Default 0.</p>
+</td></tr>
+<tr valign="top"><td><code>max.depth</code></td>
+<td>
+<p>The maximal depth for the pileup
+command. Default 1,000,000.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>Boolean. Set to TRUE if you want to get
+additional output.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A named <code><a href="../../base/html/matrix.html">matrix</a></code> with rows corresponding to
+genomic positions and columns for the nucleotide counts
+(A, T, C, G, -), masked nucleotides (N), (INS)ertions,
+(DEL)etions, (HEAD)s and (TAIL)s that count how often a
+read begins and ends at the given position, respectively,
+and the sum of alignment (QUAL)ities, which can be
+indicative of alignment problems. Counts from matches on
+the reference strand (s=0) are uppercase, counts on the
+complement (s=1) are lowercase. The returned matrix has
+11 * 2 (strands) = 22 columns and (stop - start + 1)
+rows.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Moritz Gerstung
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Simple example:
+counts &lt;- bam2R(file = system.file("extdata", "test.bam", package="deepSNV"), chr="B.FR.83.HXB2_LAI_IIIB_BRU_K034", start = 3120, stop=3140, q = 10)
+show(counts)
+## Not run: Requires an internet connection, but try yourself.
+# bam &lt;- bam2R(file = "http://www.bsse.ethz.ch/cbg/software/deepSNV/data/test.bam", chr="B.FR.83.HXB2_LAI_IIIB_BRU_K034", start = 2074, stop=3585, q=10)
+# head(bam)
+</pre>
+
+<hr><div align="center">[Package <em>deepSNV</em> version 1.10.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

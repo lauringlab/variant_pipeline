@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Comparing and ordering the elements in one or more XStringSet...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for XStringSet-comparison {Biostrings}"><tr><td>XStringSet-comparison {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Comparing and ordering the elements in one or more XStringSet objects</h2>
+
+<h3>Description</h3>
+
+<p>Methods for comparing and ordering the elements in one or more
+<a href="XStringSet-class.html">XStringSet</a> objects.
+</p>
+
+
+<h3>Details</h3>
+
+<p>Element-wise (aka &quot;parallel&quot;) comparison of 2 <a href="XStringSet-class.html">XStringSet</a> objects
+is based on the lexicographic order between 2 <a href="XString-class.html">BString</a>,
+<a href="DNAString-class.html">DNAString</a>, <a href="RNAString-class.html">RNAString</a>, or <a href="AAString-class.html">AAString</a> objects.
+</p>
+<p>For <a href="XStringSet-class.html">DNAStringSet</a> and <a href="XStringSet-class.html">RNAStringSet</a> objects, the letters in
+the respective alphabets (i.e. <a href="DNAString-class.html">DNA_ALPHABET</a> and <a href="RNAString-class.html">RNA_ALPHABET</a>)
+are ordered based on a predefined code assigned to each letter. The code
+assigned to each letter can be retrieved with:
+</p>
+<PRE>
+  dna_codes &lt;- as.integer(DNAString(paste(DNA_ALPHABET, collapse="")))
+  names(dna_codes) &lt;- DNA_ALPHABET
+
+  rna_codes &lt;- as.integer(RNAString(paste(RNA_ALPHABET, collapse="")))
+  names(rna_codes) &lt;- RNA_ALPHABET
+  </PRE>
+Note that this order does NOT depend on the locale in use. Also note that
+comparing DNA sequences with RNA sequences is supported and in that case T
+and U are considered to be the same letter.
+For <a href="XStringSet-class.html">BStringSet</a> and <a href="XStringSet-class.html">AAStringSet</a> objects, the alphabetical
+order is defined by the C collation. Note that, at the moment,
+<a href="XStringSet-class.html">AAStringSet</a> objects are treated like <a href="XStringSet-class.html">BStringSet</a> objects
+i.e. the alphabetical order is NOT defined by the order of the letters
+in <a href="AAString-class.html">AA_ALPHABET</a>. This might change at some point.
+
+
+<h3><code>compare()</code> and related methods</h3>
+
+<p>In the code snippets below,
+<code>x</code> and <code>y</code> are <a href="XStringSet-class.html">XStringSet</a> objects.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>compare(x, y)</code>:
+Performs element-wise (aka &quot;parallel&quot;) comparison of <code>x</code> and
+<code>y</code>, that is, returns an integer vector where the i-th element
+is less than, equal to, or greater than zero if the i-th element in
+<code>x</code> is considered to be respectively less than, equal to, or
+greater than the i-th element in <code>y</code>.
+If <code>x</code> and <code>y</code> don't have the same length, then the shortest
+is recycled to the length of the longest (the standard recycling rules
+apply).
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>x == y</code>, <code>x != y</code>, <code>x &lt;= y</code>, <code>x &gt;= y</code>,
+<code>x &lt; y</code>, <code>x &gt; y</code>:
+Equivalent to <code>compare(x, y) == 0</code>, <code>compare(x, y) != 0</code>,
+<code>compare(x, y) &lt;= 0</code>, <code>compare(x, y) &gt;= 0</code>,
+<code>compare(x, y) &lt; 0</code>, and <code>compare(x, y) &gt; 0</code>, respectively.
+</p>
+</dd>
+</dl>
+
+
+
+<h3><code>order()</code> and related methods</h3>
+
+<p>In the code snippets below, <code>x</code> is an <a href="XStringSet-class.html">XStringSet</a> object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>is.unsorted(x, strictly=FALSE)</code>:
+Return a logical values specifying if <code>x</code> is unsorted. The
+<code>strictly</code> argument takes logical value indicating if the check
+should be for _strictly_ increasing values.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>order(x, decreasing=FALSE)</code>:
+Return a permutation which rearranges <code>x</code> into ascending or
+descending order.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>rank(x, ties.method=c("first", "min"))</code>:
+Rank <code>x</code> in ascending order.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>sort(x, decreasing=FALSE)</code>:
+Sort <code>x</code> into ascending or descending order.
+</p>
+</dd>
+</dl>
+
+
+
+<h3><code>duplicated()</code> and <code>unique()</code></h3>
+
+<p>In the code snippets below, <code>x</code> is an <a href="XStringSet-class.html">XStringSet</a> object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>duplicated(x)</code>:
+Return a logical vector whose elements denotes duplicates in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>unique(x)</code>:
+Return the subset of <code>x</code> made of its unique elements.
+</p>
+</dd>
+</dl>
+
+
+
+<h3><code>match()</code> and <code>%in%</code></h3>
+
+<p>In the code snippets below,
+<code>x</code> and <code>table</code> are <a href="XStringSet-class.html">XStringSet</a> objects.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>match(x, table, nomatch=NA_integer_)</code>:
+Returns an integer vector containing the first positions of an identical
+match in <code>table</code> for the elements in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>x %in% table</code>:
+Returns a logical vector indicating which elements in <code>x</code> match
+identically with an element in <code>table</code>.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="XStringSet-class.html">XStringSet-class</a>,
+<code><a href="../../base/html/Comparison.html">==</a></code>,
+<code><a href="../../base/html/is.unsorted.html">is.unsorted</a></code>,
+<code><a href="../../base/html/order.html">order</a></code>,
+<code><a href="../../base/html/rank.html">rank</a></code>,
+<code><a href="../../base/html/sort.html">sort</a></code>,
+<code><a href="../../base/html/duplicated.html">duplicated</a></code>,
+<code><a href="../../base/html/unique.html">unique</a></code>,
+<code><a href="../../base/html/match.html">match</a></code>,
+<code><a href="../../base/html/match.html">%in%</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## ---------------------------------------------------------------------
+## A. SIMPLE EXAMPLES
+## ---------------------------------------------------------------------
+
+dna &lt;- DNAStringSet(c("AAA", "TC", "", "TC", "AAA", "CAAC", "G"))
+match(c("", "G", "AA", "TC"), dna)
+
+library(drosophila2probe)
+fly_probes &lt;- DNAStringSet(drosophila2probe)
+sum(duplicated(fly_probes))  # 481 duplicated probes
+
+is.unsorted(fly_probes)  # TRUE
+fly_probes &lt;- sort(fly_probes)
+is.unsorted(fly_probes)  # FALSE
+is.unsorted(fly_probes, strictly=TRUE)  # TRUE, because of duplicates
+is.unsorted(unique(fly_probes), strictly=TRUE)  # FALSE
+
+## Nb of probes that are the reverse complement of another probe:
+nb1 &lt;- sum(reverseComplement(fly_probes) %in% fly_probes)
+stopifnot(identical(nb1, 455L))  # 455 probes
+
+## Probes shared between drosophila2probe and hgu95av2probe:
+library(hgu95av2probe)
+human_probes &lt;- DNAStringSet(hgu95av2probe)
+m &lt;- match(fly_probes, human_probes)
+stopifnot(identical(sum(!is.na(m)), 493L))  # 493 shared probes
+
+## ---------------------------------------------------------------------
+## B. AN ADVANCED EXAMPLE
+## ---------------------------------------------------------------------
+## We want to compare the first 5 bases with the 5 last bases of each
+## probe in drosophila2probe. More precisely, we want to compute the
+## percentage of probes for which the first 5 bases are the reverse
+## complement of the 5 last bases.
+
+library(drosophila2probe)
+probes &lt;- DNAStringSet(drosophila2probe)
+
+first5 &lt;- narrow(probes, end=5)
+last5 &lt;- narrow(probes, start=-5)
+nb2 &lt;- sum(first5 == reverseComplement(last5))
+stopifnot(identical(nb2, 17L))
+
+## Percentage:
+100 * nb2 / length(probes)  # 0.0064 %
+
+## If the probes were random DNA sequences, a probe would have 1 chance
+## out of 4^5 to have this property so the percentage would be:
+100 / 4^5  # 0.098 %
+
+## With randomly generated probes:
+set.seed(33)
+random_dna &lt;- sample(DNAString(paste(DNA_BASES, collapse="")),
+                     sum(width(probes)), replace=TRUE)
+random_probes &lt;- successiveViews(random_dna, width(probes))
+random_probes
+random_probes &lt;- as(random_probes, "XStringSet")
+random_probes
+
+random_first5 &lt;- narrow(random_probes, end=5)
+random_last5 &lt;- narrow(random_probes, start=-5)
+
+nb3 &lt;- sum(random_first5 == reverseComplement(random_last5))
+100 * nb3 / length(random_probes)  # 0.099 %
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,4 @@
+argparse==1.2.1
+ngs-plumbing==0.12.4
+numpy==1.7.1
+wsgiref==0.1.2

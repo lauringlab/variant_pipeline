@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Bayesian beta-binomal test, codename shearwater</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for bbb {deepSNV}"><tr><td>bbb {deepSNV}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Bayesian beta-binomal test, codename shearwater</h2>
+
+<h3>Description</h3>
+
+<p>This is the workhorse of the shearwater test. It computes
+the Bayes factor for each sample, nucleotide and position
+of the null-model vs. the alternative of a real variant.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  bbb(counts, rho = NULL, alternative = "greater",
+    truncate = 0.1, rho.min = 1e-04, rho.max = 0.1,
+    pseudo = .Machine$double.eps, return.value = "BF",
+    model = c("OR", "AND", "adaptive"), min.cov = NULL,
+    max.odds = 10, mu.min = 1e-06, mu.max = 1 - mu.min)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>counts</code></td>
+<td>
+<p>An <code><a href="../../base/html/array.html">array</a></code> of nucleotide counts
+(samples x positions x 10 nucleotides in forward and
+reverse orientation), typically from
+<code><a href="loadAllData.html">loadAllData</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>truncate</code></td>
+<td>
+<p>The model uses a compound control sample
+which is the sum of all samples with a relative
+nucleotide frequency below truncate at this locus.
+Default = 0.1.</p>
+</td></tr>
+<tr valign="top"><td><code>alternative</code></td>
+<td>
+<p>The alternative. Currently only
+&quot;greater&quot; is implemented.</p>
+</td></tr>
+<tr valign="top"><td><code>rho</code></td>
+<td>
+<p>Disperision factor. If NULL, estimated from
+the data.</p>
+</td></tr>
+<tr valign="top"><td><code>rho.min</code></td>
+<td>
+<p>Lower bound for the method of moment
+estimate of the dispersion factor rho.</p>
+</td></tr>
+<tr valign="top"><td><code>rho.max</code></td>
+<td>
+<p>Upper bound for the method of moment
+estimate of the dispersion factor rho.</p>
+</td></tr>
+<tr valign="top"><td><code>mu.min</code></td>
+<td>
+<p>Minimum of the error rate mu.</p>
+</td></tr>
+<tr valign="top"><td><code>mu.max</code></td>
+<td>
+<p>Maximal error rate mu.</p>
+</td></tr>
+<tr valign="top"><td><code>pseudo</code></td>
+<td>
+<p>A pseudo count to be added to the counts to
+avoid problems with zeros.</p>
+</td></tr>
+<tr valign="top"><td><code>return.value</code></td>
+<td>
+<p>Return value. Either &quot;BF&quot; for Bayes
+Factor of &quot;P0&quot; for the posterior probability (assuming a
+prior of 0.5).</p>
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>The null model to use. For &quot;OR&quot; it requires
+the alternative model to be violated on either of the
+strands, for &quot;AND&quot; the null is specified such that the
+error rates of the sample of interest and the compound
+control sample are identical on both strands. &quot;AND&quot;
+typically yield many more calls. The most recent addition
+is &quot;adaptive&quot;, which switches from &quot;OR&quot; to &quot;AND&quot;, if the
+coverage is less than min.cov, or if the odds of forward
+and reverse coverage is greater than max.odds. Default =
+&quot;OR&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>min.cov</code></td>
+<td>
+<p>Minimal coverage to swith from OR to AND,
+if model is &quot;adaptive&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>max.odds</code></td>
+<td>
+<p>Maximal odds before switching from OR to
+AND if model is &quot;adaptive&quot; and min.cov=NULL.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An <code><a href="../../base/html/array.html">array</a></code> of Bayes factors
+</p>
+
+
+<h3>Note</h3>
+
+<p>Experimental code, subject to changes
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>mg14
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Load data from deepSNV example
+regions &lt;- GRanges("B.FR.83.HXB2_LAI_IIIB_BRU_K034", IRanges(start = 3120, end=3140))
+files &lt;- c(system.file("extdata", "test.bam", package="deepSNV"), system.file("extdata", "control.bam", package="deepSNV"))
+counts &lt;- loadAllData(files, regions, q=10)
+
+## Run (bbb) computes the Bayes factor
+bf &lt;- bbb(counts, model = "OR", rho=1e-4)
+vcf &lt;- bf2Vcf(bf, counts, regions, samples = files, prior = 0.5, mvcf = TRUE) 
+
+## Compare to deepSNV
+bf &lt;- bbb(counts, model = "AND", rho=1e-4)
+dpSNV &lt;- deepSNV(test = files[1], control = files[2], regions=regions, q=10)
+plot(p.val(dpSNV), bf[1,,]/(1+bf[1,,]), log="xy")
+</pre>
+
+<hr><div align="center">[Package <em>deepSNV</em> version 1.10.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

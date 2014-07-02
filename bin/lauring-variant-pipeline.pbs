@@ -1,0 +1,24 @@
+#!/bin/sh
+#PBS -S /bin/sh 
+#PBS -A ccmb_flux
+#PBS -N lauring_variant_pipeline
+#PBS -q flux
+#PBS -M cgates@umich.edu
+#PBS -m abe
+#PBS -V
+#PBS -l nodes=1:ppn=4,qos=flux,walltime=10:00:00
+
+echo Running job name $PBS_JOBNAME with ID $PBS_JOBID on host $PBS_O_HOST;
+echo Working directory is $PBS_O_WORKDIR
+echo Start time: `date`;
+
+module add med
+module add fastqc
+module add java
+module add picard
+module add bowtie2
+module add samtools 
+
+/scratch/ccmb_flux/cgates/lauring/lauring-variant-pipeline/bin/variantPipeline.sh /scratch/ccmb_flux/cgates/lauring/input /scratch/ccmb_flux/cgates/lauring/output
+echo Finish time: `date`
+

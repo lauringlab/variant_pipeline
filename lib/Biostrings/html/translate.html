@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Translating DNA/RNA sequences</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for translate {Biostrings}"><tr><td>translate {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Translating DNA/RNA sequences</h2>
+
+<h3>Description</h3>
+
+<p>Functions for translating DNA or RNA sequences into amino acid sequences.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## Translating DNA/RNA:
+translate(x, genetic.code=GENETIC_CODE, if.fuzzy.codon="error")
+
+## Extracting codons without translating them:
+codons(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>A <a href="XStringSet-class.html">DNAStringSet</a>, <a href="XStringSet-class.html">RNAStringSet</a>, <a href="DNAString-class.html">DNAString</a>,
+<a href="RNAString-class.html">RNAString</a>, <a href="MaskedXString-class.html">MaskedDNAString</a> or <a href="MaskedXString-class.html">MaskedRNAString</a>
+object for <code>translate</code>.
+</p>
+<p>A <a href="DNAString-class.html">DNAString</a>, <a href="RNAString-class.html">RNAString</a>, <a href="MaskedXString-class.html">MaskedDNAString</a> or
+<a href="MaskedXString-class.html">MaskedRNAString</a> object for <code>codons</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>genetic.code</code></td>
+<td>
+
+<p>The genetic code to use for the translation of codons into Amino Acid
+letters. It must be represented as a named character vector of length
+64 similar to predefined constant <code>GENETIC_CODE</code> i.e. it must
+contain 1-letter strings in the Amino Acid alphabet and its names must
+be identical to <code>names(GENETIC_CODE)</code>.
+The default value for <code>genetic.code</code> is <code>GENETIC_CODE</code>
+which represents The Standard Genetic Code.
+See <code>?AA_ALPHABET</code>) for the Amino Acid alphabet and
+<code>?GENETIC_CODE</code> for The Standard Genetic Code and its known
+variants.
+</p>
+</td></tr>
+<tr valign="top"><td><code>if.fuzzy.codon</code></td>
+<td>
+
+<p>How fuzzy codons (i.e codon with IUPAC ambiguities) should be handled.
+Accepted values are:
+</p>
+
+<ul>
+<li> <p><code>"error"</code>: An error will be raised on the first occurence of
+a fuzzy codon. This is the default.
+</p>
+</li>
+<li> <p><code>"solve"</code>: Fuzzy codons that can be translated non
+ambiguously to an amino acid or to * (stop codon) will be
+translated. Ambiguous fuzzy codons will be translated to X.
+</p>
+</li>
+<li> <p><code>"error.if.X"</code>: Fuzzy codons that can be translated non
+ambiguously to an amino acid or to * (stop codon) will be
+translated. An error will be raised on the first occurence of
+an ambiguous fuzzy codon.
+</p>
+</li>
+<li> <p><code>"X"</code>: All fuzzy codons (ambiguous and non-ambiguous) will
+be translated to X.
+</p>
+</li></ul>
+
+<p>Alternatively <code>if.fuzzy.codon</code> can be specified as a character
+vector of length 2. The 1st string and 2nd strings specify how to handle
+non-ambiguous and ambiguous fuzzy codons, respectively.
+The accepted values for the 1st string are:
+</p>
+
+<ul>
+<li> <p><code>"error"</code>: Any occurence of a non-ambiguous fuzzy codon
+will cause an error.
+</p>
+</li>
+<li> <p><code>"solve"</code>: Non-ambiguous fuzzy codons will be translated to
+an amino acid or to *.
+</p>
+</li>
+<li> <p><code>"X"</code>: Non-ambiguous fuzzy codons will be translated to X.
+</p>
+</li></ul>
+
+<p>The accepted values for the 2nd string are:
+</p>
+
+<ul>
+<li> <p><code>"error"</code>: Any occurence of an ambiguous fuzzy codon will
+cause an error.
+</p>
+</li>
+<li> <p><code>"X"</code>: Ambiguous fuzzy codons will be translated to X.
+</p>
+</li></ul>
+
+<p>All the 6 possible combinations of 1st and 2nd strings are supported.
+Note that <code>if.fuzzy.codon=c("error", "error")</code> is equivalent to
+<code>if.fuzzy.codon="error"</code>,
+<code>if.fuzzy.codon=c("solve", "X")</code> is equivalent to
+<code>if.fuzzy.codon="solve"</code>,
+<code>if.fuzzy.codon=c("solve", "error")</code> is equivalent to
+<code>if.fuzzy.codon="error.if.X"</code>, and
+<code>if.fuzzy.codon=c("X", "X")</code> is equivalent to
+<code>if.fuzzy.codon="X"</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>translate</code> reproduces the biological process of RNA
+translation that occurs in the cell.
+The input of the function can be either RNA or coding DNA.
+By default The Standard Genetic Code (see <code>?<a href="GENETIC_CODE.html">GENETIC_CODE</a></code>)
+is used to translate codons into amino acids but the user can
+supply a different genetic code via the <code>genetic.code</code> argument.
+</p>
+<p><code>codons</code> is a utility for extracting the codons involved
+in this translation without translating them. 
+</p>
+
+
+<h3>Value</h3>
+
+<p>For <code>translate</code>: An <a href="AAString-class.html">AAString</a> object when <code>x</code> is a
+<a href="DNAString-class.html">DNAString</a>, <a href="RNAString-class.html">RNAString</a>, <a href="MaskedXString-class.html">MaskedDNAString</a>, or
+<a href="MaskedXString-class.html">MaskedRNAString</a> object.
+An <a href="XStringSet-class.html">AAStringSet</a> object <EM>parallel</EM> to <code>x</code> (i.e. with 1
+amino acid sequence per DNA or RNA sequence in <code>x</code>) when <code>x</code>
+is a <a href="XStringSet-class.html">DNAStringSet</a> or <a href="XStringSet-class.html">RNAStringSet</a> object. If <code>x</code> has
+names on it, they're propagated to the returned object.
+</p>
+<p>For <code>codons</code>: An <a href="XStringViews-class.html">XStringViews</a> object with 1 view per codon.
+When <code>x</code> is a <a href="MaskedXString-class.html">MaskedDNAString</a> or <a href="MaskedXString-class.html">MaskedRNAString</a> object,
+its masked parts are interpreted as introns and filled with the + letter
+in the returned object. Therefore codons that span across masked regions
+are represented by views that have a width &gt; 3 and contain the + letter.
+Note that each view is guaranteed to contain exactly 3 base letters.
+</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li> <p><code><a href="AAString-class.html">AA_ALPHABET</a></code> for the Amino Acid alphabet.
+</p>
+</li>
+<li> <p><code><a href="GENETIC_CODE.html">GENETIC_CODE</a></code> for The Standard Genetic Code and
+its known variants.
+</p>
+</li>
+<li><p> The examples for
+<code><a href="../../GenomicFeatures/html/extractTranscriptsFromGenome.html">extractTranscriptsFromGenome</a></code>
+in the <span class="pkg">GenomicFeatures</span> package for computing the
+full proteome of a given organism.
+</p>
+</li>
+<li><p> The <code><a href="reverseComplement.html">reverseComplement</a></code> function.
+</p>
+</li>
+<li><p> The <a href="XStringSet-class.html">DNAStringSet</a> and <a href="XStringSet-class.html">AAStringSet</a> classes.
+</p>
+</li>
+<li><p> The <a href="XStringViews-class.html">XStringViews</a> and <a href="MaskedXString-class.html">MaskedXString</a> classes.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## ---------------------------------------------------------------------
+## 1. BASIC EXAMPLES
+## ---------------------------------------------------------------------
+dna1 &lt;- DNAString("TATAAATGGAGTAGATAA")
+translate(dna1)
+
+SGC1 &lt;- getGeneticCode("SGC1")  # Vertebrate Mitochondrial code
+translate(dna1, genetic.code=SGC1)
+
+## All codons except 1st are fuzzy:
+dna2 &lt;- DNAString("TATANATGRAGYMGRTRA")
+
+## Not run: 
+  translate(dna2)  # error because of fuzzy codons
+
+## End(Not run)
+## Codons 4 to 6 are non-ambiguous and can be solved. 2nd and 3rd codons
+## are ambiguous and are translated to X:
+translate(dna2, if.fuzzy.codon="solve")
+
+## Fuzzy codons that are non-ambiguous with a given genetic code can
+## become ambiguous with another genetic code and vice versa:
+translate(dna2, genetic.code=SGC1, if.fuzzy.codon="solve")
+
+## ---------------------------------------------------------------------
+## 2. TRANSLATING AN OPEN READING FRAME
+## ---------------------------------------------------------------------
+file &lt;- system.file("extdata", "someORF.fa", package="Biostrings")
+x &lt;- readDNAStringSet(file)
+x
+
+## The first and last 1000 nucleotides are not part of the ORFs:
+x &lt;- DNAStringSet(x, start=1001, end=-1001)
+
+## Before calling translate() on an ORF, we need to mask the introns
+## if any. We can get this information fron the SGD database
+## (http://www.yeastgenome.org/).
+## According to SGD, the 1st ORF (YAL001C) has an intron at 71..160
+## (see http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YAL001C)
+y1 &lt;- x[[1]]
+mask1 &lt;- Mask(length(y1), start=71, end=160)
+masks(y1) &lt;- mask1
+y1
+translate(y1)
+
+## Codons:
+codons(y1)
+which(width(codons(y1)) != 3)
+codons(y1)[20:28]
+
+## ---------------------------------------------------------------------
+## 3. AN ADVANCED EXAMPLE
+## ---------------------------------------------------------------------
+## Translation on the '-' strand:
+dna3 &lt;- DNAStringSet(c("ATC", "GCTG", "CGACT"))
+translate(reverseComplement(dna3))
+
+## Translate sequences on both '+' and '-' strand across all 
+## possible reading frames (i.e., codon position 1, 2 or 3):
+## First create a DNAStringSet of '+' and '-' strand sequences, 
+## removing the nucleotides prior to the reading frame start position.
+dna3_subseqs &lt;- lapply(1:3, function(pos) 
+    subseq(c(dna3, reverseComplement(dna3)), start=pos))
+## Translation of 'dna3_subseqs' produces a list of length 3, each with
+## 6 elements (3 '+' strand results followed by 3 '-' strand results).
+lapply(dna3_subseqs, translate)
+
+## Note that translate() throws a warning when the length of the sequence
+## is not divisible by 3. To avoid this warning wrap the function in 
+## suppressWarnings().
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

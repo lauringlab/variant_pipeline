@@ -1,0 +1,421 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: MultipleAlignment objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for MultipleAlignment-class {Biostrings}"><tr><td>MultipleAlignment-class {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>MultipleAlignment objects</h2>
+
+<h3>Description</h3>
+
+<p>The MultipleAlignment class is a container for storing multiple sequence
+alignments.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## Constructors:
+DNAMultipleAlignment(x=character(), start=NA, end=NA, width=NA,
+    use.names=TRUE, rowmask=NULL, colmask=NULL)
+RNAMultipleAlignment(x=character(), start=NA, end=NA, width=NA,
+    use.names=TRUE, rowmask=NULL, colmask=NULL)
+AAMultipleAlignment(x=character(), start=NA, end=NA, width=NA,
+    use.names=TRUE, rowmask=NULL, colmask=NULL)
+
+## Read functions:
+readDNAMultipleAlignment(filepath, format)
+readRNAMultipleAlignment(filepath, format)
+readAAMultipleAlignment(filepath, format)
+
+## Write funtions:
+write.phylip(x, filepath)
+
+## ... and more (see below)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>Either a character vector (with no NAs), or an <a href="XString-class.html">XString</a>,
+<a href="XStringSet-class.html">XStringSet</a> or <a href="XStringViews-class.html">XStringViews</a> object containing
+strings with the same number of characters.  If writing out a Phylip
+file, then x would be a <a href="MultipleAlignment-class.html">MultipleAlignment</a> object
+</p>
+</td></tr>
+<tr valign="top"><td><code>start,end,width</code></td>
+<td>
+
+<p>Either <code>NA</code>, a single integer, or an integer vector of the same
+length as <code>x</code> specifying how <code>x</code> should be &quot;narrowed&quot;
+(see <code>?<a href="../../IRanges/html/narrow.html">narrow</a></code> in the <span class="pkg">IRanges</span> package for
+the details).
+</p>
+</td></tr>
+<tr valign="top"><td><code>use.names</code></td>
+<td>
+
+<p><code>TRUE</code> or <code>FALSE</code>. Should names be preserved?
+</p>
+</td></tr>
+<tr valign="top"><td><code>filepath</code></td>
+<td>
+
+<p>A character vector (of arbitrary length when reading, of length 1
+when writing) containing the paths to the files to read or write.
+Note that special values like <code>""</code> or <code>"|cmd"</code> (typically
+supported by other I/O functions in R) are not supported here. Also
+<code>filepath</code> cannot be a connection.
+</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+
+<p>Either <code>"fasta"</code> (the default), <code>stockholm</code>, or
+<code>"clustal"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>rowmask</code></td>
+<td>
+
+<p>a NormalIRanges object that will set masking for rows
+</p>
+</td></tr>
+<tr valign="top"><td><code>colmask</code></td>
+<td>
+
+<p>a NormalIRanges object that will set masking for columns
+</p>
+</td></tr>  
+</table>
+
+
+<h3>Details</h3>
+
+<p>The MultipleAlignment class is designed to hold and represent multiple
+sequence alignments. The rows and columns within an alignment can be
+masked for ad hoc analyses.
+</p>
+
+
+<h3>Accessor methods</h3>
+
+<p>In the code snippets below, <code>x</code> is a MultipleAlignment object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>unmasked(x)</code>:
+The underlying <a href="XStringSet-class.html">XStringSet</a> object containing the multiple
+sequence alignment.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>rownames(x)</code>:
+<code>NULL</code> or a character vector of the same length as <code>x</code>
+containing a short user-provided description or comment for each
+sequence in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>rowmask(x)</code>, <code>rowmask(x, append, invert) &lt;- value</code>:
+Gets and sets the <a href="../../IRanges/html/IRanges-class.html">NormalIRanges</a> object representing the
+masked rows in <code>x</code>. The <code>append</code> argument takes
+<code>union</code>, <code>replace</code> or <code>intersect</code> to indicate how
+to combine the new <code>value</code> with <code>rowmask(x)</code>. The
+<code>invert</code> argument takes a logical argument to indicate
+whether or not to invert the new mask. The <code>value</code> argument
+can be of any class that is coercible to a <a href="../../IRanges/html/IRanges-class.html">NormalIRanges</a>
+via the <code>as</code> function.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>colmask(x)</code>, <code>colmask(x, append, invert) &lt;- value</code>:
+Gets and sets the <a href="../../IRanges/html/IRanges-class.html">NormalIRanges</a> object representing the
+masked columns in <code>x</code>. The <code>append</code> argument takes
+<code>union</code>, <code>replace</code> or <code>intersect</code> to indicate how
+to combine the new <code>value</code> with <code>colmask(x)</code>. The
+<code>invert</code> argument takes a logical argument to indicate
+whether or not to invert the new mask. The <code>value</code> argument
+can be of any class that is coercible to a <a href="../../IRanges/html/IRanges-class.html">NormalIRanges</a>
+via the <code>as</code> function.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>maskMotif(x, motif, min.block.width=1, ...)</code>:
+Returns a MultipleAlignment object with a modified column mask
+based upon motifs found in the consensus string where the consensus
+string keeps all the columns but drops the masked rows.
+</p>
+
+<dl>
+<dt>motif</dt><dd><p>The motif to mask.</p>
+</dd>
+<dt>min.block.width</dt><dd><p>The minimum width of the blocks to mask.</p>
+</dd>
+<dt>...</dt><dd><p>Additional arguments for <code>matchPattern</code>.</p>
+</dd>
+</dl>
+
+</dd>
+<dt></dt><dd>
+<p><code>maskGaps(x, min.fraction, min.block.width)</code>:
+Returns a MultipleAlignment object with a modified column mask
+based upon gaps in the columns. In particular, this mask is defined
+by <code>min.block.width</code> or more consecutive columns that have
+<code>min.fraction</code> or more of their non-masked rows containing
+gap codes.
+</p>
+
+<dl>
+<dt>min.fraction</dt><dd><p>A value in <code>[0, 1]</code> that indicates
+the minimum fraction needed to call a gap in the consensus string
+(default is <code>0.5</code>).</p>
+</dd>
+<dt>min.block.width</dt><dd><p>A positive integer that indicates the
+minimum number of consecutive gaps to mask, as defined by
+<code>min.fraction</code> (default is <code>4</code>).</p>
+</dd>
+</dl>
+
+</dd>
+<dt></dt><dd>
+<p><code>nrow(x)</code>:
+Returns the number of sequences aligned in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>ncol(x)</code>:
+Returns the number of characters for each alignment in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>dim(x)</code>:
+Equivalent to <code>c(nrow(x), ncol(x))</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>maskednrow(x)</code>:
+Returns the number of masked aligned sequences in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>maskedncol(x)</code>:
+Returns the number of masked aligned characters in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>maskeddim(x)</code>:
+Equivalent to <code>c(maskednrow(x), maskedncol(x))</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>maskedratio(x)</code>:
+Equivalent to <code>maskeddim(x) / dim(x)</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>nchar(x)</code>:
+Returns the number of unmasked aligned characters in <code>x</code>,
+i.e. <code>ncol(x) - maskedncol(x)</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>alphabet(x)</code>:
+Equivalent to <code>alphabet(unmasked(x))</code>.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Coercion</h3>
+
+<p>In the code snippets below, <code>x</code> is a MultipleAlignment object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>as(from, "DNAStringSet")</code>, <code>as(from, "RNAStringSet")</code>,
+<code>as(from, "AAStringSet")</code>, <code>as(from, "BStringSet")</code>:
+Creates an instance of the specified <a href="XStringSet-class.html">XStringSet</a> object subtype
+that contains the unmasked regions of the multiple sequence alignment
+in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>as.character(x, use.names)</code>:
+Convert <code>x</code> to a character vector containing the unmasked
+regions of the multiple sequence alignment. <code>use.names</code>
+controls whether or not <code>rownames(x)</code> should be used to set
+the names of the returned vector (default is <code>TRUE</code>).
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>as.matrix(x, use.names)</code>:
+Returns a character matrix containing the &quot;exploded&quot; representation
+of the unmasked regions of the multiple sequence alignment.
+<code>use.names</code> controls whether or not <code>rownames(x)</code> should
+be used to set the row names of the returned matrix (default is
+<code>TRUE</code>).
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Utilities</h3>
+
+<p>In the code snippets below, x is a MultipleAlignment object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>consensusMatrix(x, as.prob, baseOnly)</code>:
+Creates an integer matrix containing the column frequencies of
+the underlying alphabet with masked columns being represented
+with <code>NA</code> values. If <code>as.prob</code> is <code>TRUE</code>, then
+probabilities are reported, otherwise counts are reported (the
+default). If <code>baseOnly</code> is <code>TRUE</code>, then the non-base
+letters are collapsed into an <code>"other"</code> category.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>consensusString(x, ...)</code>:
+Creates a consensus string for <code>x</code> with the symbol <code>"#"</code>
+representing a masked column. See <code><a href="letterFrequency.html">consensusString</a></code>
+for details on the arguments.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>consensusViews(x, ...)</code>:
+Similar to the <code>consensusString</code> method. It returns a 
+<a href="XStringViews-class.html">XStringViews</a> on the consensus string containing subsequence
+contigs of non-masked columns. Unlike the <code>consensusString</code>
+method, the masked columns in the underlying string contain a
+consensus value rather than the <code>"#"</code> symbol.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>alphabetFrequency(x, as.prob, collapse)</code>:
+Creates an integer matrix containing the row frequencies of
+the underlying alphabet. If <code>as.prob</code> is <code>TRUE</code>, then
+probabilities are reported, otherwise counts are reported (the
+default). If <code>collapse</code> is <code>TRUE</code>, then returns the
+overall frequency instead of the frequency by row.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>detail(x, invertColMask, hideMaskedCols)</code>: Allows for a full
+pager driven display of the object so that masked cols and rows
+can be removed and the entire sequence can be visually
+inspected. If <code>hideMaskedCols</code> is set to it's default value
+of <code>TRUE</code> then the output will hide all the the masked
+columns in the output.  Otherwise, all columns will be displayed
+along with a row to indicate the masking status.  If
+<code>invertColMask</code> is <code>TRUE</code> then any displayed mask will
+be flipped so as to represent things in a way consistent with
+Phylip style files instead of the mask that is actually stored in
+the <code>MultipleAlignment</code> object.  Please notice that
+<code>invertColMask</code> will be ignored if <code>hideMaskedCols</code> is
+set to its default value of <code>TRUE</code> since in that case it will
+not make sense to show any masking information in the output.
+Masked rows are always hidden in the output.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>P. Aboyoun and M. Carlson</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="XStringSet-class.html">XStringSet-class</a>,
+<a href="MaskedXString-class.html">MaskedXString-class</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## create an object from file
+origMAlign &lt;-
+  readDNAMultipleAlignment(filepath =
+                           system.file("extdata",
+                                       "msx2_mRNA.aln",
+                                       package="Biostrings"),
+                           format="clustal")
+
+## list the names of the sequences in the alignment
+rownames(origMAlign)
+
+## rename the sequences to be the underlying species for MSX2
+rownames(origMAlign) &lt;- c("Human","Chimp","Cow","Mouse","Rat",
+                          "Dog","Chicken","Salmon")
+origMAlign
+
+## See a detailed pager view
+if (interactive()) {
+detail(origMAlign)
+}
+
+## operations to mask rows
+## For columns, just use colmask() and do the same kinds of operations
+rowMasked &lt;- origMAlign
+rowmask(rowMasked) &lt;- IRanges(start=1,end=3)
+rowMasked
+
+## remove rowumn masks
+rowmask(rowMasked) &lt;- NULL
+rowMasked
+
+## "select" rows of interest
+rowmask(rowMasked, invert=TRUE) &lt;- IRanges(start=4,end=7)
+rowMasked
+
+## or mask the rows that intersect with masked rows
+rowmask(rowMasked, append="intersect") &lt;- IRanges(start=1,end=5)
+rowMasked
+
+## TATA-masked
+tataMasked &lt;- maskMotif(origMAlign, "TATA")
+colmask(tataMasked)
+
+## automatically mask rows based on consecutive gaps
+autoMasked &lt;- maskGaps(origMAlign, min.fraction=0.5, min.block.width=4)
+colmask(autoMasked)
+autoMasked
+
+## calculate frequencies
+alphabetFrequency(autoMasked)
+consensusMatrix(autoMasked, baseOnly=TRUE)[, 84:90]
+
+## get consensus values
+consensusString(autoMasked)
+consensusViews(autoMasked)
+
+## cluster the masked alignments
+sdist &lt;- stringDist(as(autoMasked,"DNAStringSet"), method="hamming")
+clust &lt;- hclust(sdist, method = "single")
+plot(clust)
+fourgroups &lt;- cutree(clust, 4)
+fourgroups
+
+## write out the alignement object (with current masks) to Phylip format
+write.phylip(x = autoMasked, filepath = tempfile("foo.txt",tempdir()))
+
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

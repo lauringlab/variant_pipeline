@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Function to create a 'VCF' object with variant calls from an...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for bf2Vcf {deepSNV}"><tr><td>bf2Vcf {deepSNV}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Function to create a <code><a href="../../VariantAnnotation/html/VCF-class.html">VCF</a></code> object with variant calls from an array of Bayes factors.</h2>
+
+<h3>Description</h3>
+
+<p>This function thresholds the Bayes factors computed by
+the shearwater algorithm and creates a <code><a href="../../VariantAnnotation/html/VCF-class.html">VCF</a></code>
+object as output.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  bf2Vcf(BF, counts, regions, samples = 1:nrow(counts),
+    err = NULL, mu = NULL, cutoff = 0.05, prior = 0.5,
+    mvcf = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>BF</code></td>
+<td>
+<p>array of Bayes factors from <code><a href="shearwater.html">bbb</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>counts</code></td>
+<td>
+<p>array of counts from
+<code><a href="loadAllData.html">loadAllData</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>regions</code></td>
+<td>
+<p><code><a href="../../GenomicRanges/html/GRanges-class.html">GRanges</a></code> with the regions
+corresponding to counts and BF.</p>
+</td></tr>
+<tr valign="top"><td><code>samples</code></td>
+<td>
+<p>vector of samples names.</p>
+</td></tr>
+<tr valign="top"><td><code>cutoff</code></td>
+<td>
+<p>Cutoff for the posterior artifact
+probability below which a variant is considered to be
+true (default = 0.05)</p>
+</td></tr>
+<tr valign="top"><td><code>prior</code></td>
+<td>
+<p>matrix of prior probabilities for finding a
+true call, typically from <code><a href="makePrior.html">makePrior</a></code>.
+Alternatively a single fixed number.</p>
+</td></tr>
+<tr valign="top"><td><code>mvcf</code></td>
+<td>
+<p>boolean flag, if TRUE compute a large VCF
+with as many genotype columns as samples. Default TRUE.
+Otherwise use duplicate rows and only one genotype
+column. The sample is then provided by the info:PD field.
+Can be inefficient for large sample sizes.</p>
+</td></tr>
+<tr valign="top"><td><code>err</code></td>
+<td>
+<p>Optional matrix of error rates, otherwise
+recomputed from counts.</p>
+</td></tr>
+<tr valign="top"><td><code>mu</code></td>
+<td>
+<p>Optional matrix of relative frequencies,
+otherwise recomputed from counts.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <code><a href="../../VariantAnnotation/html/VCF-class.html">VCF</a></code> object
+</p>
+
+
+<h3>Note</h3>
+
+<p>Experimental code, subject to changes
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>mg14
+</p>
+
+<hr><div align="center">[Package <em>deepSNV</em> version 1.10.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

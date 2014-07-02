@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: AlignedXStringSet and QualityAlignedXStringSet objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for AlignedXStringSet-class {Biostrings}"><tr><td>AlignedXStringSet-class {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>AlignedXStringSet and QualityAlignedXStringSet objects</h2>
+
+<h3>Description</h3>
+
+<p>The <code>AlignedXStringSet</code> and <code>QualityAlignedXStringSet</code> classes are
+containers for storing an aligned <code>XStringSet</code>.
+</p>
+
+
+<h3>Details</h3>
+
+<p>Before we define the notion of alignment, we introduce the notion of
+&quot;filled-with-gaps subsequence&quot;. A &quot;filled-with-gaps subsequence&quot; of
+a string string1 is obtained by inserting 0 or any number of gaps in
+a subsequence of s1. For example L-A&ndash;ND and A&ndash;N-D are
+&quot;filled-with-gaps subsequences&quot; of LAND. An alignment between two strings
+string1 and string2 results in two strings (align1 and align2) that have
+the same length and are &quot;filled-with-gaps subsequences&quot; of string1 and string2.
+</p>
+<p>For example, this is an alignment between LAND and LEAVES:
+</p>
+<PRE>
+    L-A
+    LEA
+  </PRE>
+An alignment can be seen as a compact representation of one set of basic
+operations that transforms string1 into align1. There are 3 different kinds
+of basic operations: &quot;insertions&quot; (gaps in align1), &quot;deletions&quot; (gaps in
+align2),  &quot;replacements&quot;.
+The above alignment represents the following basic operations:
+<PRE>
+    insert E at pos 2
+    insert V at pos 4
+    insert E at pos 5
+    replace by S at pos 6 (N is replaced by S)
+    delete at pos 7 (D is deleted)
+  </PRE>
+Note that &quot;insert X at pos i&quot; means that all letters at a position &gt;= i
+are moved 1 place to the right before X is actually inserted.
+There are many possible alignments between two given strings string1 and
+string2 and a common problem is to find the one (or those ones) with the
+highest score, i.e. with the lower total cost in terms of basic operations.
+
+
+<h3>Accessor methods</h3>
+
+<p>In the code snippets below,
+<code>x</code> is a <code>AlignedXStringSet</code> or <code>QualityAlignedXStringSet</code> object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>unaligned(x)</code>:
+The original string.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>aligned(x, degap = FALSE)</code>:
+If <code>degap = FALSE</code>, the &quot;filled-with-gaps subsequence&quot; representing
+the aligned substring. If <code>degap = TRUE</code>, the &quot;gap-less subsequence&quot;
+representing the aligned substring.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>start(x)</code>:
+The start of the aligned substring.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>end(x)</code>:
+The end of the aligned substring.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>width(x)</code>:
+The width of the aligned substring, ignoring gaps.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>indel(x)</code>:
+The positions, in the form of an <code>IRanges</code> object, of the insertions or
+deletions (depending on what <code>x</code> represents).
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>nindel(x)</code>:
+A two-column matrix containing the length and sum of the widths for each of
+the elements returned by <code>indel</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>length(x)</code>:
+The length of the <code>aligned(x)</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>nchar(x)</code>:
+The nchar of the <code>aligned(x)</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>alphabet(x)</code>:
+Equivalent to <code>alphabet(unaligned(x))</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>as.character(x)</code>:
+Converts <code>aligned(x)</code> to a character vector.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>toString(x)</code>:
+Equivalent to <code>toString(as.character(x))</code>.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Subsetting methods</h3>
+
+
+<dl>
+<dt></dt><dd>
+<p><code>x[i]</code>:
+Returns a new <code>AlignedXStringSet</code> or <code>QualityAlignedXStringSet</code>
+object made of the selected elements.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>rep(x, times)</code>:
+Returns a new <code>AlignedXStringSet</code> or <code>QualityAlignedXStringSet</code>
+object made of the repeated elements.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>P. Aboyoun and H. Pages</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="pairwiseAlignment.html">pairwiseAlignment</a></code>,
+<code><a href="PairwiseAlignments-class.html">PairwiseAlignments-class</a></code>,
+<code><a href="XStringSet-class.html">XStringSet-class</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  pattern &lt;- AAString("LAND")
+  subject &lt;- AAString("LEAVES")
+  nw1 &lt;- pairwiseAlignment(pattern, subject, substitutionMatrix = "BLOSUM50", gapOpening = -3, gapExtension = -1)
+  alignedPattern &lt;- pattern(nw1)
+  unaligned(alignedPattern)
+  aligned(alignedPattern)
+  as.character(alignedPattern)
+  nchar(alignedPattern)
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

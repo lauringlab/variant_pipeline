@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Read/write an XStringSet object from/to a file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for XStringSet-io {Biostrings}"><tr><td>XStringSet-io {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Read/write an XStringSet object from/to a file</h2>
+
+<h3>Description</h3>
+
+<p>Functions to read/write an <a href="XStringSet-class.html">XStringSet</a> object from/to a file.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## Read FASTA (or FASTQ) files in an XStringSet object:
+readBStringSet(filepath, format="fasta",
+               nrec=-1L, skip=0L, seek.first.rec=FALSE, use.names=TRUE)
+readDNAStringSet(filepath, format="fasta",
+               nrec=-1L, skip=0L, seek.first.rec=FALSE, use.names=TRUE)
+readRNAStringSet(filepath, format="fasta",
+               nrec=-1L, skip=0L, seek.first.rec=FALSE, use.names=TRUE)
+readAAStringSet(filepath, format="fasta",
+               nrec=-1L, skip=0L, seek.first.rec=FALSE, use.names=TRUE)
+
+## Extract basic information about FASTA (or FASTQ) files
+## without actually loading the sequence data:
+fasta.info(filepath,
+           nrec=-1L, skip=0L, seek.first.rec=FALSE, use.names=TRUE,
+           seqtype="B")
+fastq.geometry(filepath, nrec=-1L, skip=0L, seek.first.rec=FALSE)
+
+## Write an XStringSet object to a FASTA (or FASTQ) file:
+writeXStringSet(x, filepath, append=FALSE,
+                compress=FALSE, compression_level=NA, format="fasta", ...)
+
+## Serialize an XStringSet object:
+saveXStringSet(x, objname, dirpath=".", save.dups=FALSE, verbose=TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>filepath</code></td>
+<td>
+
+<p>A character vector (of arbitrary length when reading, of length 1
+when writing) containing the path(s) to the file(s) to read or write.
+Reading files in gzip format (which usually have the '.gz' extension) is
+supported.
+</p>
+<p>Note that special values like <code>""</code> or <code>"|cmd"</code> (typically
+supported by other I/O functions in R) are not supported here.
+Also <code>filepath</code> cannot be a connection.
+</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+
+<p>Either <code>"fasta"</code> (the default) or <code>"fastq"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>nrec</code></td>
+<td>
+
+<p>Single integer. The maximum of number of records to read in.
+Negative values are ignored.
+</p>
+</td></tr>
+<tr valign="top"><td><code>skip</code></td>
+<td>
+
+<p>Single non-negative integer. The number of records of the data file(s)
+to skip before beginning to read in records.
+</p>
+</td></tr>
+<tr valign="top"><td><code>seek.first.rec</code></td>
+<td>
+
+<p><code>TRUE</code> or <code>FALSE</code> (the default). If <code>TRUE</code>, then the
+reading function starts by setting the file position indicator at the
+beginning of the first line in the file that looks like the beginning of
+a FASTA (if <code>format</code> is <code>"fasta"</code>) or FASTQ (if <code>format</code>
+is <code>"fastq"</code>) record. More precisely this is the first line in the
+file that starts with a '&gt;' (for FASTA) or a '@' (for FASTQ). An error
+is raised if no such line is found.
+</p>
+<p>Normal parsing then starts from there, and everything happens like if
+the file actually started there. In particular it will be an error if
+this first record is not a valid FASTA or FASTQ record.
+</p>
+<p>Using <code>seek.first.rec=TRUE</code> is useful for example to parse GFF3
+files with embedded FASTA data.
+</p>
+</td></tr>
+<tr valign="top"><td><code>use.names</code></td>
+<td>
+
+<p>Should the returned vector be named? For FASTA the names are taken
+from the record description lines. For FASTQ they are taken from
+the record sequence ids.
+Dropping the names can help reducing memory footprint e.g. for
+a FASTQ file containing millions of reads.
+</p>
+</td></tr>
+<tr valign="top"><td><code>seqtype</code></td>
+<td>
+
+<p>A single string specifying the type of sequences contained in the
+FASTA file(s). Supported sequence types:
+</p>
+
+<ul>
+<li> <p><code>"B"</code> for anything i.e. any letter is a valid one-letter
+sequence code.
+</p>
+</li>
+<li> <p><code>"DNA"</code> for DNA sequences i.e. only letters in
+<code><a href="DNAString-class.html">DNA_ALPHABET</a></code> (case ignored) are valid
+one-letter sequence codes.
+</p>
+</li>
+<li> <p><code>"RNA"</code> for RNA sequences i.e. only letters in
+<code><a href="RNAString-class.html">RNA_ALPHABET</a></code> (case ignored) are valid
+one-letter sequence codes.
+</p>
+</li>
+<li> <p><code>"AA"</code> for Amino Acid sequences. Currently treated as
+<code>"B"</code> but this will change in the near future i.e. only
+letters in <code><a href="AAString-class.html">AA_ALPHABET</a></code> (case ignored) will be
+valid one-letter sequence codes.
+</p>
+</li></ul>
+
+<p>Invalid one-letter sequence codes are ignored with a warning.
+</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>For <code>writeXStringSet</code>, the object to write to <code>file</code>.
+</p>
+<p>For <code>saveXStringSet</code>, the object to serialize.
+</p>
+</td></tr>
+<tr valign="top"><td><code>append</code></td>
+<td>
+
+<p><code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code> output will be
+appended to <code>file</code>; otherwise, it will overwrite the contents
+of <code>file</code>. See <code>?<a href="../../base/html/cat.html">cat</a></code> for the details.
+</p>
+</td></tr>
+<tr valign="top"><td><code>compress</code></td>
+<td>
+
+<p>Like for the <code>save</code> function in base R, must be <code>TRUE</code> or
+<code>FALSE</code> (the default), or a single string specifying whether writing
+to the file is to use compression.
+The only type of compression supported at the moment is <code>"gzip"</code>.
+</p>
+<p>Passing <code>TRUE</code> is equivalent to passing <code>"gzip"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>compression_level</code></td>
+<td>
+
+<p>Not implemented yet.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Further format-specific arguments.
+If <code>format="fasta"</code>, the <code>width</code> argument (single integer)
+can be used to specify the maximum number of letters per line of
+sequence.
+If <code>format="fastq"</code>, the <code>qualities</code> argument (<a href="XStringSet-class.html">BStringSet</a>
+object) can be used to specify the qualities. If the qualities are
+omitted, then the fake quality ';' is assigned to each letter in
+<code>x</code> and written to the file.
+</p>
+</td></tr>
+<tr valign="top"><td><code>objname</code></td>
+<td>
+
+<p>The name of the serialized object.
+</p>
+</td></tr>
+<tr valign="top"><td><code>dirpath</code></td>
+<td>
+
+<p>The path to the directory where to save the serialized object.
+</p>
+</td></tr>
+<tr valign="top"><td><code>save.dups</code></td>
+<td>
+
+<p><code>TRUE</code> or <code>FALSE</code>.
+If <code>TRUE</code> then the <code><a href="../../IRanges/html/Grouping%2dclass.html">Dups</a></code>
+object describing 
+how duplicated elements in <code>x</code> are related to each other is
+saved too. For advanced users only.
+</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+
+<p><code>TRUE</code> or <code>FALSE</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>gzip compression is supported by reading and writing functions on all
+platforms.
+</p>
+<p><code>readDNAStringSet</code> and family (i.e. <code>readBStringSet</code>,
+<code>readDNAStringSet</code>, <code>readRNAStringSet</code> and <code>readAAStringSet</code>)
+load sequences from an input file (or multiple input files) into an
+<a href="XStringSet-class.html">XStringSet</a> object. When multiple input files are specified,
+all must have the same format (i.e. FASTA or FASTQ) and files with
+different compression types can be mixed with non-compressed files. 
+The files are read in the order they were specified and the sequences
+are stored in the returned object in the order they were read.
+</p>
+<p>Only FASTA and FASTQ files are supported for now. The read qualities
+stored in FASTQ files are ignored by <code>readDNAStringSet</code> and family.
+When multiple input FASTQ files are specified, all must have the same
+&quot;width&quot; (i.e. all their sequences must have the same length).
+</p>
+<p>The <code>fasta.info</code> utility returns an integer vector with one element
+per FASTA record in the input files. Each element is the length of the
+sequence found in the corresponding record, that is, the number of
+valid one-letter sequence codes in the record. See description of the
+<code>seqtype</code> argument above for how to control the set of valid
+one-letter sequence codes.
+</p>
+<p>The <code>fastq.geometry</code> utility returns an integer vector describing
+the &quot;geometry&quot; of the FASTQ files i.e. a vector of length 2 where the
+first element is the total number of FASTQ records in the files and
+the second element the common &quot;width&quot; of these files (this width is
+<code>NA</code> if the files contain no FASTQ records or records with
+different widths).
+</p>
+<p><code>writeXStringSet</code> writes an <a href="XStringSet-class.html">XStringSet</a> object to a file.
+Like with <code>readDNAStringSet</code> and family, only FASTA and FASTQ
+files are supported for now.
+WARNING: Please be aware that using <code>writeXStringSet</code> on a
+<a href="XStringSet-class.html">BStringSet</a> object that contains the '\n' (LF) or '\r' (CR)
+characters or the FASTA markup characters '&gt;' or ';' is almost
+guaranteed to produce a broken FASTA file!
+</p>
+<p>Serializing an <a href="XStringSet-class.html">XStringSet</a> object with <code>saveXStringSet</code>
+is equivalent to using the standard <code>save</code> mechanism. But it will
+try to reduce the size of <code>x</code> in memory first before calling
+<code>save</code>. Most of the times this leads to a much reduced size on disk.
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://en.wikipedia.org/wiki/FASTA_format">http://en.wikipedia.org/wiki/FASTA_format</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="XStringSet-class.html">XStringSet-class</a>,
+<a href="XString-class.html">BString-class</a>,
+<a href="DNAString-class.html">DNAString-class</a>,
+<a href="RNAString-class.html">RNAString-class</a>,
+<a href="AAString-class.html">AAString-class</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## ---------------------------------------------------------------------
+## A. READ/WRITE FASTA FILES
+## ---------------------------------------------------------------------
+
+## Read a non-compressed FASTA files:
+filepath1 &lt;- system.file("extdata", "someORF.fa", package="Biostrings")
+fasta.info(filepath1, seqtype="DNA")
+x1 &lt;- readDNAStringSet(filepath1)
+x1
+
+## Read a gzip-compressed FASTA file:
+filepath2 &lt;- system.file("extdata", "someORF.fa.gz", package="Biostrings")
+fasta.info(filepath2, seqtype="DNA")
+x2 &lt;- readDNAStringSet(filepath2)
+x2
+
+## Sanity check:
+stopifnot(identical(as.character(x1), as.character(x2)))
+
+## Read 2 FASTA files at once:
+filepath3 &lt;- system.file("extdata", "fastaEx.fa", package="Biostrings")
+fasta.info(c(filepath2, filepath3), seqtype="DNA")
+x23 &lt;- readDNAStringSet(c(filepath2, filepath3))
+x23
+
+## Sanity check:
+x3 &lt;- readDNAStringSet(filepath3)
+stopifnot(identical(as.character(x23), as.character(c(x2, x3))))
+
+## Write FASTA files:
+out23a &lt;- tempfile()
+writeXStringSet(x23, out23a)
+out23b &lt;- tempfile()
+writeXStringSet(x23, out23b, compress=TRUE)
+file.info(c(out23a, out23b))$size
+
+## Sanity checks:
+stopifnot(identical(as.character(readDNAStringSet(out23a)),
+                    as.character(x23)))
+stopifnot(identical(readLines(out23a), readLines(out23b)))
+
+## ---------------------------------------------------------------------
+## B. READ/WRITE FASTQ FILES
+## ---------------------------------------------------------------------
+filepath &lt;- system.file("extdata", "s_1_sequence.txt",
+                        package="Biostrings")
+fastq.geometry(filepath)
+readDNAStringSet(filepath, format="fastq")
+
+library(BSgenome.Celegans.UCSC.ce2)
+## Create a "sliding window" on chr I:
+sw_start &lt;- seq.int(1, length(Celegans$chrI)-50, by=50)
+sw &lt;- Views(Celegans$chrI, start=sw_start, width=10)
+my_fake_shortreads &lt;- as(sw, "XStringSet")
+my_fake_ids &lt;- sprintf("ID%06d",  seq_len(length(my_fake_shortreads)))
+names(my_fake_shortreads) &lt;- my_fake_ids
+my_fake_shortreads
+
+## Fake quality ';' will be assigned to each base in 'my_fake_shortreads':
+out2 &lt;- tempfile()
+writeXStringSet(my_fake_shortreads, out2, format="fastq")
+
+## Passing qualities thru the 'qualities' argument:
+my_fake_quals &lt;- rep.int(BStringSet("DCBA@?&gt;=&lt;;"),
+                         length(my_fake_shortreads))
+my_fake_quals
+out3 &lt;- tempfile()
+writeXStringSet(my_fake_shortreads, out3, format="fastq",
+                qualities=my_fake_quals)
+
+## ---------------------------------------------------------------------
+## C. SERIALIZATION
+## ---------------------------------------------------------------------
+saveXStringSet(my_fake_shortreads, "my_fake_shortreads", dirpath=tempdir())
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

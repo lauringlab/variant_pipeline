@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Replacing letters in a sequence (or set of sequences) at some...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for replaceLetterAt {Biostrings}"><tr><td>replaceLetterAt {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Replacing letters in a sequence (or set of sequences)
+at some specified locations</h2>
+
+<h3>Description</h3>
+
+<p><code>replaceLetterAt</code> first makes a copy of a sequence (or set of
+sequences) and then replaces some of the original letters by new
+letters at the specified locations.
+</p>
+<p><code>.inplaceReplaceLetterAt</code> is the IN PLACE version of
+<code>replaceLetterAt</code>: it will modify the original
+sequence in place i.e. without copying it first.
+Note that in place modification of a sequence is fundamentally
+dangerous because it alters all objects defined in your session
+that make reference to the modified sequence.
+NEVER use <code>.inplaceReplaceLetterAt</code>, unless you know what
+you are doing!
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+replaceLetterAt(x, at, letter, if.not.extending="replace", verbose=FALSE)
+
+## NEVER USE THIS FUNCTION!
+.inplaceReplaceLetterAt(x, at, letter)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>A <a href="DNAString-class.html">DNAString</a> or rectangular <a href="XStringSet-class.html">DNAStringSet</a> object.
+</p>
+</td></tr>
+<tr valign="top"><td><code>at</code></td>
+<td>
+
+<p>The locations where the replacements must occur.
+</p>
+<p>If <code>x</code> is a <a href="DNAString-class.html">DNAString</a> object, then <code>at</code> is typically
+an integer vector with no NAs but a logical vector or
+<a href="../../IRanges/html/Rle%2dclass.html">Rle</a> 
+object is valid too. Locations can be repeated and in this case the
+last replacement to occur at a given location prevails.
+</p>
+<p>If <code>x</code> is a rectangular <a href="XStringSet-class.html">DNAStringSet</a> object, then
+<code>at</code> must be a matrix of logicals with the same dimensions
+as <code>x</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>letter</code></td>
+<td>
+
+<p>The new letters.
+</p>
+<p>If <code>x</code> is a <a href="DNAString-class.html">DNAString</a> object, then <code>letter</code> must be
+a <a href="DNAString-class.html">DNAString</a> object or a character vector (with no NAs) with a
+total number of letters (<code>sum(nchar(letter))</code>) equal to the number
+of locations specified in <code>at</code>.
+</p>
+<p>If <code>x</code> is a rectangular <a href="XStringSet-class.html">DNAStringSet</a> object, then
+<code>letter</code> must be a <a href="XStringSet-class.html">DNAStringSet</a> object or a character
+vector of the same length as <code>x</code>. In addition, the number of
+letters in each element of <code>letter</code> must match the number of
+locations specified in the corresponding row of <code>at</code>
+(<code>all(width(letter) == rowSums(at))</code>).
+</p>
+</td></tr>
+<tr valign="top"><td><code>if.not.extending</code></td>
+<td>
+
+<p>What to do if the new letter is not &quot;extending&quot; the old letter?
+The new letter &quot;extends&quot; the old letter if both are IUPAC letters
+and the new letter is as specific or less specific than the old
+one (e.g. M extends A, Y extends Y, but Y doesn't extend S).
+Possible values are <code>"replace"</code> (the default) for replacing
+in all cases, <code>"skip"</code> for not replacing when the new letter
+does not extend the old letter, <code>"merge"</code> for merging the new
+IUPAC letter with the old one, and <code>"error"</code> for raising
+an error.
+</p>
+<p>Note that the gap (<code>"-"</code>) and hard masking (<code>"+"</code>)
+letters are not extending or extended by any other letter.
+</p>
+<p>Also note that <code>"merge"</code> is the only value for the
+<code>if.not.extending</code> argument that guarantees the final result
+to be independent on the order the replacement is performed (although
+this is only relevant when <code>at</code> contains duplicated locations,
+otherwise the result is of course always independent on the order,
+whatever the value of <code>if.not.extending</code> is).
+</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+
+<p>When <code>TRUE</code>, a warning will report the number of skipped or merged
+letters.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>.inplaceReplaceLetterAt</code> semantic is equivalent to calling
+<code>replaceLetterAt</code> with <code>if.not.extending="merge"</code>
+and <code>verbose=FALSE</code>.
+</p>
+<p>Never use <code>.inplaceReplaceLetterAt</code>!
+It is used by the <code><a href="../../BSgenome/html/injectSNPs.html">injectSNPs</a></code> function
+in the BSgenome package, as part of the &quot;lazy sequence loading&quot;
+mechanism, for altering the original sequences of a
+<a href="../../BSgenome/html/BSgenome%2dclass.html">BSgenome</a> object at &quot;sequence-load time&quot;.
+This alteration consists in injecting the IUPAC ambiguity letters
+representing the SNPs into the just loaded sequence, which is the
+only time where in place modification of the external data of
+an <a href="XString-class.html">XString</a> object is safe.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <a href="DNAString-class.html">DNAString</a> or <a href="XStringSet-class.html">DNAStringSet</a> object of the same shape
+(i.e. length and width) as the orignal object <code>x</code>
+for <code>replaceLetterAt</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li><p> The <code><a href="replaceAt.html">replaceAt</a></code> function for extracting or replacing
+arbitrary subsequences from/in a sequence or set of sequences.
+</p>
+</li>
+<li> <p><code><a href="IUPAC_CODE_MAP.html">IUPAC_CODE_MAP</a></code> for the mapping between IUPAC
+nucleotide ambiguity codes and their meaning.
+</p>
+</li>
+<li><p> The <code><a href="../../base/html/chartr.html">chartr</a></code> and <code><a href="injectHardMask.html">injectHardMask</a></code> functions.
+</p>
+</li>
+<li><p> The <a href="DNAString-class.html">DNAString</a> and <a href="XStringSet-class.html">DNAStringSet</a> class.
+</p>
+</li>
+<li><p> The <code><a href="../../BSgenome/html/injectSNPs.html">injectSNPs</a></code> function and the
+<a href="../../BSgenome/html/BSgenome.html">BSgenome</a> class in the <span class="pkg">BSgenome</span> package.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## Replace letters of a DNAString object:
+  replaceLetterAt(DNAString("AAMAA"), c(5, 1, 3, 1), "TYNC")
+  replaceLetterAt(DNAString("AAMAA"), c(5, 1, 3, 1), "TYNC", if.not.extending="merge")
+
+  ## Replace letters of a DNAStringSet object (sorry for the totally
+  ## artificial example with absolutely no biological meaning):
+  library(drosophila2probe)
+  probes &lt;- DNAStringSet(drosophila2probe)
+  at &lt;- matrix(c(TRUE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE),
+               nrow=length(probes), ncol=width(probes)[1],
+               byrow=TRUE)
+  letter_subject &lt;- DNAString(paste(rep.int("-", width(probes)[1]), collapse=""))
+  letter &lt;- as(Views(letter_subject, start=1, end=rowSums(at)), "XStringSet")
+  replaceLetterAt(probes, at, letter)
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

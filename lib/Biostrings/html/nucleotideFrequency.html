@@ -1,0 +1,366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Calculate the frequency of oligonucleotides in a DNA or RNA...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for nucleotideFrequency {Biostrings}"><tr><td>nucleotideFrequency {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Calculate the frequency of oligonucleotides in a DNA
+or RNA sequence (and other related functions)</h2>
+
+<h3>Description</h3>
+
+<p>Given a DNA or RNA sequence (or a set of DNA or RNA sequences),
+the <code>oligonucleotideFrequency</code> function computes the frequency
+of all possible oligonucleotides of a given length (called the &quot;width&quot;
+in this particular context) in a sliding window that is shifted
+<code>step</code> nucleotides at a time.
+</p>
+<p>The <code>dinucleotideFrequency</code> and <code>trinucleotideFrequency</code>
+functions are convenient wrappers for calling <code>oligonucleotideFrequency</code>
+with <code>width=2</code> and <code>width=3</code>, respectively.
+</p>
+<p>The <code>nucleotideFrequencyAt</code> function computes the frequency
+of the short sequences formed by extracting the nucleotides found
+at some fixed positions from each sequence of a set of DNA or RNA
+sequences.
+</p>
+<p>In this man page we call &quot;DNA input&quot; (or &quot;RNA input&quot;) an
+<a href="XString-class.html">XString</a>, <a href="XStringSet-class.html">XStringSet</a>, <a href="XStringViews-class.html">XStringViews</a> or
+<a href="MaskedXString-class.html">MaskedXString</a> object of base type DNA (or RNA).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+oligonucleotideFrequency(x, width, step=1,
+                         as.prob=FALSE, as.array=FALSE,
+                         fast.moving.side="right", with.labels=TRUE, ...)
+
+## S4 method for signature 'XStringSet'
+oligonucleotideFrequency(x, width, step=1,
+                         as.prob=FALSE, as.array=FALSE,
+                         fast.moving.side="right", with.labels=TRUE,
+                         simplify.as="matrix")
+
+dinucleotideFrequency(x, step=1,
+                      as.prob=FALSE, as.matrix=FALSE,
+                      fast.moving.side="right", with.labels=TRUE, ...)
+
+trinucleotideFrequency(x, step=1,
+                       as.prob=FALSE, as.array=FALSE,
+                       fast.moving.side="right", with.labels=TRUE, ...)
+
+nucleotideFrequencyAt(x, at,
+                      as.prob=FALSE, as.array=TRUE,
+                      fast.moving.side="right", with.labels=TRUE, ...)
+
+## Some related functions:
+oligonucleotideTransitions(x, left=1, right=1, as.prob=FALSE)
+
+mkAllStrings(alphabet, width, fast.moving.side="right")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>Any DNA or RNA input for the <code>*Frequency</code> and
+<code>oligonucleotideTransitions</code> functions.
+</p>
+<p>An <a href="XStringSet-class.html">XStringSet</a> or <a href="XStringViews-class.html">XStringViews</a> object of base type DNA or RNA
+for <code>nucleotideFrequencyAt</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+
+<p>The number of nucleotides per oligonucleotide for
+<code>oligonucleotideFrequency</code>.
+</p>
+<p>The number of letters per string for <code>mkAllStrings</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>step</code></td>
+<td>
+
+<p>How many nucleotides should the window be shifted before counting the next 
+oligonucleotide (i.e. the sliding window step; default 1).
+If <code>step</code> is smaller than <code>width</code>, oligonucleotides will overlap;
+if the two arguments are equal, adjacent oligonucleotides will be counted
+(an efficient way to count codons in an ORF); and if <code>step</code> is larger
+than <code>width</code>, nucleotides will be sampled <code>step</code> nucleotides
+apart.
+</p>
+</td></tr>
+<tr valign="top"><td><code>at</code></td>
+<td>
+
+<p>An integer vector containing the positions to look at in each element
+of <code>x</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>as.prob</code></td>
+<td>
+
+<p>If <code>TRUE</code> then probabilities are reported,
+otherwise counts (the default).
+</p>
+</td></tr>
+<tr valign="top"><td><code>as.array,as.matrix</code></td>
+<td>
+
+<p>Controls the &quot;shape&quot; of the returned object.
+If <code>TRUE</code> (the default for <code>nucleotideFrequencyAt</code>)
+then it's a numeric matrix (or array),
+otherwise it's just a &quot;flat&quot; numeric vector i.e. a
+vector with no dim attribute (the default for the
+<code>*Frequency</code> functions).
+</p>
+</td></tr>
+<tr valign="top"><td><code>fast.moving.side</code></td>
+<td>
+
+<p>Which side of the strings should move fastest?
+Note that, when <code>as.array</code> is TRUE, then the supplied value
+is ignored and the effective value is <code>"left"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>with.labels</code></td>
+<td>
+
+<p>If <code>TRUE</code> then the returned object is named.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Further arguments to be passed to or from other methods.
+</p>
+</td></tr>
+<tr valign="top"><td><code>simplify.as</code></td>
+<td>
+
+<p>Together with the <code>as.array</code> and <code>as.matrix</code>
+arguments, controls the &quot;shape&quot; of the returned object
+when the input <code>x</code> is an <a href="XStringSet-class.html">XStringSet</a> or
+<a href="XStringViews-class.html">XStringViews</a> object.
+Supported <code>simplify.as</code> values are <code>"matrix"</code>
+(the default), <code>"list"</code> and <code>"collapsed"</code>.
+If <code>simplify.as</code> is <code>"matrix"</code>, the returned
+object is a matrix with <code>length(x)</code> rows where the
+<code>i</code>-th row contains the frequencies for <code>x[[i]]</code>.
+If <code>simplify.as</code> is <code>"list"</code>, the returned
+object is a list of the same length as <code>length(x)</code>
+where the <code>i</code>-th element contains the frequencies
+for <code>x[[i]]</code>.
+If <code>simplify.as</code> is <code>"collapsed"</code>, then the
+the frequencies are computed for the entire object <code>x</code>
+as a whole (i.e. frequencies cumulated across all sequences
+in <code>x</code>).
+</p>
+</td></tr>
+<tr valign="top"><td><code>left, right</code></td>
+<td>
+
+<p>The number of nucleotides per oligonucleotide for the rows
+and columns respectively in the transition matrix created
+by <code>oligonucleotideTransitions</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>alphabet</code></td>
+<td>
+
+<p>The alphabet to use to make the strings.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>If <code>x</code> is an <a href="XString-class.html">XString</a> or <a href="MaskedXString-class.html">MaskedXString</a> object,
+the <code>*Frequency</code> functions return a numeric vector of length
+<code>4^width</code>. If <code>as.array</code> (or <code>as.matrix</code>) is <code>TRUE</code>,
+then this vector is formatted as an array (or matrix).
+If <code>x</code> is an <a href="XStringSet-class.html">XStringSet</a> or <a href="XStringViews-class.html">XStringViews</a> object,
+the returned object has the shape specified by the <code>simplify.as</code>
+argument.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages and P. Aboyoun; K. Vlahovicek for the <code>step</code> argument</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="letterFrequency.html">alphabetFrequency</a></code>,
+<code><a href="XString-class.html">alphabet</a></code>,
+<code><a href="lowlevel-matching.html">hasLetterAt</a></code>,
+<a href="XString-class.html">XString-class</a>,
+<a href="XStringSet-class.html">XStringSet-class</a>,
+<a href="XStringViews-class.html">XStringViews-class</a>,
+<a href="MaskedXString-class.html">MaskedXString-class</a>,
+<code><a href="GENETIC_CODE.html">GENETIC_CODE</a></code>,
+<code><a href="AMINO_ACID_CODE.html">AMINO_ACID_CODE</a></code>,
+<code><a href="reverseComplement.html">reverseComplement</a></code>,
+<code><a href="../../base/html/rev.html">rev</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## ---------------------------------------------------------------------
+## A. BASIC *Frequency() EXAMPLES
+## ---------------------------------------------------------------------
+data(yeastSEQCHR1)
+yeast1 &lt;- DNAString(yeastSEQCHR1)
+
+dinucleotideFrequency(yeast1)
+trinucleotideFrequency(yeast1)
+oligonucleotideFrequency(yeast1, 4)
+  
+## Get the counts of tetranucleotides overlapping by one nucleotide:
+oligonucleotideFrequency(yeast1, 4, step=3)
+
+## Get the counts of adjacent tetranucleotides, starting from the first
+## nucleotide:
+oligonucleotideFrequency(yeast1, 4, step=4)
+  
+## Subset the sequence to change the starting nucleotide (here we start
+## counting from third nucleotide):
+yeast2 &lt;- subseq(yeast1, start=3)
+oligonucleotideFrequency(yeast2, 4, step=4)
+ 
+## Get the less and most represented 6-mers:
+f6 &lt;- oligonucleotideFrequency(yeast1, 6)
+f6[f6 == min(f6)]
+f6[f6 == max(f6)]
+
+## Get the result as an array:
+tri &lt;- trinucleotideFrequency(yeast1, as.array=TRUE)
+tri["A", "A", "C"] # == trinucleotideFrequency(yeast1)["AAC"]
+tri["T", , ] # frequencies of trinucleotides starting with a "T"
+
+## With input made of multiple sequences:
+library(drosophila2probe)
+probes &lt;- DNAStringSet(drosophila2probe)
+dfmat &lt;- dinucleotideFrequency(probes)  # a big matrix
+dinucleotideFrequency(probes, simplify.as="collapsed")
+dinucleotideFrequency(probes, simplify.as="collapsed", as.matrix=TRUE)
+
+## ---------------------------------------------------------------------
+## B. OBSERVED DINUCLEOTIDE FREQUENCY VERSUS EXPECTED DINUCLEOTIDE
+##    FREQUENCY
+## ---------------------------------------------------------------------
+## The expected frequency of dinucleotide "ab" based on the frequencies
+## of its individual letters "a" and "b" is:
+##    exp_Fab = Fa * Fb / N if the 2 letters are different (e.g. CG)
+##    exp_Faa = Fa * (Fa-1) / N if the 2 letters are the same (e.g. TT)
+## where Fa and Fb are the frequencies of "a" and "b" (respectively) and
+## N the length of the sequence.
+  
+## Here is a simple function that implements the above formula for a
+## DNAString object 'x'. The expected frequencies are returned in a 4x4
+## matrix where the rownames and colnames correspond to the 1st and 2nd
+## base in the dinucleotide:
+expectedDinucleotideFrequency &lt;- function(x)
+{
+    # Individual base frequencies.
+    bf &lt;- alphabetFrequency(x, baseOnly=TRUE)[DNA_BASES]
+    (as.matrix(bf) %*% t(bf) - diag(bf)) / length(x)
+}
+
+## On Celegans chrI:
+library(BSgenome.Celegans.UCSC.ce2)
+chrI &lt;- Celegans$chrI
+obs_df &lt;- dinucleotideFrequency(chrI, as.matrix=TRUE)
+obs_df  # CG has the lowest frequency
+exp_df &lt;- expectedDinucleotideFrequency(chrI)
+## A sanity check:
+stopifnot(as.integer(sum(exp_df)) == sum(obs_df))
+
+## Ratio of observed frequency to expected frequency:
+obs_df / exp_df  # TA has the lowest ratio, not CG!
+
+## ---------------------------------------------------------------------
+## C. nucleotideFrequencyAt()
+## ---------------------------------------------------------------------
+nucleotideFrequencyAt(probes, 13)
+nucleotideFrequencyAt(probes, c(13, 20))
+nucleotideFrequencyAt(probes, c(13, 20), as.array=FALSE)
+
+## nucleotideFrequencyAt() can be used to answer questions like: "how
+## many probes in the drosophila2 chip have T, G, T, A at position
+## 2, 4, 13 and 20, respectively?"
+nucleotideFrequencyAt(probes, c(2, 4, 13, 20))["T", "G", "T", "A"]
+## or "what's the probability to have an A at position 25 if there is
+## one at position 13?"
+nf &lt;- nucleotideFrequencyAt(probes, c(13, 25))
+sum(nf["A", "A"]) / sum(nf["A", ])
+## Probabilities to have other bases at position 25 if there is an A
+## at position 13:
+sum(nf["A", "C"]) / sum(nf["A", ])  # C
+sum(nf["A", "G"]) / sum(nf["A", ])  # G
+sum(nf["A", "T"]) / sum(nf["A", ])  # T
+
+## See ?hasLetterAt for another way to get those results.
+
+## ---------------------------------------------------------------------
+## D. oligonucleotideTransitions()
+## ---------------------------------------------------------------------
+## Get nucleotide transition matrices for yeast1
+oligonucleotideTransitions(yeast1)
+oligonucleotideTransitions(yeast1, 2, as.prob=TRUE)
+
+## ---------------------------------------------------------------------
+## E. ADVANCED *Frequency() EXAMPLES
+## ---------------------------------------------------------------------
+## Note that when dropping the dimensions of the 'tri' array, elements
+## in the resulting vector are ordered as if they were obtained with
+## 'fast.moving.side="left"':
+triL &lt;- trinucleotideFrequency(yeast1, fast.moving.side="left")
+all(as.vector(tri) == triL) # TRUE
+
+## Convert the trinucleotide frequency into the amino acid frequency
+## based on translation:
+tri1 &lt;- trinucleotideFrequency(yeast1)
+names(tri1) &lt;- GENETIC_CODE[names(tri1)]
+sapply(split(tri1, names(tri1)), sum) # 12512 occurrences of the stop codon
+
+## When the returned vector is very long (e.g. width &gt;= 10), using
+## 'with.labels=FALSE' can improve performance significantly.
+## Here for example, the observed speed up is between 25x and 500x:
+f12 &lt;- oligonucleotideFrequency(yeast1, 12, with.labels=FALSE) # very fast!
+
+## With the use of 'step', trinucleotideFrequency() is a very fast way to 
+## calculate the codon usage table in an ORF (or a set of ORFs).
+## Taking the same example as in '?codons':
+file &lt;- system.file("extdata", "someORF.fa", package="Biostrings")
+my_ORFs &lt;- readDNAStringSet(file)
+## Strip flanking 1000 nucleotides around each ORF and remove first
+## sequence as it contains an intron:
+my_ORFs &lt;- DNAStringSet(my_ORFs, start=1001, end=-1001)[-1]
+## Codon usage for each ORF:
+codon_usage &lt;- trinucleotideFrequency(my_ORFs, step=3)
+## Codon usage across all ORFs:
+global_codon_usage &lt;- trinucleotideFrequency(my_ORFs, step=3,
+                                             simplify.as="collapsed")
+stopifnot(all(colSums(codon_usage) == global_codon_usage))  # sanity check
+
+## Some related functions:
+dict1 &lt;- mkAllStrings(LETTERS[1:3], 4)
+dict2 &lt;- mkAllStrings(LETTERS[1:3], 4, fast.moving.side="left")
+stopifnot(identical(reverse(dict1), dict2)) 
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: The Single-Letter Amino Acid Code</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for AMINO_ACID_CODE {Biostrings}"><tr><td>AMINO_ACID_CODE {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>The Single-Letter Amino Acid Code</h2>
+
+<h3>Description</h3>
+
+<p>Named character vector mapping single-letter amino acid representations
+to 3-letter amino acid representations.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="AAString-class.html">AAString</a></code>,
+<code><a href="GENETIC_CODE.html">GENETIC_CODE</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## See all the 3-letter codes
+  AMINO_ACID_CODE
+
+  ## Convert an AAString object to a vector of 3-letter amino acid codes
+  aa &lt;- AAString("LANDEECQW")
+  AMINO_ACID_CODE[strsplit(as.character(aa), NULL)[[1]]]
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

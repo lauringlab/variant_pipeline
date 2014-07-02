@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: The XStringViews class</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for XStringViews-class {Biostrings}"><tr><td>XStringViews-class {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>The XStringViews class</h2>
+
+<h3>Description</h3>
+
+<p>The XStringViews class is the basic container for storing a set of views
+(start/end locations) on the same sequence (an <a href="XString-class.html">XString</a> object).
+</p>
+
+
+<h3>Details</h3>
+
+<p>An XStringViews object contains a set of views (start/end locations) on the
+same <a href="XString-class.html">XString</a> object called &quot;the subject string&quot;
+or &quot;the subject sequence&quot; or simply &quot;the subject&quot;.
+Each view is defined by its start and end locations: both are
+integers such that start &lt;= end.
+An XStringViews object is in fact a particular case of an
+<a href="../../IRanges/html/Views%2dclass.html">Views</a> 
+object (the XStringViews class contains the
+<a href="../../IRanges/html/Views%2dclass.html">Views</a> class) so it 
+can be manipulated in a similar manner: see
+<code>?<a href="../../IRanges/html/Views%2dclass.html">Views</a></code> for 
+more information.
+Note that two views can overlap and that a view can be &quot;out of limits&quot;
+i.e. it can start before the first letter of the subject or/and end
+after its last letter.
+</p>
+
+
+<h3>Constructor</h3>
+
+
+<dl>
+<dt></dt><dd>
+<p><code>Views(subject, start=NULL, end=NULL, width=NULL, names=NULL)</code>:
+See <code>?<a href="../../IRanges/html/Views%2dclass.html">Views</a></code> in the IRanges
+package for the details.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Accessor-like methods</h3>
+
+<p>All the accessor-like methods defined for <code>Views</code> objects
+work on XStringViews objects. In addition, the following accessors are defined
+for XStringViews objects:
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>nchar(x)</code>:
+A vector of non-negative integers containing the number
+of letters in each view.
+Values in <code>nchar(x)</code> coincide with values in <code>width(x)</code>
+except for &quot;out of limits&quot; views where they are lower.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Other methods</h3>
+
+<p>In the code snippets below,
+<code>x</code>, <code>object</code>, <code>e1</code> and <code>e2</code> are XStringViews objects,
+and <code>i</code> can be a numeric or logical vector.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>e1 == e2</code>:
+A vector of logicals indicating the result of the view by
+view comparison. The views in the shorter of the two XStringViews
+object being compared are recycled as necessary.
+</p>
+<p>Like for comparison between <a href="XString-class.html">XString</a> objects, comparison between two
+XStringViews objects with subjects of different classes is not supported
+with one exception: when the subjects are <a href="DNAString-class.html">DNAString</a> and
+<a href="RNAString-class.html">RNAString</a> instances.
+</p>
+<p>Also, like with <a href="XString-class.html">XString</a> objects, comparison between an XStringViews
+object with a BString subject and a character vector is supported (see
+examples below).
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>e1 != e2</code>:
+Equivalent to <code>!(e1 == e2)</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>as.character(x, use.names=TRUE, check.limits=TRUE)</code>:
+Converts <code>x</code> to a character vector of the same length as <code>x</code>.
+The <code>use.names</code> argument controls whether or not <code>names(x)</code>
+should be propagated to the names of the returned vector.
+The <code>check.limits</code> argument controls whether or not an error
+should be raised if <code>x</code> has &quot;out of limit&quot; views.
+If <code>check.limits</code> is <code>FALSE</code> then &quot;out of limit&quot; views are
+trimmed with a warning.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>as.matrix(x, use.names=TRUE)</code>:
+Returns a character matrix containing the &quot;exploded&quot; representation
+of the views. Can only be used on an XStringViews object with
+equal-width views.
+The <code>use.names</code> argument controls whether or not <code>names(x)</code>
+should be propagated to the row names of the returned matrix.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>toString(x)</code>:
+Equivalent to <code>toString(as.character(x))</code>.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="../../IRanges/html/Views%2dclass.html">Views-class</a>,
+<code><a href="../../IRanges/html/gaps.html">gaps</a></code>,
+<a href="XString-class.html">XString-class</a>,
+<a href="XStringSet-class.html">XStringSet-class</a>,
+<code><a href="letter.html">letter</a></code>,
+<a href="MIndex-class.html">MIndex-class</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## One standard way to create an XStringViews object is to use
+## the Views() constructor.
+
+## Views on a DNAString object:
+s &lt;- DNAString("-CTC-N")
+v4 &lt;- Views(s, start=3:0, end=5:8)
+v4
+subject(v4)
+length(v4)
+start(v4)
+end(v4)
+width(v4)
+
+## Attach a comment to views #3 and #4:
+names(v4)[3:4] &lt;- "out of limits"
+names(v4)
+
+## A more programatical way to "tag" the "out of limits" views:
+names(v4)[start(v4) &lt; 1 | nchar(subject(v4)) &lt; end(v4)] &lt;- "out of limits"
+## or just:
+names(v4)[nchar(v4) &lt; width(v4)] &lt;- "out of limits"
+
+## Two equivalent ways to extract a view as an XString object:
+s2a &lt;- v4[[2]]
+s2b &lt;- subseq(subject(v4), start=start(v4)[2], end=end(v4)[2])
+identical(s2a, s2b) # TRUE
+
+## It is an error to try to extract an "out of limits" view:
+#v4[[3]] # Error!
+
+v12 &lt;- Views(DNAString("TAATAATG"), start=-2:9, end=0:11)
+v12 == DNAString("TAA")
+v12[v12 == v12[4]]
+v12[v12 == v12[1]]
+v12[3] == Views(RNAString("AU"), start=0, end=2)
+
+## Here the first view doesn't even overlap with the subject:
+Views(BString("aaa--b"), start=-3:4, end=-3:4 + c(3:6, 6:3))
+
+## 'start' and 'end' are recycled:
+subject &lt;- "abcdefghij"
+Views(subject, start=2:1, end=4)
+Views(subject, start=5:7, end=nchar(subject))
+Views(subject, start=1, end=5:7)
+
+## Applying gaps() to an XStringViews object:
+v2 &lt;- Views("abCDefgHIJK", start=c(8, 3), end=c(14, 4))
+gaps(v2)
+
+## Coercion:
+as(v12, "XStringSet")  # same as 'as(v12, "DNAStringSet")'
+rna &lt;- as(v12, "RNAStringSet")
+as(rna, "Views")
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

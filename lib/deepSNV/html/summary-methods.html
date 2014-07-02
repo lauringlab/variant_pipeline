@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Summary of a deepSNV object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for summary {deepSNV}"><tr><td>summary {deepSNV}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>Summary of a deepSNV object</h2>
+
+<h3>Description</h3>
+
+<p>Tabularize significant SNVs by evalutating the p-values
+of the <code><a href="deepSNV-methods.html">deepSNV</a></code> test.
+</p>
+<p>Summary for deepSNV object
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>A <code><a href="deepSNV-class.html">deepSNV-class</a></code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>sig.level</code></td>
+<td>
+<p>The desired significance level.</p>
+</td></tr>
+<tr valign="top"><td><code>adjust.method</code></td>
+<td>
+<p>The adjustment method for multiple
+testing corrections. See <code><a href="../../stats/html/p.adjust.html">p.adjust</a></code> for
+details. Set to NULL, for no adjustment. Default
+&quot;bonferroni&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>fold.change</code></td>
+<td>
+<p>The minimal fold change required of
+the relative frequency. Default 1.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>String. The type of the returned object.
+Either &quot;data.frame&quot; for a <code><a href="../../base/html/data.frame.html">data.frame</a></code>
+(default) or &quot;VCF&quot; for an Extended<code><a href="../../VariantAnnotation/html/VCF-class.html">VCF-class</a></code>
+object.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>If value=&quot;data.frame&quot;, a <code><a href="../../base/html/data.frame.html">data.frame</a></code> with
+the following columns: </p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>chr</code></td>
+<td>
+<p>The chromosome</p>
+</td></tr>
+<tr valign="top"><td><code>pos</code></td>
+<td>
+<p>The position (1-based)</p>
+</td></tr> <tr valign="top"><td><code>ref</code></td>
+<td>
+<p>The
+reference (consensus) nucleotide</p>
+</td></tr> <tr valign="top"><td><code>var</code></td>
+<td>
+<p>The variant
+nucleotide</p>
+</td></tr> <tr valign="top"><td><code>p.val</code></td>
+<td>
+<p>The (corrected) p-value</p>
+</td></tr>
+<tr valign="top"><td><code>freq.var</code></td>
+<td>
+<p>The relative frequency of the SNV</p>
+</td></tr>
+<tr valign="top"><td><code>sigma2.freq.var</code></td>
+<td>
+<p>The estimated variance of the
+frequency</p>
+</td></tr> <tr valign="top"><td><code>n.tst.fw</code></td>
+<td>
+<p>The variant counts in the test
+experiment, forward strand</p>
+</td></tr> <tr valign="top"><td><code>cov.tst.fw</code></td>
+<td>
+<p>The
+coverage in the test experiment, forward strand</p>
+</td></tr>
+<tr valign="top"><td><code>n.tst.bw</code></td>
+<td>
+<p>The variant counts in the test
+experiment, backward strand</p>
+</td></tr> <tr valign="top"><td><code>cov.tst.bw</code></td>
+<td>
+<p>The
+coverage in the test experiment, backward strand</p>
+</td></tr>
+<tr valign="top"><td><code>n.ctrl.fw</code></td>
+<td>
+<p>The variant counts in the control
+experiment, forward strand</p>
+</td></tr> <tr valign="top"><td><code>cov.ctrl.fw</code></td>
+<td>
+<p>The
+coverage in the control experiment, forward strand</p>
+</td></tr>
+<tr valign="top"><td><code>n.ctrl.bw</code></td>
+<td>
+<p>The variant counts in the control
+experiment, backward strand</p>
+</td></tr> <tr valign="top"><td><code>cov.ctrl.bw</code></td>
+<td>
+<p>The
+coverage in the control experiment, backward strand</p>
+</td></tr>
+<tr valign="top"><td><code>raw.p.val</code></td>
+<td>
+<p>The raw p-value</p>
+</td></tr></table>
+<p> If value = &quot;VCF&quot;, this
+functions returns a <code><a href="../../VariantAnnotation/html/VCF-class.html">VCF-class</a></code> object with
+the following entries: FIXED: </p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>REF</code></td>
+<td>
+<p>Reference allele
+in control sample. Note that deletions in the control
+sample will be reported like insertions, e.g. if the
+consensus of the control is A,- at positions 1 and 2
+(relative to the reference) and the test was A,A, then
+this would be denoted as REF=&quot;A&quot; and VAR=&quot;AA&quot; with
+coordinate IRanges(1,2). This may cause ambiguities when
+the VCF object is written to text with writeVcf(), which
+discards the width of the coordinate, and this variant
+remains indistinguishable from an insertion to the
+_reference_ genome.</p>
+</td></tr> <tr valign="top"><td><code>VAR</code></td>
+<td>
+<p>Variant allele in test
+sample</p>
+</td></tr> <tr valign="top"><td><code>QUAL</code></td>
+<td>
+<p>-10*log10(raw.p.val)</p>
+</td></tr></table>
+<p> INFO:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>VF</code></td>
+<td>
+<p>Variant frequency. Variant allele frequency in
+the test minus variant allele frequency in the control.</p>
+</td></tr>
+<tr valign="top"><td><code>VFV</code></td>
+<td>
+<p>Variant frequency variance. Variance of the
+variant frequency; can be thought of as confidence
+interval.</p>
+</td></tr></table>
+<p> GENO (one column for test and one column for
+control): </p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>FW</code></td>
+<td>
+<p>Forward allele count</p>
+</td></tr>
+<tr valign="top"><td><code>BW</code></td>
+<td>
+<p>Backward allele count</p>
+</td></tr> <tr valign="top"><td><code>DFW</code></td>
+<td>
+<p>Forward read
+depth</p>
+</td></tr> <tr valign="top"><td><code>DBW</code></td>
+<td>
+<p>Backward read depth</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Moritz Gerstung
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Short example with 2 SNVs at frequency ~10%
+regions &lt;- data.frame(chr="B.FR.83.HXB2_LAI_IIIB_BRU_K034", start = 3120, stop=3140)
+ex &lt;- deepSNV(test = system.file("extdata", "test.bam", package="deepSNV"), control = system.file("extdata", "control.bam", package="deepSNV"), regions=regions, q=10)
+show(ex)   # show method
+plot(ex)   # scatter plot
+summary(ex)   # summary with significant SNVs
+ex[1:3,]   # subsetting the first three genomic positions
+tail(test(ex, total=TRUE))   # retrieve the test counts on both strands
+tail(control(ex, total=TRUE))
+
+## Not run: Full example with ~ 100 SNVs. Requires an internet connection, but try yourself.
+# regions &lt;- data.frame(chr="B.FR.83.HXB2_LAI_IIIB_BRU_K034", start = 2074, stop=3585)
+# HIVmix &lt;- deepSNV(test = "http://www.bsse.ethz.ch/cbg/software/deepSNV/data/test.bam", control = "http://www.bsse.ethz.ch/cbg/software/deepSNV/data/control.bam", regions=regions, q=10)
+data(HIVmix) # attach data instead..
+show(HIVmix)
+plot(HIVmix)
+head(summary(HIVmix))
+
+</pre>
+
+<hr><div align="center">[Package <em>deepSNV</em> version 1.10.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

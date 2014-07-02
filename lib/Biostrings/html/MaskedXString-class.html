@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: MaskedXString objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for MaskedXString-class {Biostrings}"><tr><td>MaskedXString-class {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>MaskedXString objects</h2>
+
+<h3>Description</h3>
+
+<p>The MaskedBString, MaskedDNAString, MaskedRNAString and MaskedAAString
+classes are containers for storing masked sequences.
+</p>
+<p>All those containers derive directly (and with no additional slots)
+from the MaskedXString virtual class.
+</p>
+
+
+<h3>Details</h3>
+
+<p>In Biostrings, a pile of masks can be put on top of a sequence.
+A pile of masks is represented by a
+<a href="../../IRanges/html/MaskCollection%2dclass.html">MaskCollection</a> 
+object and the sequence by an <a href="XString-class.html">XString</a> object.
+A MaskedXString object is the result of bundling them together in a
+single object.
+</p>
+<p>Note that, no matter what masks are put on top of it, the original
+sequence is always stored unmodified in a MaskedXString object.
+This allows the user to activate/deactivate masks without having to
+worry about losing the information stored in the masked/unmasked
+regions.
+Also this allows efficient memory management since the original
+sequence never needs to be copied (modifying it would require to
+make a copy of it first - sequences cannot and should never be modified
+in place in Biostrings), even when the set of active/inactive masks
+changes.
+</p>
+
+
+<h3>Accessor methods</h3>
+
+<p>In the code snippets below, <code>x</code> is a MaskedXString object.
+For <code>masks(x)</code> and <code>masks(x) &lt;- y</code>, it can also be
+an <a href="XString-class.html">XString</a> object and <code>y</code> must be <code>NULL</code> or
+a <a href="../../IRanges/html/MaskCollection%2dclass.html">MaskCollection</a> object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>unmasked(x)</code>:
+Turns <code>x</code> into an <a href="XString-class.html">XString</a> object by dropping the masks.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>masks(x)</code>:
+Turns <code>x</code> into a
+<a href="../../IRanges/html/MaskCollection%2dclass.html">MaskCollection</a> object by 
+dropping the sequence.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>masks(x) &lt;- y</code>:
+If <code>x</code> is an <a href="XString-class.html">XString</a> object and <code>y</code> is <code>NULL</code>,
+then this doesn't do anything.
+</p>
+<p>If <code>x</code> is an <a href="XString-class.html">XString</a> object and <code>y</code> is a
+<a href="../../IRanges/html/MaskCollection%2dclass.html">MaskCollection</a> object, then
+this turns <code>x</code> into a MaskedXString object by putting the
+masks in <code>y</code> on top of it.
+</p>
+<p>If <code>x</code> is a MaskedXString object and <code>y</code> is <code>NULL</code>,
+then this is equivalent to <code>x &lt;- unmasked(x)</code>.
+</p>
+<p>If <code>x</code> is a MaskedXString object and <code>y</code> is a
+<a href="../../IRanges/html/MaskCollection%2dclass.html">MaskCollection</a> object, then
+this replaces the masks currently on top of <code>x</code> by the masks
+in <code>y</code>. 
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>alphabet(x)</code>:
+Equivalent to <code>alphabet(unmasked(x))</code>.
+See <code>?<a href="XString-class.html">alphabet</a></code> for more information.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>length(x)</code>:
+Equivalent to <code>length(unmasked(x))</code>.
+See
+<code>?`<a href="XString%2dclass.html">length,XString-method</a>`</code>
+for more information.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>&quot;maskedwidth&quot; and related methods</h3>
+
+<p>In the code snippets below, <code>x</code> is a MaskedXString object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>maskedwidth(x)</code>:
+Get the number of masked letters in <code>x</code>. A letter is considered
+masked iff it's masked by at least one active mask.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>maskedratio(x)</code>:
+Equivalent to <code>maskedwidth(x) / length(x)</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>nchar(x)</code>:
+Equivalent to <code>length(x) - maskedwidth(x)</code>.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Coercion</h3>
+
+<p>In the code snippets below, <code>x</code> is a MaskedXString object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>as(x, "Views")</code>:
+Turns <code>x</code> into a <a href="../../IRanges/html/Views.html">Views</a> object where the
+views are the unmasked regions of the original sequence
+(&quot;unmasked&quot; means not masked by at least one active mask).
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Other methods</h3>
+
+<p>In the code snippets below, <code>x</code> is a MaskedXString object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>collapse(x)</code>:
+Collapses the set of masks in <code>x</code> into a single mask made of
+all active masks.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>gaps(x)</code>:
+Reverses all the masks i.e. each mask is replaced by a mask
+where previously unmasked regions are now masked and
+previously masked regions are now unmasked.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pages</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li> <p><code><a href="maskMotif.html">maskMotif</a></code>
+</p>
+</li>
+<li> <p><code><a href="injectHardMask.html">injectHardMask</a></code>
+</p>
+</li>
+<li> <p><code><a href="letterFrequency.html">alphabetFrequency</a></code>
+</p>
+</li>
+<li> <p><code><a href="reverseComplement.html">reverseComplement</a></code>
+</p>
+</li>
+<li> <p><a href="XString-class.html">XString-class</a>
+</p>
+</li>
+<li> <p><a href="../../IRanges/html/MaskCollection%2dclass.html">MaskCollection-class</a>
+</p>
+</li>
+<li> <p><a href="../../IRanges/html/Views%2dclass.html">Views-class</a>
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## ---------------------------------------------------------------------
+## A. MASKING BY POSITION
+## ---------------------------------------------------------------------
+mask0 &lt;- Mask(mask.width=29, start=c(3, 10, 25), width=c(6, 8, 5))
+x &lt;- DNAString("ACACAACTAGATAGNACTNNGAGAGACGC")
+length(x)  # same as width(mask0)
+nchar(x)   # same as length(x)
+masks(x) &lt;- mask0
+x
+length(x)  # has not changed
+nchar(x)   # has changed
+gaps(x)
+
+## Prepare a MaskCollection object of 3 masks ('mymasks') by running the
+## examples in the man page for these objects:
+example(MaskCollection, package="IRanges")
+
+## Put it on 'x':
+masks(x) &lt;- mymasks
+x
+alphabetFrequency(x)
+
+## Deactivate all masks:
+active(masks(x)) &lt;- FALSE
+x
+
+## Activate mask "C":
+active(masks(x))["C"] &lt;- TRUE
+x
+
+## Turn MaskedXString object into a Views object:
+as(x, "Views")
+
+## Drop the masks:
+masks(x) &lt;- NULL
+x
+alphabetFrequency(x)
+
+
+## ---------------------------------------------------------------------
+## B. MASKING BY CONTENT
+## ---------------------------------------------------------------------
+## See ?maskMotif for masking by content
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

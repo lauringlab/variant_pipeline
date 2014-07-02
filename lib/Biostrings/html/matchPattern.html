@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: String searching functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="R.css">
+</head><body>
+
+<table width="100%" summary="page for matchPattern {Biostrings}"><tr><td>matchPattern {Biostrings}</td><td align="right">R Documentation</td></tr></table>
+
+<h2>String searching functions</h2>
+
+<h3>Description</h3>
+
+<p>A set of functions for finding all the occurrences (aka &quot;matches&quot; or &quot;hits&quot;)
+of a given pattern (typically short) in a (typically long) reference sequence
+or set of reference sequences (aka the subject)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+matchPattern(pattern, subject,
+             max.mismatch=0, min.mismatch=0,
+             with.indels=FALSE, fixed=TRUE,
+             algorithm="auto")
+
+countPattern(pattern, subject,
+             max.mismatch=0, min.mismatch=0,
+             with.indels=FALSE, fixed=TRUE,
+             algorithm="auto")
+
+vmatchPattern(pattern, subject,
+              max.mismatch=0, min.mismatch=0,
+              with.indels=FALSE, fixed=TRUE,
+              algorithm="auto", ...)
+
+vcountPattern(pattern, subject,
+              max.mismatch=0, min.mismatch=0,
+              with.indels=FALSE, fixed=TRUE,
+              algorithm="auto", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pattern</code></td>
+<td>
+
+<p>The pattern string.
+</p>
+</td></tr>
+<tr valign="top"><td><code>subject</code></td>
+<td>
+
+<p>An <a href="XString-class.html">XString</a>, <a href="XStringViews-class.html">XStringViews</a> or <a href="MaskedXString-class.html">MaskedXString</a>
+object for <code>matchPattern</code> and <code>countPattern</code>.
+</p>
+<p>An <a href="XStringSet-class.html">XStringSet</a> or <a href="XStringViews-class.html">XStringViews</a> object for
+<code>vmatchPattern</code> and <code>vcountPattern</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>max.mismatch, min.mismatch</code></td>
+<td>
+
+<p>The maximum and minimum number of mismatching letters allowed (see
+<code>?`<a href="lowlevel-matching.html">lowlevel-matching</a>`</code> for the details).
+If non-zero, an algorithm that supports inexact matching is used.
+</p>
+</td></tr>
+<tr valign="top"><td><code>with.indels</code></td>
+<td>
+
+<p>If <code>TRUE</code> then indels are allowed. In that case, <code>min.mismatch</code>
+must be <code>0</code> and <code>max.mismatch</code> is interpreted as the maximum
+&quot;edit distance&quot; allowed between the pattern and a match.
+Note that in order to avoid pollution by redundant matches,
+only the &quot;best local matches&quot; are returned.
+Roughly speaking, a &quot;best local match&quot; is a match that is locally
+both the closest (to the pattern P) and the shortest.
+More precisely, a substring S' of the subject S is a &quot;best local match&quot; iff:
+</p>
+<PRE>
+       (a) nedit(P, S') &lt;= max.mismatch
+       (b) for every substring S1 of S':
+               nedit(P, S1) &gt; nedit(P, S')
+       (c) for every substring S2 of S that contains S':
+               nedit(P, S2) &gt;= nedit(P, S')
+    </PRE>
+One nice property of &quot;best local matches&quot; is that their first and last
+letters are guaranteed to match the letters in P that they align with.
+</td></tr>
+<tr valign="top"><td><code>fixed</code></td>
+<td>
+
+<p>If <code>TRUE</code> (the default), an IUPAC ambiguity code in the pattern
+can only match the same code in the subject, and vice versa.
+If <code>FALSE</code>, an IUPAC ambiguity code in the pattern can match
+any letter in the subject that is associated with the code, and 
+vice versa. See <code>?`<a href="lowlevel-matching.html">lowlevel-matching</a>`</code> for more information.
+</p>
+</td></tr>
+<tr valign="top"><td><code>algorithm</code></td>
+<td>
+
+<p>One of the following: <code>"auto"</code>, <code>"naive-exact"</code>,
+<code>"naive-inexact"</code>, <code>"boyer-moore"</code>, <code>"shift-or"</code>
+or <code>"indels"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Additional arguments for methods.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Available algorithms are: &ldquo;naive exact&rdquo;, &ldquo;naive inexact&rdquo;,
+&ldquo;Boyer-Moore-like&rdquo;, &ldquo;shift-or&rdquo; and &ldquo;indels&rdquo;.
+Not all of them can be used in all situations: restrictions
+apply depending on the &quot;search criteria&quot; i.e. on the values of
+the <code>pattern</code>, <code>subject</code>, <code>max.mismatch</code>,
+<code>min.mismatch</code>, <code>with.indels</code> and <code>fixed</code>
+arguments.
+</p>
+<p>It is important to note that the <code>algorithm</code> argument
+is not part of the search criteria. This is because the supported
+algorithms are interchangeable, that is, if 2 different algorithms
+are compatible with a given search criteria, then choosing one or
+the other will not affect the result (but will most likely affect
+the performance). So there is no &quot;wrong choice&quot; of algorithm (strictly
+speaking).
+</p>
+<p>Using <code>algorithm="auto"</code> (the default) is recommended because
+then the best suited algorithm will automatically be selected among
+the set of algorithms that are valid for the given search criteria.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An <a href="XStringViews-class.html">XStringViews</a> object for <code>matchPattern</code>.
+</p>
+<p>A single integer for <code>countPattern</code>.
+</p>
+<p>An <a href="MIndex-class.html">MIndex</a> object for <code>vmatchPattern</code>.
+</p>
+<p>An integer vector for <code>vcountPattern</code>, with each element in
+the vector corresponding to the number of matches in the corresponding
+element of <code>subject</code>.
+</p>
+
+
+<h3>Note</h3>
+
+<p>Use <code><a href="matchPDict-exact.html">matchPDict</a></code> if you need to match a (big) set of patterns
+against a reference sequence.
+</p>
+<p>Use <code><a href="pairwiseAlignment.html">pairwiseAlignment</a></code> if you need to solve a (Needleman-Wunsch)
+global alignment, a (Smith-Waterman) local alignment, or an (ends-free)
+overlap alignment problem.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="lowlevel-matching.html">lowlevel-matching</a>,
+<code><a href="matchPDict-exact.html">matchPDict</a></code>,
+<code><a href="pairwiseAlignment.html">pairwiseAlignment</a></code>,
+<code><a href="match-utils.html">mismatch</a></code>,
+<code><a href="matchLRPatterns.html">matchLRPatterns</a></code>,
+<code><a href="matchProbePair.html">matchProbePair</a></code>,
+<code><a href="maskMotif.html">maskMotif</a></code>,
+<code><a href="letterFrequency.html">alphabetFrequency</a></code>,
+<a href="XStringViews-class.html">XStringViews-class</a>,
+<a href="MIndex-class.html">MIndex-class</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## ---------------------------------------------------------------------
+## A. matchPattern()/countPattern()
+## ---------------------------------------------------------------------
+
+## A simple inexact matching example with a short subject:
+x &lt;- DNAString("AAGCGCGATATG")
+m1 &lt;- matchPattern("GCNNNAT", x)
+m1
+m2 &lt;- matchPattern("GCNNNAT", x, fixed=FALSE)
+m2
+as.matrix(m2)
+
+## With DNA sequence of yeast chromosome number 1:
+data(yeastSEQCHR1)
+yeast1 &lt;- DNAString(yeastSEQCHR1)
+PpiI &lt;- "GAACNNNNNCTC" # a restriction enzyme pattern
+match1.PpiI &lt;- matchPattern(PpiI, yeast1, fixed=FALSE)
+match2.PpiI &lt;- matchPattern(PpiI, yeast1, max.mismatch=1, fixed=FALSE)
+
+## With a genome containing isolated Ns:
+library(BSgenome.Celegans.UCSC.ce2)
+chrII &lt;- Celegans[["chrII"]]
+alphabetFrequency(chrII)
+matchPattern("N", chrII)
+matchPattern("TGGGTGTCTTT", chrII) # no match
+matchPattern("TGGGTGTCTTT", chrII, fixed=FALSE) # 1 match
+
+## Using wildcards ("N") in the pattern on a genome containing N-blocks:
+library(BSgenome.Dmelanogaster.UCSC.dm3)
+chrX &lt;- maskMotif(Dmelanogaster$chrX, "N")
+as(chrX, "Views") # 4 non masked regions
+matchPattern("TTTATGNTTGGTA", chrX, fixed=FALSE)
+## Can also be achieved with no mask:
+masks(chrX) &lt;- NULL
+matchPattern("TTTATGNTTGGTA", chrX, fixed="subject")
+
+## ---------------------------------------------------------------------
+## B. vmatchPattern()/vcountPattern()
+## ---------------------------------------------------------------------
+
+Ebox &lt;- DNAString("CANNTG")
+subject &lt;- Celegans$upstream5000
+mindex &lt;- vmatchPattern(Ebox, subject, fixed=FALSE)
+count_index &lt;- countIndex(mindex)  # Get the number of matches per
+                                   # subject element.
+sum(count_index)  # Total number of matches.
+table(count_index)
+i0 &lt;- which(count_index == max(count_index))
+subject[i0]  # The subject element with most matches.
+
+## The matches in 'subject[i0]' as an IRanges object:
+mindex[[i0]]
+## The matches in 'subject[i0]' as an XStringViews object:
+Views(subject[[i0]], mindex[[i0]])
+
+## ---------------------------------------------------------------------
+## C. WITH INDELS
+## ---------------------------------------------------------------------
+
+library(BSgenome.Celegans.UCSC.ce2)
+subject &lt;- Celegans$chrI
+pattern1 &lt;- DNAString("ACGGACCTAATGTTATC")
+pattern2 &lt;- DNAString("ACGGACCTVATGTTRTC")
+
+## Allowing up to 2 mismatching letters doesn't give any match:
+m1a &lt;- matchPattern(pattern1, subject, max.mismatch=2)
+
+## But allowing up to 2 edit operations gives 3 matches:
+system.time(m1b &lt;- matchPattern(pattern1, subject, max.mismatch=2,
+                                with.indels=TRUE))
+m1b
+
+## pairwiseAlignment() returns the (first) best match only:
+if (interactive()) {
+  mat &lt;- nucleotideSubstitutionMatrix(match=1, mismatch=0, baseOnly=TRUE)
+  ## Note that this call to pairwiseAlignment() will need to
+  ## allocate 733.5 Mb of memory (i.e. length(pattern) * length(subject)
+  ## * 3 bytes).
+  system.time(pwa &lt;- pairwiseAlignment(pattern1, subject, type="local",
+                                       substitutionMatrix=mat,
+                                       gapOpening=0, gapExtension=1))
+  pwa
+}
+
+## With IUPAC ambiguities in the pattern:
+m2a &lt;- matchPattern(pattern2, subject, max.mismatch=2,
+                    fixed="subject")
+m2b &lt;- matchPattern(pattern2, subject, max.mismatch=2,
+                    with.indels=TRUE, fixed="subject")
+
+## All the matches in 'm1b' and 'm2a' should also appear in 'm2b':
+stopifnot(suppressWarnings(all(ranges(m1b) %in% ranges(m2b))))
+stopifnot(suppressWarnings(all(ranges(m2a) %in% ranges(m2b))))
+
+## ---------------------------------------------------------------------
+## D. WHEN 'with.indels=TRUE', ONLY "BEST LOCAL MATCHES" ARE REPORTED
+## ---------------------------------------------------------------------
+
+## With deletions in the subject:
+subject &lt;- BString("ACDEFxxxCDEFxxxABCE")
+matchPattern("ABCDEF", subject, max.mismatch=2, with.indels=TRUE)
+matchPattern("ABCDEF", subject, max.mismatch=2)
+
+## With insertions in the subject:
+subject &lt;- BString("AiBCDiEFxxxABCDiiFxxxAiBCDEFxxxABCiDEF")
+matchPattern("ABCDEF", subject, max.mismatch=2, with.indels=TRUE)
+matchPattern("ABCDEF", subject, max.mismatch=2)
+
+## With substitutions (note that the "best local matches" can introduce
+## indels and therefore be shorter than 6):
+subject &lt;- BString("AsCDEFxxxABDCEFxxxBACDEFxxxABCEDF")
+matchPattern("ABCDEF", subject, max.mismatch=2, with.indels=TRUE)
+matchPattern("ABCDEF", subject, max.mismatch=2)
+</pre>
+
+<hr><div align="center">[Package <em>Biostrings</em> version 2.32.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

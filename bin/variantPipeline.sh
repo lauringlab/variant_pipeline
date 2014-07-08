@@ -25,6 +25,6 @@ cp -a $SCRIPT_DIR/variantPipeline.bpipe* .
 
 #throttled to 8 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
-time $BPIPE_COMMAND run -n 8 variantPipeline.bpipe $INPUT_DIR/*.fastq
+time $BPIPE_COMMAND run -n 8  variantPipeline.bpipe $INPUT_DIR/*.fastq
 
 ) 

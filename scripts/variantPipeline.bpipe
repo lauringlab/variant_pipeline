@@ -12,10 +12,10 @@ done = {
 
 run  {
     // Align each pair of input files separately in parallel
-    "%_*.fastq" * [ fastqc ]  +
+    "Covaris-%_*.fastq" * [ fastqc ]  +
     //pydmx + 
-    "%_*.fastq" * [ bowtie2 ] + 
-    "%.sam" * [ picard_sortsam ] +
+    "Covaris-%_*.fastq" * [ bowtie2 ] + 
+    "%.sam" * [ picard_sortsam + picard_markdups ] +
     done
 }
 

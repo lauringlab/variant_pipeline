@@ -1,4 +1,3 @@
-
 // fastqc generates two zipped directory files using a custom naming convention
 // input: two *.fastq files
 // output: two *_fastqc.zip files
@@ -49,7 +48,7 @@ picard_sortsam = {
     output.dir = "03-align"
     transform("bam") {
         exec """
-            java -Xmx1g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/SortSam.jar 
+            java -Xmx4g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/SortSam.jar 
             SO=coordinate 
             INPUT=$input.sam 
             OUTPUT=$output 

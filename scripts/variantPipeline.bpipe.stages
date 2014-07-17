@@ -1,16 +1,3 @@
-// naming changes the names of the files as they come off the sequencer into more intuititive names that don't include
-// uneeded information added by the sequencer
-
-naming = {
-	produce("*.fastq"){
-	exec " /scratch/alauring_fluxm/mccrone/variant_pipeline/scripts/rename.sh $input"
-	}
-}
-
-
-
-
-
 // fastqc generates two zipped directory files using a custom naming convention
 // input: two *.fastq files
 // output: two *_fastqc.zip files

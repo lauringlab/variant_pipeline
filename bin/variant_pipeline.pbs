@@ -1,0 +1,32 @@
+#!/bin/sh
+#PBS -S /bin/sh 
+#PBS -A alauring_fluxm
+#PBS -N test_PR8
+#PBS -q fluxm
+#PBS -M mccrone@umich.edu
+#PBS -m abe
+#PBS -j oe
+#PBS -V
+#PBS -l nodes=1:ppn=2,mem=48gb,walltime=10:00:00
+
+echo Running job name $PBS_JOBNAME with ID $PBS_JOBID on host $PBS_O_HOST;
+echo Working directory is $PBS_O_WORKDIR
+echo Start time: `date`;
+
+module add med
+module add fastqc
+module add java
+module add picard
+module add bowtie2
+module add samtools 
+
+##Renaming Stage
+/scratch/alauring_fluxm/mccrone/variant_pipeline/scripts/rename1.sh /scratch/alauring_fluxm/mccrone/Simulated/fastq
+
+#begin Pipeline
+/scratch/alauring_fluxm/mccrone/variant_pipeline/bin/variantPipeline.sh /scratch/alauring_fluxm/mccrone/Simulated/fastq /scratch/alauring_fluxm/mccrone/Simulated/analysis
+
+#Again renaming
+/scratch/alauring_fluxm/mccrone/variant_pipeline/scripts/rename2.sh /scratch/alauring_fluxm/mccrone/Simulated/analysis
+echo Finish time: `date`
+

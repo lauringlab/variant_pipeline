@@ -11,11 +11,13 @@ done = {
 }
 
 run  {
-    // Align each pair of input files separately in parallel
-    "Covaris-%_*.fastq" * [ fastqc ]  +
+    //"%_*.fastq" * [ naming ] +
+     // Align each pair of input files separately in parallel
+    //"%.*.fastq" * [ fastqc ]  +
     //pydmx + 
-    "Covaris-%_*.fastq" * [ bowtie2 ] + 
-    "%.sam" * [ picard_sortsam + picard_markdups ] +
+    "%.*.fastq" * [ bowtie2 ] + 
+    "%.sam" * [ picard_sortsam + picard_markdups + samtools_mpileup ] +
+    "%.pileup" * [ trim_pileup ] +	    
     done
 }
 

@@ -1,3 +1,16 @@
+// naming changes the names of the files as they come off the sequencer into more intuititive names that don't include
+// uneeded information added by the sequencer
+
+naming = {
+	produce("*.fastq"){
+	exec " /scratch/alauring_fluxm/mccrone/variant_pipeline/scripts/rename.sh $input"
+	}
+}
+
+
+
+
+
 // fastqc generates two zipped directory files using a custom naming convention
 // input: two *.fastq files
 // output: two *_fastqc.zip files
@@ -77,4 +90,22 @@ picard_markdups = {
 }
 
 
+samtools_mpileup = {
+	doc "mpileup to create the files needed to messure coverage across the samples"
+	output.dir = "05-coverage"
+	produce("05-coverage/*.pileup"){
 
+	exec "samtools mpileup -d 1000000 $input.bam > ./05-coverage/" + new File(input1).name.split("\\.[12]\\.bam")[0] + '.pileup'
+
+	}
+
+}
+
+
+trim_pileup = {
+	doc " this trims large .pileup file to a smaller file that is more easily transfered and presents coverage intuitively"
+	output.dir = "05-coverage"
+	transform("05-coverage/*.cov"){
+		exec "/scratch/alauring_fluxm/mccrone/variant_pipeline/scripts/Trim_to_coverage.py $input.pileup ${input}.cov"
+	}
+}

@@ -12,10 +12,11 @@ done = {
 
 run  {
      // Align each pair of input files separately in parallel
-    "%.*.fastq" * [ fastqc ]  +
+    //"%.*.fastq" * [ fastqc ]  +
     //pydmx + 
     "%.*.fastq" * [ bowtie2 ] + 
-    "%.sam" * [ picard_sortsam + picard_markdups + samtools_mpileup ] +
+    "%.sam" * [ picard_sortsam + picard_markdups ] + 
+    "%.bam" * [ samtools_mpileup ] +
     "%.pileup" * [ trim_pileup ] +	    
     done
 }

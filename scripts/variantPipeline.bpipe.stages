@@ -3,8 +3,8 @@
 // output: two *_fastqc.zip files
 fastqc = {
     doc "Run FASTQC to generate QC metrics for the fastq files"
-    output.dir = "01-fastqc"
-    output_dir = "01-fastqc"
+    output.dir = "01_fastqc"
+    output_dir = "01_fastqc"
     produce("${output_dir}/*_fastqc.zip") {
         exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
         exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
@@ -35,9 +35,9 @@ pydmx = {
 // output: a *.sam file
 bowtie2 = {
     doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
-    output.dir = "03-align"
-    produce ("03-align/*.sam") {
-        exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03-align/" + new File(input1).name.split("\\.[12]\\.fastq")[0] + '.sam'
+    output.dir = "03_align"
+    produce ("03_align/*.sam") {
+        exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.fastq")[0] + '.sam'
     }
 }
 
@@ -45,7 +45,7 @@ bowtie2 = {
 picard_sortsam = {
     doc "Sort SAM file so that its in reference order and convert to BAM."
     tmp_dir    = "./tmp"
-    output.dir = "03-align"
+    output.dir = "03_align"
     transform("bam") {
         exec """
             java -Xmx4g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/SortSam.jar 
@@ -62,7 +62,7 @@ picard_sortsam = {
 picard_markdups = {
     doc "Mark duplicates but do not remove."
     tmp_dir    = "./tmp"
-    output.dir = "04-mark_duplicates"
+    output.dir = "04_mark_duplicates"
     filter("marked") {
         exec """
             java -Xmx1g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/MarkDuplicates.jar 
@@ -79,10 +79,10 @@ picard_markdups = {
 
 samtools_mpileup = {
 	doc "mpileup to create the files needed to messure coverage across the samples"
-	output.dir = "05-coverage"
-	produce("05-coverage/*.pileup"){
+	output.dir = "05_coverage"
+	produce("05_coverage/*.pileup"){
 
-	exec "samtools mpileup -d 1000000 $input.bam > ./05-coverage/" + new File(input1).name.split("\\.[12]\\.bam")[0] + '.pileup'
+	exec "samtools mpileup -d 1000000 $input.bam > ./05_coverage/" + new File(input1).name.split("\\.[12]\\.bam")[0] + '.pileup'
 
 	}
 
@@ -91,8 +91,8 @@ samtools_mpileup = {
 
 trim_pileup = {
 	doc " this trims large .pileup file to a smaller file that is more easily transfered and presents coverage intuitively"
-	output.dir = "05-coverage"
-	transform("05-coverage/*.cov"){
+	output.dir = "05_coverage"
+	transform("05_coverage/*.cov"){
 		exec "/scratch/alauring_fluxm/mccrone/variant_pipeline/scripts/Trim_to_coverage.py $input.pileup ${input}.cov"
 	}
 }

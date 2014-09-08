@@ -2,6 +2,7 @@
 # will be optimized to present the snv's in the samples provided.  The input will be the
 # directory output from the pipeline.
 library(deepSNV)
+args<-commandArgs(TRUE)
 #################################Functions########################################################
 # Make names from the file list for coverage plots
 naming<-function(filenames){
@@ -73,11 +74,11 @@ false.neg<-function(sumfile,true=True_snv){
  return(x)
 }
 #################################Coverage Plots####################################################
-setwd("~/Documents/Lauring_Lab/NGS/wsn33_pr8_05_30/marked_dups/05_coverage/")
+print(paste(args[1],"/05_coverage", sep=""))
+setwd(paste(args[1],"/05_coverage", sep=""))
 
 # Get file names
-files <- list.files(pattern=".cov", all.files=T, full.names=F)
-
+files <- list.files( pattern="*cov$", all.files=T, full.names=F)
 #Read in coverage files
 coverage.ls<-lapply(files,read.table,header=T,sep='\t')  # read in coverage files and save data.frames in a list
 cov.vars<-lapply(files,naming) # make the names for the list of data.frames
@@ -85,22 +86,21 @@ names(coverage.ls)<-cov.vars  # name the data frames in the order they were read
 
 #-------------------------Plotting coverage-----------------------------------
 #MAKE Plots
-par(mfrow=c(4,2))
-coverage_plots('PB2')
-coverage_plots('PB1')
-coverage_plots('PA')
-coverage_plots('HA')
-coverage_plots('NP')
-coverage_plots('N_A')
-coverage_plots('M')
-coverage_plots('NS')
-par(mfrow = c(1,1)) #reset Par
+#par(mfrow=c(4,2))
+#coverage_plots('PB2')
+#coverage_plots('PB1')
+#coverage_plots('PA')
+#coverage_plots('HA')
+#coverage_plots('NP')
+#coverage_plots('N_A')
+#coverage_plots('M')
+#coverage_plots('NS')
+#par(mfrow = c(1,1)) #reset Par
 
-#Start here tomorrow
 #################################Deep-SNV analysis##########################
 
 
-setwd("~/Documents/Lauring_Lab/NGS/wsn33_pr8_05_30/marked_dups/04_marked_duplicates/")
+setwd(paste(args[1],"/04_mark_duplicates",sep=""))
 
 
 ##Get ranges for chromosomes and save the vectors for future analysis checking the true variants 
@@ -118,26 +118,16 @@ empieza<-segment_starts$Position+trim
 chromosomes<-levels(coverage.df$Segment) # Segment order comes from the reference sequence oder ( HA M N_A NP NS PA PB1 PB2 )
 regions<-data.frame(chr=chromosomes, start = empieza, stop = ultima)
 
-# making a list of the deepsnv objects
-files <- list.files( pattern="bam$", all.files=T, full.names=F)
+# making a list for the deepsnv objects
+files <- list.files( pattern="*bam$", all.files=T, full.names=F)
 control_file<- list.files(pattern="control.*bam$", all.files=T, full.names = T) # sim added for simuated analysis
 
+print(control_file)
 deepSnv.ls<-lapply(files,deepSNV,control=control_file,regions=regions,q=25) # DeepSNV objects in a list
 
 deepSnv.vars<-lapply(files,naming) # make the names for the list of data.frames
 names(deepSnv.ls)<-deepSnv.vars  # name the data frames in the order they were read in 
 
-
-## Plot of the snv objects
-
-par(mfrow=c(3,2))
-nplot(deepSnv.ls$Covaris_5_dsnv,'5%',0.05)
-nplot(deepSnv.ls$Covaris_25_dsnv,"2.5%",0.025)
-nplot(deepSnv.ls$Covaris_125_dsnv,"1.25%",0.0125)
-nplot(deepSnv.ls$Covaris_063_dsnv,"0.63%",0.0063)
-nplot(deepSnv.ls$Covaris_016_dsnv,"0.16%",0.0016)
-nplot(deepSnv.ls$Frag_008_dsnv,"0.08%",0.0008)
-par(mfrow=c(1,1))
 
 #################---COUNTING TRUE and FALSE positives---##################################################
 
@@ -150,38 +140,8 @@ names(summary.ls)<-summary.vars  # name the data frames in the order they were r
 summary.df<-do.call(rbind,summary.ls)
 summary.df$Id<-unlist(lapply(rownames(summary.df),id)) # Use the row names to make the Id column
 
-#The _true is a data frame of all true mutations and their frequency and pvalues.  Any mutations with 00 for both were not found
-True_snv<-read.table("~/Documents/Lauring_Lab/NGS/wsn33_pr8_05_30/PR8_wsn33",header=T,sep='\t')
-
-# Add a True/False column to label the mutation
-True_snv$Mutation<-rep(TRUE,times=length(True_snv$Seq.Pos))
-
-summary.df<-merge(summary.df,True_snv,by.x=c("chr","pos","ref","var"),by.y=c("Name","Seq.Pos","Ref","Allele.1"),all.x = TRUE)[,c(1:17,25)]
-summary.df$Mutation[is.na(summary.df$Mutation)] <- FALSE
-
-# Add coverage data to summary.df
-summary.df<-merge(summary.df,coverage.df,by.x=c("chr","pos","Id"),by.y=c("Segment","Position","Id"), all.x=TRUE)
-summary.df$Cov_filter<-(summary.df$Coverage/((summary.df$freq.var)^-1)>=10) #filtering based on coverage
-
-summary.ls<-by(summary.df, summary.df[,"Id"], function(x) x) # now update the summary.ls variable
-#plotting results
-lapply(summary.ls,freq_pval)
-
-#Getting the false negative I'll need one for each snv object(keep in a list)
-True_snv<True_snv$Mutation<-NULL # get rid of the mutation column which served to be transfered to summary.df
-summary.df$Detected<-TRUE
-summary.ls<-by(summary.df, summary.df[,"Id"], function(x) x) # now update the summary.ls variable
-
-False_neg_test.ls<-lapply(summary.ls,false.neg)
-False_neg_test.ls<-lapply(False_neg_test.ls,function(x) x$Detected[is.na(x$Detected), return(x)] <- FALSE) #Fix this
-
-#combining list into data.frame with Id
-False_neg_test.df<-do.call(rbind,False_neg_test.ls)
-False_neg_test.df$Id<-unlist(lapply(rownames(False_neg_test.df),id)) # Use the row names to make the Id column
-
-
 
 #Save data
-save(list = ls(all = TRUE), file = "/scratch/alauring_fluxm/mccrone/Run_1053/analysis/Run_1053.RData")
+save(list = ls(all = TRUE), file = paste(args[1],"/deepsnv.RData",sep=""))
 
 

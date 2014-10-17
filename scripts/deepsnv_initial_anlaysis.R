@@ -120,7 +120,7 @@ regions<-data.frame(chr=chromosomes, start = empieza, stop = ultima)
 
 # making a list for the deepsnv objects
 files <- list.files( pattern="*bam$", all.files=T, full.names=F)
-control_file<- list.files(pattern="pWSN33.*bam$", all.files=T, full.names = T) # sim added for simuated analysis
+control_file<- list.files(pattern="wt.*bam$", all.files=T, full.names = T) # sim added for simuated analysis
 
 print(control_file)
 deepSnv.ls<-lapply(files,deepSNV,control=control_file,regions=regions,q=25) # DeepSNV objects in a list
@@ -142,6 +142,6 @@ summary.df$Id<-unlist(lapply(rownames(summary.df),id)) # Use the row names to ma
 
 
 #Save data
-save(list = ls(all = TRUE), file = paste(args[1],"/deepsnv.RData",sep=""))
+save(list = ls(all = TRUE), file = paste(args[1],"/deepsnv_virus_control.RData",sep=""))
 
 

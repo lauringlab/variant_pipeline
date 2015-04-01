@@ -59,16 +59,16 @@ picard_sortsam = {
 }
 
 
-picard_markdups = {
-    doc "Mark duplicates but do not remove."
+picard_removedups = {
+    doc "Remove duplicates"
     tmp_dir    = "./tmp"
-    output.dir = "04_mark_duplicates"
-    filter("marked") {
+    output.dir = "04_removed_duplicates"
+    filter("removed") {
         exec """
             java -Xmx1g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/MarkDuplicates.jar 
             INPUT=$input.bam 
             OUTPUT=$output 
-            REMOVE_DUPLICATES=false 
+            REMOVE_DUPLICATES=true 
             CREATE_INDEX=true 
             METRICS_FILE=${output}-picard.out.metrics 
             VALIDATION_STRINGENCY=LENIENT
@@ -76,6 +76,22 @@ picard_markdups = {
     }
 }
 
+picard_markdups = { 
+    doc "Mark  duplicates"
+    tmp_dir    = "./tmp"
+    output.dir = "04_marked_duplicates"
+    filter("marked") {
+        exec """ 
+            java -Xmx1g -Djava.io.tmpdir=$tmp_dir -jar ${LIBRARY_LOCATION}/picard-tools-1.115/MarkDuplicates.jar 
+            INPUT=$input.bam 
+            OUTPUT=$output 
+            REMOVE_DUPLICATES=false 
+            CREATE_INDEX=true 
+            METRICS_FILE=${output}-picard.out.metrics 
+            VALIDATION_STRINGENCY=LENIENT
+        """ 
+    }   
+}
 
 samtools_mpileup = {
 	doc "mpileup to create the files needed to messure coverage across the samples"
@@ -93,6 +109,37 @@ trim_pileup = {
 	doc " this trims large .pileup file to a smaller file that is more easily transfered and presents coverage intuitively"
 	output.dir = "05_coverage"
 	transform("05_coverage/*.cov"){
-		exec "/scratch/alauring_fluxm/mccrone/variant_pipeline/scripts/Trim_to_coverage.py $input.pileup ${input}.cov"
+		from("*.pileup"){
+			exec "${SCRIPTS}/Trim_to_coverage.py $input.pileup ${input}.cov"
+		}	
 	}
+}
+
+
+
+
+deepsnv = {
+	doc "Runs a basic deepSNV script to call variants in each sample saving the outputs as .Rdata files and csv of the summary output"
+	output.dir = "06_deepSNV"
+		
+	//This finds the control bam file.  Currently it looks for a file matching the control name that includes name.(something).bam
+	// where something is most likely marked or removed dependeding on how the pipeline ran.
+	// I would rather direct it to the directory begining in 04 but I should think about that.  
+	//also we currently run the control which is not need.
+	//The current directory here is the output directory
+	new File('.').eachFileRecurse{
+		if(it.name=~/.*$CONTROL.*\..*\.bam$/){
+		def control_bam = it.getPath()
+		print control_bam
+
+				produce("06_deepSNV/*"){
+					exec "Rscript  ${SCRIPTS}/deepSNV.r ${LIBRARY_LOCATION} ${REFERENCE_FA} $input1 $control_bam"
+							}
+				}		
+	}
+}
+
+rename = {
+	doc "runs basic shell script to rename remove everything after the _ in the sample name"
+	exec "${SCRIPTS}/rename1.sh input.fastq"
 }

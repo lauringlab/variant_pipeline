@@ -32,7 +32,7 @@ cat(paste("loaded regions: ", paste(regions.bed$chr, collapse=","),"\n"))
 
 cat("calling variants with deepSNV\n")
 cat(paste("\ttest [",test.bam,"]\n\tcontrol [",control.bam,"]...\n", sep=""))
-deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed) # this is the pseudo count used by Gerstung in examples to allow for the use of a betabin model later if so desired
+deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed, q=25) # this is the pseudo count used by Gerstung in examples to allow for the use of a betabin model later if so desired
 
 #cat(paste("saving to [",output_file_name,".vcf].\n", sep=""))
 #flu_result.vcf <- summary(deepsnv.result, value='VCF')

@@ -15,7 +15,7 @@ CONTROL=$4
 BIN_DIR=`dirname $0` 
 SCRIPT_DIR=`readlink -f $BIN_DIR/../scripts/`
 LIB_DIR=`readlink -f $BIN_DIR/../lib`
-BPIPE_COMMAND=$LIB_DIR/bpipe-0.9.8.2/bin/bpipe
+BPIPE_COMMAND=$LIB_DIR/bpipe-0.9.8.7/bin/bpipe
 
 echo "Processing fastqs from [$INPUT_DIR]."
 echo "Results will be saved to [$OUTPUT_DIR]."
@@ -28,13 +28,13 @@ cp -a $SCRIPT_DIR/variantPipeline.bpipe* .
 
 # add variables to config reference to config file
 
-sed -i '7iREFERENCE="'$REF'"' variantPipeline.bpipe.config
-sed -i '8iREFERENCE_FA="'$REF'.fa"' variantPipeline.bpipe.config
-sed -i '9iSCRIPTS="'$SCRIPT_DIR'"' variantPipeline.bpipe.config
-sed -i '10iLIBRARY_LOCATION="'$LIB_DIR'"' variantPipeline.bpipe.config
-sed -i '11iCONTROL="'$CONTROL'"' variantPipeline.bpipe.config
+sed -i '7iREFERENCE="'$REF'"' variantPipeline.bpipe.config.groovy
+sed -i '8iREFERENCE_FA="'$REF'.fa"' variantPipeline.bpipe.config.groovy
+sed -i '9iSCRIPTS="'$SCRIPT_DIR'"' variantPipeline.bpipe.config.groovy
+sed -i '10iLIBRARY_LOCATION="'$LIB_DIR'"' variantPipeline.bpipe.config.groovy
+sed -i '11iCONTROL="'$CONTROL'"' variantPipeline.bpipe.config.groovy
 
 #throttled to 8 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 # Run the control first so it is ready to be used as a control in the deepSNV step of the test samples
-time $BPIPE_COMMAND run -n 8  variantPipeline.bpipe $INPUT_DIR/*.fastq
+time $BPIPE_COMMAND run -n 8  variantPipeline.bpipe.groovy $INPUT_DIR/*.fastq

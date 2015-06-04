@@ -1,6 +1,6 @@
 rename = {
 	doc "runs basic shell script to rename remove everything after the _ in the sample name"
-	exec "${SCRIPTS}/rename1.sh input.fastq"
+	exec "${SCRIPTS}/rename1.sh $input"
 }
 // fastqc generates two zipped directory files using a custom naming convention
 // input: two *.fastq files

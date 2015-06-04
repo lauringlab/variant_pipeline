@@ -13,7 +13,7 @@ done = {
 
 run  {
 
-   // "%.fastq" * [ rename ] +
+     //"%.fastq" + [ rename ] +
     // Align each pair of input files separately in parallel
     "%.*.fastq" * [ fastqc ]  +
     //pydmx + 

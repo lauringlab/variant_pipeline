@@ -1,6 +1,6 @@
 rename = {
 	doc "runs basic shell script to rename remove everything after the _ in the sample name"
-	exec "${SCRIPTS}/rename1.sh $input"
+	exec "${SCRIPTS}/rename1.sh input.fastq"
 }
 // fastqc generates two zipped directory files using a custom naming convention
 // input: two *.fastq files
@@ -37,14 +37,38 @@ pydmx = {
 
 // input: 'r1' and 'r2' fastq files
 // output: a *.sam file
-bowtie2 = {
+
+bowtie2 = { 
     doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
     output.dir = "03_align"
-    produce ("03_align/*.sam") {
-        exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.fastq")[0] + '.sam'
+    if(input.input.size == 2){
+        produce ("03_align/*.sam") {
+            exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
+        }
+    }
+    if(input.input.size == 4){ 
+        produce ("03_align/*.sam") {
+            exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
+        }
+    }
+    if(input.input.size == 6){ 
+        produce ("03_align/*.sam") {
+            exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
+        }
+    }
+    if(input.input.size == 8){ 
+        produce ("03_align/*.sam") {
+            exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
+        }
+    }   
+}
+samtools_filter = {
+    doc "Filter the sam file to include only proper pair alignments"
+    output.dir = "03_align"
+    filter("proper"){
+        exec " samtools view -f 0X0002 -Sh $input.sam > $output.sam"
     }
 }
-
 
 picard_sortsam = {
     doc "Sort SAM file so that its in reference order and convert to BAM."
@@ -52,7 +76,7 @@ picard_sortsam = {
     output.dir = "03_align"
     transform("bam") {
         exec """
-            java -Xmx4g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/SortSam.jar 
+            java -Xmx4g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/picard.jar SortSam 
             SO=coordinate 
             INPUT=$input.sam 
             OUTPUT=$output 
@@ -69,7 +93,7 @@ picard_removedups = {
     output.dir = "04_removed_duplicates"
     filter("removed") {
         exec """
-            java -Xmx1g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/MarkDuplicates.jar 
+            java -Xmx2g -Djava.io.tmpdir=$tmp_dir -jar ${PICARD_JARS}/picard.jar MarkDuplicates 
             INPUT=$input.bam 
             OUTPUT=$output 
             REMOVE_DUPLICATES=true 
@@ -166,3 +190,14 @@ mapq_conditional = {
         	}
           }
 }
+
+
+combine = {
+	doc "combines the coverage, reads and variant calls into one file that can easily be imported into R for analysis"
+
+	exec "python ${SCRIPTS}/combine.py ./mapq reads.csv all.reads.csv "
+	exec "python ${SCRIPTS}/combine.py ./mapq sum.csv all.sum.csv"
+	exec "python ${SCRIPTS}/combine_add_name.py ./05_coverage/ .cov all.cov"
+}
+
+

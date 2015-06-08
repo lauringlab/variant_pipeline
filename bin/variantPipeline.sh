@@ -33,6 +33,7 @@ sed -i '8iREFERENCE_FA="'$REF'.fa"' variantPipeline.bpipe.config.groovy
 sed -i '9iSCRIPTS="'$SCRIPT_DIR'"' variantPipeline.bpipe.config.groovy
 sed -i '10iLIBRARY_LOCATION="'$LIB_DIR'"' variantPipeline.bpipe.config.groovy
 sed -i '11iCONTROL="'$CONTROL'"' variantPipeline.bpipe.config.groovy
+#sed -i '12iCONTROL="'$LIB_DIR'"' variantPipeline.bpipe.config.groovy
 
 #throttled to 8 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory

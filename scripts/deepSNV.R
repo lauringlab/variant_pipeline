@@ -60,7 +60,7 @@ mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
 
 
 
-print(head(deepsnv_sum))
+#print(head(deepsnv_sum))
 cat(paste("saving to [",output_file_name,".csv].\n", sep=""))
 write.csv(deepsnv_sum, paste(output_file_name,".csv", sep=""))
 

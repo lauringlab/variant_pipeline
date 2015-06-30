@@ -37,7 +37,13 @@ pydmx = {
 
 // input: 'r1' and 'r2' fastq files
 // output: a *.sam file
-
+//bowtie2_M= {
+//    doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
+//    output.dir = "03_align"
+//    produce ("03_align/*.sam") {
+//        exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.fastq")[0] + '.sam'
+//    }
+//}
 bowtie2 = { 
     doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
     output.dir = "03_align"
@@ -163,7 +169,7 @@ deepsnv = {
 	println "control:" + control
 	if( test!=control) {
 				produce("variants/*.csv","variants/*.fa"){
-					exec "Rscript  ${SCRIPTS}/deepSNV.R ${LIBRARY_LOCATION} ${REFERENCE_FA} $input1 $CONTROL_BAM"
+					exec "Rscript  ${SCRIPTS}/deepSNV.R ${LIBRARY_LOCATION}/R ${REFERENCE_FA} $input1 $CONTROL_BAM"
 				}
 	} else {
 		produce("variants/*.csv"){

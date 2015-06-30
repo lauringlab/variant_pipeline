@@ -6,7 +6,7 @@ set.seed(42)
 
 args <- commandArgs(TRUE)
 if (length(args) != 4) {
-    stop(paste("Usage:", "deepSNV.r" ,"{library_location} {reference.fasta} {test.bam} {control.bam}"), call.=FALSE)
+    stop(paste("Usage:", "deepSNV.R" ,"{library_location} {reference.fasta} {test.bam} {control.bam}"), call.=FALSE)
 } 
 
 #print(args)
@@ -29,12 +29,16 @@ if(test_file_prefix==control_file_prefix){
 
 print(test_file_prefix)
 print(control_file_prefix)
-cat(paste("loading libraries ...\n", sep=""))
+cat(paste("loading libraries from",library.location,"\n", sep=""))
 
-library("reshape2")
+#library("tools")
+#suppressPackageStartupMessages(library("deepSNV", lib.loc=library.location))
+#suppressPackageStartupMessages(library("plyr", lib.loc=library.location))
+#suppressPackageStartupMessages(library("reshape2", lib.loc=library.location))
 library("plyr")
 library("deepSNV")
 library("reshape2")
+
 cat(paste("loading regions from [", reference.fasta, "]...\n", sep=""))
 segments <- fasta.info(reference.fasta)
 regions.bed <- data.frame(chr = gsub("[ ].*","", names(segments)), start=1, stop=segments, row.names=NULL)
@@ -50,7 +54,7 @@ consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 #flu_result.vcf <- summary(deepsnv.result, value='VCF')
 #writeVcf(flu_result.vcf, paste(output_file_name,".vcf", sep=""))
 
-deepsnv_sum<-summary(deepsnv.result,sig.level = 0.05, adjust.method="bonferroni")
+deepsnv_sum<-summary(deepsnv.result,sig.level = 0.1, adjust.method="BH")
 deepsnv_sum$Id<-sample_name # set the sample name for csv
 
 

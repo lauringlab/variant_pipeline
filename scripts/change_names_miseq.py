@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(description='This program takes Miseq fastq fil
 parser.add_argument('-s',action='store',dest='s',help='The sorce directory containing the original fastq files')
 parser.add_argument('-f',action='store',dest='f',help='The final directory that will hold the renamed fastq files')
 parser.add_argument('-mv',action='store_true',dest='mv_switch',default=False,help="boolean switch that moves inputs to output, default is to copy. NOTE: ACTIVATING THIS SWITCH WILL OVERWRITE THE ORIGINAL")
-parser.add_argument('-r',action='store_true',dest='test',default=False,help='Boolean switch to run program, without this the program runs in test mode: the log is made but no files are renamed')
+parser.add_argument('-run',action='store_true',dest='test',default=False,help='Boolean switch to run program, without this the program runs in test mode: the log is made but no files are renamed')
 
 args=parser.parse_args()
 s=args.s

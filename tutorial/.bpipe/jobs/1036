@@ -1,0 +1,1 @@
+/Users/jt/Box Sync/Lab_work/NGS/variant_pipeline/lib/bpipe-0.9.8.7/bin/bpipe run -n 8 variantPipeline.bpipe.groovy /Users/jt/Box Sync/Lab_work/NGS/variant_pipeline/tutorial/fastq_renamed/*.fastq

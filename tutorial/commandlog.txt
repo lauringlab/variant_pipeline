@@ -1,0 +1,22 @@
+
+####################################################################################################
+# Starting pipeline at Thu Jul 23 17:12:52 EDT 2015
+# Input files:  [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq]
+# Output Log:  .bpipe/logs/1221.log
+# Stage bowtie2 [WT_Plasmidcontrol]
+# Stage bowtie2 [PB2_16]
+bowtie2 --sensitive -x $REFERENCE -1 /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq -2 /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq -S ./03_align/WT_Plasmidcontrol.sam
+bowtie2 --sensitive -x $REFERENCE -1 /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq -2 /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq -S ./03_align/PB2_16.sam
+# ################ Finished at Thu Jul 23 17:12:53 EDT 2015 Duration = 0.910 seconds #################
+
+
+####################################################################################################
+# Starting pipeline at Thu Jul 23 17:13:12 EDT 2015
+# Input files:  [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq]
+# Output Log:  .bpipe/logs/1265.log
+# Stage bowtie2 [WT_Plasmidcontrol]
+# Stage bowtie2 [PB2_16]
+bowtie2 --sensitive -x $REFERENCE -1 /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq -2 /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq -S ./03_align/WT_Plasmidcontrol.sam
+bowtie2 --sensitive -x $REFERENCE -1 /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq -2 /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq -S ./03_align/PB2_16.sam
+# ################ Finished at Thu Jul 23 17:13:12 EDT 2015 Duration = 0.829 seconds #################
+

@@ -12,7 +12,7 @@ INPUT_DIR=`readlink -f $1`
 OUTPUT_DIR=`readlink -f $2`
 REF=`readlink -f $3`
 CONTROL=$4
-BIN_DIR=`dirname $0` 
+BIN_DIR=`dirname $0`
 SCRIPT_DIR=`readlink -f $BIN_DIR/../scripts/`
 LIB_DIR=`readlink -f $BIN_DIR/../lib`
 BPIPE_COMMAND=$LIB_DIR/bpipe-0.9.8.7/bin/bpipe
@@ -37,5 +37,4 @@ sed -i '11iCONTROL="'$CONTROL'"' variantPipeline.bpipe.config.groovy
 
 #throttled to 8 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
-# Run the control first so it is ready to be used as a control in the deepSNV step of the test samples
 time $BPIPE_COMMAND run -n 8  variantPipeline.bpipe.groovy $INPUT_DIR/*.fastq

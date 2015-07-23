@@ -1,0 +1,248 @@
+bpipe.Runner	[1]	INFO	|5:12:51 Starting 
+bpipe.Runner	[1]	INFO	|5:12:51 OS: Mac OS X (10.10.2) Java: 1.8.0_05 Vendor: Oracle Corporation 
+bpipe.Runner	[1]	INFO	|5:12:51 Initializing plugins ... 
+bpipe.Config	[1]	INFO	|5:12:51 No plugins directory found: /Users/jt/variant_pipeline/tutorial/.bpipe/plugins 
+bpipe.Runner	[1]	INFO	|5:12:51 Reading user config ...  
+bpipe.Config	[1]	INFO	|5:12:51 No configuration file found in same dir as pipeline file /Users/jt/variant_pipeline/scripts/bpipe.config 
+bpipe.Config	[1]	INFO	|5:12:51 No local configuration file found 
+bpipe.Utils	[12]	INFO	|5:12:51 Read config from /Users/jt/variant_pipeline/lib/bpipe-0.9.8.7/bin/../bpipe.config executed in 0.332 seconds 
+bpipe.Utils	[1]	INFO	|5:12:51 Read user config executed in 0.620 seconds 
+bpipe.Runner	[1]	INFO	|5:12:51 Maximum threads specified as 8 
+bpipe.Runner	[1]	INFO	|5:12:51 Loading tool database ...  
+bpipe.Runner	[1]	INFO	|5:12:52 No CLI parameters specified 
+bpipe.ToolDatabase	[13]	INFO	|5:12:52 Loading tool database from user configuration 
+bpipe.Concurrency	[15]	INFO	|5:12:52 Creating thread pool with 8 threads to execute parallel pipelines 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool samtools 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool bwa 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool bowtie 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool fastqc 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool coverageBed 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool fastx_clipper 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool convert2annovar.pl 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool summarize_annovar.pl 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool bowtie2 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool GenomeAnalysisTK 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool MarkDuplicates 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool signalp 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool variant_effect_predictor.pl 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool igvtools 
+bpipe.Tool	[13]	INFO	|5:12:52 Configured meta data about tool ls 
+bpipe.Runner	[1]	INFO	|5:12:52 Parsing script ...  
+bpipe.Runner	[1]	INFO	|5:12:52 Run ...  
+bpipe.Pipeline	[1]	INFO	|5:12:52 Evaluating library file /Users/jt/variant_pipeline/scripts/variantPipeline.bpipe.config.groovy 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Evaluating library file /Users/jt/variant_pipeline/scripts/variantPipeline.bpipe.stages.groovy 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable rename 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable fastqc 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable pydmx 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable bowtie2 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable samtools_filter 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable picard_sortsam 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable picard_removedups 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable picard_markdups 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable samtools_mpileup 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable trim_pileup 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable get_control 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable deepsnv 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable mapq_conditional 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable combine 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Running with input [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable rename 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable fastqc 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable pydmx 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable bowtie2 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable samtools_filter 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable picard_sortsam 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable picard_removedups 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable picard_markdups 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable samtools_mpileup 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable trim_pileup 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable get_control 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable deepsnv 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable mapq_conditional 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable combine 
+bpipe.PipelineCategory	[1]	INFO	|5:12:52 Found closure variable done 
+bpipe.Pipeline	[1]	WARNING	|5:12:52 Pipeline folder /Users/jt/bpipes could not be found 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Skip loading /Users/jt/variant_pipeline/scripts/variantPipeline.bpipe.config.groovy (already loaded) 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Skip loading /Users/jt/variant_pipeline/scripts/variantPipeline.bpipe.stages.groovy (already loaded) 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: args 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference args is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: BPIPE_NO_EXTERNAL_STAGES 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference BPIPE_NO_EXTERNAL_STAGES is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: PYDMX 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference PYDMX is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: PICARD_JARS 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference PICARD_JARS is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: rename 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference rename is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: fastqc 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference fastqc is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: pydmx 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference pydmx is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: bowtie2 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference bowtie2 is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: samtools_filter 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference samtools_filter is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: picard_sortsam 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference picard_sortsam is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: picard_removedups 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference picard_removedups is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: picard_markdups 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference picard_markdups is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: samtools_mpileup 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference samtools_mpileup is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: trim_pileup 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference trim_pileup is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: get_control 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference get_control is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: deepsnv 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference deepsnv is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: mapq_conditional 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference mapq_conditional is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: combine 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference combine is overridden by local reference 
+bpipe.Pipeline	[1]	INFO	|5:12:52 Loaded external reference: done 
+bpipe.Pipeline	[1]	INFO	|5:12:52 External reference done is overridden by local reference 
+bpipe.DefinePipelineCategory	[1]	INFO	|5:12:52 multiply on input null with pattern %.*.fastq 
+bpipe.InputSplitter	[1]	INFO	|5:12:52 Found * pattern at [2], hash at [] and % at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:52 Sorted: [0, 2] 
+bpipe.InputSplitter	[1]	INFO	|5:12:52 % groups are at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:52 Result is [pattern:([^/]*?)\.([^/]*?)\.fastq, splits:[0]] 
+bpipe.DefinePipelineCategory	[1]	INFO	|5:12:52 Processing segment 1219273867 
+bpipe.DefinePipelineCategory	[1]	INFO	|5:12:52 multiply on input null with pattern %.sam 
+bpipe.InputSplitter	[1]	INFO	|5:12:52 Found * pattern at [], hash at [] and % at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:52 Sorted: [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:52 % groups are at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Result is [pattern:([^/]*?)\.sam, splits:[0]] 
+bpipe.DefinePipelineCategory	[1]	INFO	|5:12:53 Processing segment 4766562 
+bpipe.DefinePipelineCategory	[1]	INFO	|5:12:53 multiply on input null with pattern %.bam 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Found * pattern at [], hash at [] and % at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Sorted: [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 % groups are at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Result is [pattern:([^/]*?)\.bam, splits:[0]] 
+bpipe.DefinePipelineCategory	[1]	INFO	|5:12:53 Processing segment 661119548 
+bpipe.DefinePipelineCategory	[1]	INFO	|5:12:53 Processing segment 1896622931 
+bpipe.DefinePipelineCategory	[1]	INFO	|5:12:53 multiply on input null with pattern %.csv 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Found * pattern at [], hash at [] and % at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Sorted: [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 % groups are at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Result is [pattern:([^/]*?)\.csv, splits:[0]] 
+bpipe.DefinePipelineCategory	[1]	INFO	|5:12:53 Processing segment 658404420 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 Joiners for pipeline 837457281 = [] 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 Joiners for pipeline 837457281 = [bpipe.PipelineCategory$_splitOnFiles_closure6@183ec003] 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 Joiners for pipeline 837457281 = [bpipe.PipelineCategory$_splitOnFiles_closure6@183ec003, bpipe.PipelineCategory$_splitOnFiles_closure6@2b40ff9c, bpipe.PipelineCategory$_plus_closure1@3e08ff24] 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 Joiners for pipeline 837457281 = [bpipe.PipelineCategory$_splitOnFiles_closure6@183ec003, bpipe.PipelineCategory$_splitOnFiles_closure6@2b40ff9c, bpipe.PipelineCategory$_plus_closure1@3e08ff24, bpipe.PipelineCategory$_splitOnFiles_closure6@4d1c005e, bpipe.PipelineCategory$_plus_closure1@8462f31, bpipe.PipelineCategory$_plus_closure1@24569dba, bpipe.PipelineCategory$_plus_closure1@5ddeb7cb] 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 Joiners for pipeline 837457281 = [bpipe.PipelineCategory$_splitOnFiles_closure6@183ec003, bpipe.PipelineCategory$_splitOnFiles_closure6@2b40ff9c, bpipe.PipelineCategory$_plus_closure1@3e08ff24, bpipe.PipelineCategory$_splitOnFiles_closure6@4d1c005e, bpipe.PipelineCategory$_plus_closure1@8462f31, bpipe.PipelineCategory$_plus_closure1@24569dba, bpipe.PipelineCategory$_plus_closure1@5ddeb7cb, bpipe.PipelineCategory$_splitOnFiles_closure6@70ed52de, bpipe.PipelineCategory$_plus_closure1@496bc455] 
+bpipe.Pipeline	[1]	INFO	|5:12:53 Running segment with inputs [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Dependencies	[1]	INFO	|5:12:53 Checking input (s) [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Utils	[1]	INFO	|5:12:53 Output folder scan (concurrency=5) executed in 0.007 seconds 
+bpipe.Utils	[1]	INFO	|5:12:53 Index output graph executed in 0 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Setting or creating a delegate for context 1485089044 body 84113572/java.lang.Class in thread 1 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Created new delegate bpipe.PipelineDelegate@7a6d7e92 overriding type java.lang.Class in thread 1 
+bpipe.Dependencies	[1]	INFO	|5:12:53 Checking input (s) [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Setting or creating a delegate for context 136393487 body 116669570/java.lang.Class in thread 1 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Created new delegate bpipe.PipelineDelegate@5db6b9cd overriding type java.lang.Class in thread 1 
+bpipe.Dependencies	[1]	INFO	|5:12:53 Checking input (s) [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Setting or creating a delegate for context 467796378 body 93199773/java.lang.Class in thread 1 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Created new delegate bpipe.PipelineDelegate@446a1e84 overriding type java.lang.Class in thread 1 
+bpipe.Dependencies	[1]	INFO	|5:12:53 Checking input (s) [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Setting or creating a delegate for context 947553027 body 609656250/java.lang.Class in thread 1 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Created new delegate bpipe.PipelineDelegate@1500b2f3 overriding type java.lang.Class in thread 1 
+bpipe.Dependencies	[1]	INFO	|5:12:53 Checking input (s) [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Setting or creating a delegate for context 308433917 body 138817329/java.lang.Class in thread 1 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Created new delegate bpipe.PipelineDelegate@57db2b13 overriding type java.lang.Class in thread 1 
+bpipe.Dependencies	[1]	INFO	|5:12:53 Checking input (s) [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq 
+bpipe.Dependencies	[1]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Setting or creating a delegate for context 1197251633 body 725680028/java.lang.Class in thread 1 
+bpipe.PipelineDelegate	[1]	INFO	|5:12:53 Created new delegate bpipe.PipelineDelegate@5c7bfdc1 overriding type java.lang.Class in thread 1 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 multiply on input [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] with pattern %.*.fastq 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Found * pattern at [2], hash at [] and % at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Sorted: [0, 2] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 % groups are at [0] 
+bpipe.InputSplitter	[1]	INFO	|5:12:53 Result is [pattern:([^/]*?)\.([^/]*?)\.fastq, splits:[0]] 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 Created pipeline stage 757708014 for parallel block 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 Processing segment 1219273867 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 Creating pipeline to run parallel segment PB2_16 with files [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq]. Branch filter = [] 
+bpipe.PipelineCategory	[1]	INFO	|5:12:53 Creating pipeline to run parallel segment WT_Plasmidcontrol with files [/Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq]. Branch filter = [] 
+bpipe.Concurrency	[1]	INFO	|5:12:53 Waiting for 2 parallel stages to complete (pool.active=2 pool.tasks=2) 
+bpipe.PipelineContext	[17]	INFO	|5:12:53 Setting output [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq] on context 1047128086 in thread 17 
+bpipe.PipelineContext	[17]	INFO	|5:12:53 Using previously set output: [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq] 
+bpipe.PipelineContext	[18]	INFO	|5:12:53 Setting output [/Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] on context 1618302274 in thread 18 
+bpipe.PipelineContext	[18]	INFO	|5:12:53 Using previously set output: [/Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.PipelineCategory	[17]	INFO	|5:12:53 Adding dummy prior stage for thread 17 with outputs : /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq 
+bpipe.PipelineCategory	[18]	INFO	|5:12:53 Adding dummy prior stage for thread 18 with outputs : /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq 
+bpipe.Pipeline	[17]	INFO	|5:12:53 Running segment with inputs [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq] 
+bpipe.Dependencies	[17]	INFO	|5:12:53 Checking input (s) [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq] 
+bpipe.Dependencies	[17]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq 
+bpipe.Dependencies	[17]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq 
+bpipe.Pipeline	[18]	INFO	|5:12:53 Running segment with inputs [/Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Dependencies	[18]	INFO	|5:12:53 Checking input (s) [/Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Dependencies	[18]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq 
+bpipe.Dependencies	[18]	INFO	|5:12:53  Checking file /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq 
+bpipe.PipelineStage	[18]	INFO	|5:12:53 Stage bowtie2 [WT_Plasmidcontrol] : INPUT=[/Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] OUTPUT=WT_Plasmidcontrol.1.1.fastq.bowtie2 
+bpipe.PipelineDelegate	[18]	INFO	|5:12:53 Setting or creating a delegate for context 1883619161 body 1219273867/variantPipeline.bpipe.stages_bpipe in thread 18 
+bpipe.PipelineDelegate	[18]	INFO	|5:12:53 Created new delegate bpipe.PipelineDelegate@562b05fa overriding type variantPipeline.bpipe.stages_bpipe in thread 18 
+bpipe.PipelineStage	[17]	INFO	|5:12:53 Stage bowtie2 [PB2_16] : INPUT=[/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq] OUTPUT=PB2_16.1.1.fastq.bowtie2 
+bpipe.PipelineDelegate	[17]	INFO	|5:12:53 Setting or creating a delegate for context 481621173 body 1219273867/bpipe.PipelineDelegate in thread 17 
+bpipe.PipelineDelegate	[17]	INFO	|5:12:53 Existing delegate bpipe.PipelineDelegate@562b05fa has type bpipe.PipelineDelegate in thread 17. Setting new context 481621173 
+bpipe.PipelineContext	[18]	INFO	|5:12:53 No inputs resolved by input wrappers: outputs based on default WT_Plasmidcontrol.1.1.fastq.bowtie2 
+bpipe.PipelineContext	[17]	INFO	|5:12:53 No inputs resolved by input wrappers: outputs based on default PB2_16.1.1.fastq.bowtie2 
+bpipe.PipelineContext	[17]	INFO	|5:12:53 Output set to 03_align (new default output = 03_align/PB2_16.1.1.fastq.bowtie2) 
+bpipe.PipelineContext	[18]	INFO	|5:12:53 Output set to 03_align (new default output = 03_align/WT_Plasmidcontrol.1.1.fastq.bowtie2) 
+bpipe.PipelineContext	[18]	INFO	|5:12:53 Producing [03_align/*.sam] from bpipe.PipelineContext@7045bf59 
+bpipe.PipelineContext	[17]	INFO	|5:12:53 Producing [03_align/*.sam] from bpipe.PipelineContext@1cb4f4b5 
+bpipe.PipelineContext	[18]	INFO	|5:12:53 Files matching glob 03_align/*.sam = [] 
+bpipe.PipelineContext	[17]	INFO	|5:12:53 Files matching glob 03_align/*.sam = [] 
+bpipe.PipelineDelegate	[17]	INFO	|5:12:53 Setting or creating a delegate for context 481621173 body 2054566793/variantPipeline.bpipe.stages_bpipe$_run_closure4 in thread 17 
+bpipe.PipelineDelegate	[18]	INFO	|5:12:53 Setting or creating a delegate for context 1883619161 body 13101883/variantPipeline.bpipe.stages_bpipe$_run_closure4 in thread 18 
+bpipe.PipelineDelegate	[17]	INFO	|5:12:53 Created new delegate bpipe.PipelineDelegate@1967826 overriding type variantPipeline.bpipe.stages_bpipe$_run_closure4 in thread 17 
+bpipe.PipelineDelegate	[18]	INFO	|5:12:53 Created new delegate bpipe.PipelineDelegate@79902d51 overriding type variantPipeline.bpipe.stages_bpipe$_run_closure4 in thread 18 
+bpipe.PipelineContext	[17]	INFO	|5:12:53 Producing from inputs [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq] 
+bpipe.PipelineContext	[18]	INFO	|5:12:53 Producing from inputs [/Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.PipelineDelegate	[17]	INFO	|5:12:53 Input 1 reference resolved by PipelineDelegate 
+bpipe.PipelineDelegate	[18]	INFO	|5:12:53 Input 1 reference resolved by PipelineDelegate 
+bpipe.PipelineDelegate	[18]	INFO	|5:12:53 Input 2 reference resolved by PipelineDelegate 
+bpipe.PipelineDelegate	[17]	INFO	|5:12:53 Input 2 reference resolved by PipelineDelegate 
+bpipe.PipelineDelegate	[18]	INFO	|5:12:53 Input 1 reference resolved by PipelineDelegate 
+bpipe.PipelineDelegate	[17]	INFO	|5:12:53 Input 1 reference resolved by PipelineDelegate 
+bpipe.PipelineContext	[18]	INFO	|5:12:53 Tracking outputs referenced=[[]] inferred=[[]] for command bowtie2 --sensitive -x $REFERENCE -1 /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq -2 /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq -S ./03_align/WT_Plasmidcontrol.sam 
+bpipe.PipelineContext	[17]	INFO	|5:12:53 Tracking outputs referenced=[[]] inferred=[[]] for command bowtie2 --sensitive -x $REFERENCE -1 /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq -2 /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq -S ./03_align/PB2_16.sam 
+bpipe.PipelineContext	[18]	INFO	|5:12:53 Checking actual resolved inputs [] 
+bpipe.PipelineContext	[17]	INFO	|5:12:53 Checking actual resolved inputs [] 
+bpipe.Command	[18]	INFO	|5:12:53 Checking for configuration for command bowtie2 
+bpipe.Command	[17]	INFO	|5:12:53 Checking for configuration for command bowtie2 
+bpipe.Command	[18]	INFO	|5:12:53 Default command properties: [executor:local] 
+bpipe.Command	[17]	INFO	|5:12:53 Default command properties: [executor:local] 
+bpipe.CommandManager	[18]	INFO	|5:12:53 Using config [executor:local] for command 
+bpipe.CommandManager	[17]	INFO	|5:12:53 Using config [executor:local] for command 
+bpipe.Pipeline	[17]	INFO	|5:12:53 Pipeline segment aborted due to test mode 
+bpipe.Pipeline	[18]	INFO	|5:12:53 Pipeline segment aborted due to test mode 
+bpipe.Pipeline	[18]	INFO	|5:12:53 Finished running segment for inputs [/Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Pipeline	[17]	INFO	|5:12:53 Finished running segment for inputs [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq] 
+bpipe.Concurrency	[18]	INFO	|5:12:53 Decremented running count to 1 in thread Thread-8 
+bpipe.Concurrency	[17]	INFO	|5:12:53 Decremented running count to 0 in thread Thread-7 
+bpipe.Pipeline	[1]	INFO	|5:12:53 Pipeline segment aborted due to test mode 
+bpipe.Pipeline	[1]	INFO	|5:12:53 Finished running segment for inputs [/Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/PB2_16.2.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.1.1.fastq, /Users/jt/variant_pipeline/tutorial/fastq_renamed/WT_Plasmidcontrol.2.1.fastq] 
+bpipe.Runner	[10]	INFO	|5:12:53 Deleting job file /Users/jt/.bpipedb/jobs/1221 

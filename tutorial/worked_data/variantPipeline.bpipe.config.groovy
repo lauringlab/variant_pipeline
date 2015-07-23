@@ -1,0 +1,5 @@
+REFERENCE="/Users/jt/variant_pipeline/tutorial/reference/wsn33_wt_plasmid"
+REFERENCE_FA="/Users/jt/variant_pipeline/tutorial/reference/wsn33_wt_plasmid.fa"
+SCRIPTS="/Users/jt/variant_pipeline/scripts"
+LIBRARY_LOCATION="/Users/jt/variant_pipeline/lib"
+CONTROL="WT_Plasmidcontrol"

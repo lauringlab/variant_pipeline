@@ -1,11 +1,29 @@
-import sys
+#import sys
 import os
-import gzip
+#import gzip
+import argparse
+import shutil
+
+parser = argparse.ArgumentParser(description='This program takes hiseq fastq files and renames them as sample.#.read_direction.fastq and keeps a log of the change, it may need to be adjusted if the sequencing core changes their scheme')
+parser.add_argument('-s',action='store',dest='s',help='The sorce directory containing the original fastq files')
+parser.add_argument('-f',action='store',dest='o',help='The final directory that will hold the renamed fastq files')
+parser.add_argument('-k',action='store',dest='key',help='The output csv given by the sequencing core that serves as the key for renaming')
+parser.add_argument('-mv',action='store_true',dest='mv_switch',default=False,help="boolean switch that moves inputs to output, default is to copy. NOTE: ACTIVATING THIS SWITCH WILL OVERWRITE THE ORIGINAL")
+parser.add_argument('-run',action='store_true',dest='test',default=False,help='Boolean switch to run program, without this the program runs in test mode: the log is made but no files are renamed')
+
+args=parser.parse_args()
+s=args.s
+o=args.f
+key=arg.key
+mv_switch=args.mv_switch
+test=args.test
+
+
 # input argument is the sample sheet
 junk_names = [] # The names given by the sequencing core sampleid_index
 new_names = []
 # add the bad names from the sample sheet to a list
-f =  open(sys.argv[1],"r") 
+f =  open(key,"r")
 next(f)
 for line in f:
     line = line.strip()
@@ -15,9 +33,9 @@ for line in f:
     new_names.append(new)
 f.close()
 
-outfile = open('renaming_files.txt','w')
-os.chdir(sys.argv[2])
-for filename in os.listdir(sys.argv[2]):
+outfile = open(o+'renaming_log.txt','w')
+
+for filename in os.listdir(s):
     name=filename.split("_L")
     bad_name = name[0]
     lane_junk = name[1]
@@ -29,8 +47,15 @@ for filename in os.listdir(sys.argv[2]):
         better_name= new_names[name_index]
         perfect_name= better_name+"."+read_number+"."+fastq_number+".fastq"
         # Write file to new name
-        print("WRITING "+ filename + " to "+perfect_name)
-        outfile.write(filename + "\t WRITTEN to \t" + perfect_name + "\n")
-        os.rename(filename,perfect_name)
-outfile.close()
+        if mv_switch==True:
+            print("MOVING "+ s+filename + " to "+o+perfect_name)
+            outfile.write(s+filename + "\t MOVED to \t" + o+perfect_name + "\n")
+            if test==True:
+                shutil.move(s+filename,o+perfect_name)
+        else:
+            print("COPYING "+ s+filename + " to "+o+perfect_name)
+            outfile.write(s+filename + "\t COPIED to \t" + o+perfect_name + "\n")
+            if test==True:
+                shutil.copy(s+filename,o+perfect_name)
 
+outfile.close()

@@ -6,16 +6,3 @@ PICARD_JARS="~/lib/picard-tools-1.133"
 // reference added by bin/variantPipeline.sh in form of REFERENCE="/scratch/alauring_fluxm/common/reference/wsn33_wt_plasmid" //
 
 // Parameters //
-
-
-
-
-
-
-
-
-
-
-
-
-

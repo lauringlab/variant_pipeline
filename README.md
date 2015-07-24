@@ -30,8 +30,8 @@ Usage: variantPipeline.sh {input_dir} {output_dir} {reference} {plasmid control 
 * Inputs:  
 	* dir containing left fastq, right fastq named as sample.#.read_direction.fastq
 		* the python scripts change_names* can be used as a fast means of renaming fastq to this format.
-	* path to the reference genome for alignment
-			made using
+	* path to the reference genome for alignment made using
+
 	```bash
 	bowtie2-build WSN33.fa WSN33
 	```
@@ -72,18 +72,21 @@ Note: *The R packages may need to be installed under your username on Flux.  The
 		```
 	* reshape2
 
-	```R
-	install.packages("reshape2")
-	```
+			```R
+			install.packages("reshape2")
+			```
 
 * python	(installed through pip in terminal)
 	* pysam 0.8.2.1
 
-	```bash
-	pip install pysam
-	```
+			```bash
+			pip install pysam
+			```
 * bowtie2
 	[How to install bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#obtaining-bowtie-2)
+
+* samtools
+	[Installing samtools](http://www.htslib.org)
 
 
 ## Pipeline Example
@@ -93,7 +96,9 @@ For consistency all these commands will be run from the variant_pipeline/tutoria
 
 ### 1) fastq setup
 
+
 	Often the fastq files we are working with with be gzipped.  If this is the case they will end in .gz and we can unzip them using the command
+
 
  ```bash
  gunzip *.gz
@@ -107,16 +112,16 @@ python ../scripts/change_names_miseq.py -h
  ```
  Let's run the test
  ```bash
-python ../scripts/change_names_miseq.py -s fastq_original/ -f fastq_renamed/
+python ../scripts/change_names_miseq.py -s fastq_original/ -f fastq/
  ```
 
  Everything looks good so lets do it for real by adding the -run option
 
  Let's run the test
  ```bash
-python ../scripts/change_names_miseq.py -s fastq_original/ -f fastq_renamed/ -run
+python ../scripts/change_names_miseq.py -s fastq_original/ -f fastq/ -run
  ```
-*Note: a log of the name changes was made in fastq_renamed/renaming_log.txt for posterity*
+*Note: a log of the name changes was made in fastq/renaming_log.txt for posterity*
 
 ### 2) Running the pipeline
 
@@ -127,13 +132,13 @@ python ../bin/variantPipeline.py -h
 So we need to provide the directory containing the fastq files, the directory we were we want the output ( it will be made if it doesn't exist), our reference for bowtie (made above), and the name of our control sample.  To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.
 
 ```bash
-python ../bin/variantPipeline.py -i fastq_renamed/ -o worked_data -r reference/wsn33_wt_plasmid -p Plasmid_control -t
+python ../bin/variantPipeline.py -i fastq/ -o worked_data -r reference/wsn33_wt_plasmid -p Plasmid_control -t
 ```
 
 It seems like everything is in order so we'll let it rip.  This took about 5 min on my old macbook pro.
 
 ```bash
-python ../bin/variantPipeline.py -i fastq_renamed/ -o worked_data -r reference/wsn33_wt_plasmid -p Plasmid_control
+python ../bin/variantPipeline.py -i fastq/ -o worked_data -r reference/wsn33_wt_plasmid -p Plasmid_control
 ```
 
 ### 3) Analyzing data
@@ -142,7 +147,7 @@ Bpipe keeps a log of all the commands it runs in 'commadlog.txt'. This can be us
 
 The pipeline does not carry out any secondary analysis. It only provides putative variants and information regarding how trustworthy those calls are.  It is up to you to sort through the putative variants (found in mapq/all.sum.csv) using Excel (booo!!) or R (Hooray!!).  Currently we are setting a p.value cut off of 0.01 (p.val<0.01) and for most applications a frequency cut off of 0.5% (freq.var>0.5%).  Additionally we require variants to be uniformly distributed across the reads on which they are found.  We achieve this by requiring the average read position to be in the middle 50% of the read length. (Read_pos>50 & Read_pos<200, for a Miseq run with 2X250 reads).  
 
-An example of how to begin analysis on these samples can be found in tutorial/scripts/secondary.analysis.Rmd. It gives the following as output.
+An example of how to begin analysis on these samples can be found in the results directory.
 
 
 Adapted and developed by JT McCrone based on work done by

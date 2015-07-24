@@ -17,6 +17,9 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 * test
 	* automated tests (mostly python)
 
+* tutorial
+		* a directories needed to run the tutorial found below.
+
 ## Workflow summary
 ![variantPipeline workflow image](doc/workflow.png)
 
@@ -112,14 +115,14 @@ python ../scripts/change_names_miseq.py -h
  ```
  Let's run the test
  ```bash
-python ../scripts/change_names_miseq.py -s fastq_original/ -f fastq/
+python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/
  ```
 
  Everything looks good so lets do it for real by adding the -run option
 
  Let's run the test
  ```bash
-python ../scripts/change_names_miseq.py -s fastq_original/ -f fastq/ -run
+python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -run
  ```
 *Note: a log of the name changes was made in fastq/renaming_log.txt for posterity*
 
@@ -132,13 +135,13 @@ python ../bin/variantPipeline.py -h
 So we need to provide the directory containing the fastq files, the directory we were we want the output ( it will be made if it doesn't exist), our reference for bowtie (made above), and the name of our control sample.  To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.
 
 ```bash
-python ../bin/variantPipeline.py -i fastq/ -o worked_data -r reference/wsn33_wt_plasmid -p Plasmid_control -t
+python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -t
 ```
 
 It seems like everything is in order so we'll let it rip.  This took about 5 min on my old macbook pro.
 
 ```bash
-python ../bin/variantPipeline.py -i fastq/ -o worked_data -r reference/wsn33_wt_plasmid -p Plasmid_control
+python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control
 ```
 
 ### 3) Analyzing data

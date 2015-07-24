@@ -1,4 +1,0 @@
-fastq_original/PB2-16_S35_L001_R1_001.fastq	 COPIED to 	fastq_renamed/PB2_16.1.1.fastq
-fastq_original/PB2-16_S35_L001_R2_001.fastq	 COPIED to 	fastq_renamed/PB2_16.2.1.fastq
-fastq_original/WT-Plasmidcontrol_S19_L001_R1_001.fastq	 COPIED to 	fastq_renamed/WT_Plasmidcontrol.1.1.fastq
-fastq_original/WT-Plasmidcontrol_S19_L001_R2_001.fastq	 COPIED to 	fastq_renamed/WT_Plasmidcontrol.2.1.fastq

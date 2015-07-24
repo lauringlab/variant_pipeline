@@ -1,5 +1,5 @@
 #!/bin/sh
-#PBS -S /bin/sh 
+#PBS -S /bin/sh
 #PBS -A alauring_fluxm
 #PBS -N test_PR8
 #PBS -q fluxm
@@ -18,15 +18,13 @@ module add fastqc
 module add java
 module add picard
 module add bowtie2
-module add samtools 
+module add samtools
+module add python
+module add R\3.1.1
+module add pysam 0.8.2.1
 
-##Renaming Stage
-/scratch/alauring_fluxm/mccrone/variant_pipeline/scripts/rename1.sh /scratch/alauring_fluxm/mccrone/Simulated/fastq
+cd $PBS_O_WORKDIR
 
-#begin Pipeline
-/scratch/alauring_fluxm/mccrone/variant_pipeline/bin/variantPipeline.sh /scratch/alauring_fluxm/mccrone/Simulated/fastq /scratch/alauring_fluxm/mccrone/Simulated/analysis
+python ../bin/variantPipeline.py -i data/fastq/ -o worked_data_pbs -r data/reference/wsn33_wt_plasmid -p Plasmid_control
 
-#Again renaming
-/scratch/alauring_fluxm/mccrone/variant_pipeline/scripts/rename2.sh /scratch/alauring_fluxm/mccrone/Simulated/analysis
 echo Finish time: `date`
-

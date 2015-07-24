@@ -84,12 +84,15 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 <li>note that variantPipeline.bpipe.config holds several default config variables</li>
 </ul>
 </li>
-<li>test
+<li>
+<p>test</p>
 
 <ul>
 <li>automated tests (mostly python)</li>
 </ul>
 </li>
+<li><p>tutorial
+    * a directories needed to run the tutorial found below.</p></li>
 </ul>
 
 <h2>
@@ -233,13 +236,13 @@ pip install pysam
 
 <p>Let's run the test</p>
 
-<div class="highlight highlight-bash"><pre>python ../scripts/change_names_miseq.py -s fastq_original/ -f fastq/</pre></div>
+<div class="highlight highlight-bash"><pre>python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/</pre></div>
 
 <p>Everything looks good so lets do it for real by adding the -run option</p>
 
 <p>Let's run the test</p>
 
-<div class="highlight highlight-bash"><pre>python ../scripts/change_names_miseq.py -s fastq_original/ -f fastq/ -run</pre></div>
+<div class="highlight highlight-bash"><pre>python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -run</pre></div>
 
 <p><em>Note: a log of the name changes was made in fastq/renaming_log.txt for posterity</em></p>
 
@@ -252,11 +255,11 @@ pip install pysam
 
 <p>So we need to provide the directory containing the fastq files, the directory we were we want the output ( it will be made if it doesn't exist), our reference for bowtie (made above), and the name of our control sample.  To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.</p>
 
-<div class="highlight highlight-bash"><pre>python ../bin/variantPipeline.py -i fastq/ -o worked_data -r reference/wsn33_wt_plasmid -p Plasmid_control -t</pre></div>
+<div class="highlight highlight-bash"><pre>python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -t</pre></div>
 
 <p>It seems like everything is in order so we'll let it rip.  This took about 5 min on my old macbook pro.</p>
 
-<div class="highlight highlight-bash"><pre>python ../bin/variantPipeline.py -i fastq/ -o worked_data -r reference/wsn33_wt_plasmid -p Plasmid_control</pre></div>
+<div class="highlight highlight-bash"><pre>python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control</pre></div>
 
 <h3>
 <a id="user-content-3-analyzing-data" class="anchor" href="#3-analyzing-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>3) Analyzing data</h3>

@@ -27,12 +27,12 @@ with open(csv_files[0],"r") as first_file:
     for line in first_file:
         fout.write(line.strip()+'\t'+sample+'\n')
 
-# now the rest:    
+# now the rest:
 for num in range(1,len(csv_files)):
     print("working with " + csv_files[num])
     with open(csv_files[num],"r") as next_file:
         next_file.next() # skip the header
         sample=csv_files[num].split('.')[0]
         for line in next_file:
-            fout.write(line.strip()+'\t'+sample+'\n')
+            fout.write(line.strip()+','+sample+'\n')
 fout.close()

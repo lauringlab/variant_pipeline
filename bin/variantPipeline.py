@@ -3,6 +3,8 @@ import os.path
 import argparse
 import shutil
 import subprocess
+import sys
+
 
 
 parser = argparse.ArgumentParser(description='This is a wrapper to set up and run the bpipe command')
@@ -51,7 +53,10 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
 if test==False:
     command="time "+ bpipe_command + " run -n 8 " + script_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
 else:
-    command="time "+ bpipe_command + " test -n 8 " + script_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
-print command
- process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
- output = process.communicate()[0]
+    command="time "+ bpipe_command + " test -n 8 " + script_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
+print "submitting command: \n"+command
+
+subprocess.call(command,shell=True)#, stdout=subprocess.PIPE)
+#output = process.communicate()[0]
+
+sys.exit(0)

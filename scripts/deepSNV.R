@@ -5,9 +5,9 @@ library(tools)
 set.seed(42)
 
 args <- commandArgs(TRUE)
-if (length(args) != 4) {
-    stop(paste("Usage:", "deepSNV.R" ,"{library_location} {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)}", call.=FALSE)
-} 
+if (length(args) != 5){
+    stop(paste0("Usage:", "deepSNV.R" ,"{library_location} {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)}"), call.=FALSE)
+}
 
 #print(args)
 library.location <- args[1]
@@ -27,9 +27,9 @@ if(test_file_prefix==control_file_prefix){
 	stop()
 }
 
-print(test_file_prefix)
-print(control_file_prefix)
-cat(paste("loading libraries from",library.location,"\n", sep=""))
+#print(test_file_prefix)
+#print(control_file_prefix)
+#cat(paste("loading libraries from",library.location,"\n", sep=""))
 
 #library("tools")
 #suppressPackageStartupMessages(library("deepSNV", lib.loc=library.location))

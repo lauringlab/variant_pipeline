@@ -18,7 +18,7 @@ test=args.test
 
 outfile = open(f+'renaming_log.txt','w')
 #os.chdir(sys.argv[1])
-if test==True:
+if test==False:
     print "running in test mode add option -r to run"
 for filename in os.listdir(s):
     name=filename.split("_L")

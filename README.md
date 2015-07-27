@@ -5,7 +5,7 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 
 ## Directory list
 * bin
-	* variantPipeline.sh : align reads, sort, call variants using deepSNV, and characterize putative variants.
+	* variantPipeline.py : align reads, sort, call variants using deepSNV, and characterize putative variants.
 	* variant_pipeline.pbs : an example pbs script used to implement the Pipeline
 * doc
 	* workflow diagram, examples
@@ -18,7 +18,7 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 	* automated tests (mostly python)
 
 * tutorial
-		* a directories needed to run the tutorial found below.
+		* a directories needed to run the tutorial. Instructions can be found in tutorial.html.
 
 ## Workflow summary
 ![variantPipeline workflow image](doc/workflow.png)
@@ -28,18 +28,20 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
  This script is a thin bash wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory
 
 
-Usage: variantPipeline.sh {input_dir} {output_dir} {reference} {plasmid control name}
+Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name}
 
 * Inputs:  
-	* dir containing left fastq, right fastq named as sample.#.read_direction.fastq
+	* -i dir containing left fastq, right fastq named as sample.#.read_direction[1,2].fastq
 		* the python scripts change_names* can be used as a fast means of renaming fastq to this format.
-	* path to the reference genome for alignment made using
+	* -r path to the reference genome for alignment made using
 
 	```bash
 	bowtie2-build WSN33.fa WSN33
 	```
 	Where WSN33.fa is your fasta file
-	* plasmid control : the sample name of the plasmid control fastq.
+	* -p plasmid control : the sample name of the plasmid control fastq.
+
+	See the tutorial for more information.
 
 
 * Outputs:
@@ -90,68 +92,6 @@ Note: *The R packages may need to be installed under your username on Flux.  The
 
 * samtools
 	[Installing samtools](http://www.htslib.org)
-
-
-## Pipeline Example
-For this example we will run a small data set through using a command line approach.  We are working with one MFE sample and the a wsn33 plasmid control. For computation speed these fastq files have been reduced 75%.  We will later show how this approach can be implemented using pbs on a computing cluster.
-
-For consistency all these commands will be run from the variant_pipeline/tutorial directory.
-
-### 1) fastq setup
-
-
-	Often the fastq files we are working with with be gzipped.  If this is the case they will end in .gz and we can unzip them using the command
-
-
- ```bash
- gunzip *.gz
- ```
- This will unzip all the gzipped files in the current directory. It might take awhile if there are a lot (minutes).
-
- The next step will be to name the fastq file properly.  To do this we'll use the change_names_miseq.py script. Before running the script we will test to make sure we are naming things as we expect.  Note the default is to copy the original files to a new file. This leaves the original unchanged. For more information about the script simply type
-
- ```bash
-python ../scripts/change_names_miseq.py -h
- ```
- Let's run the test
- ```bash
-python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/
- ```
-
- Everything looks good so lets do it for real by adding the -run option
-
- Let's run the test
- ```bash
-python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -run
- ```
-*Note: a log of the name changes was made in fastq/renaming_log.txt for posterity*
-
-### 2) Running the pipeline
-
-The pipeline is run by in [bpipe](https://code.google.com/p/bpipe/wiki/Overview) using a python wrapper.  To see our options type.
-```bash
-python ../bin/variantPipeline.py -h
-```
-So we need to provide the directory containing the fastq files, the directory we were we want the output ( it will be made if it doesn't exist), our reference for bowtie (made above), and the name of our control sample.  To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.
-
-```bash
-python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -t
-```
-
-It seems like everything is in order so we'll let it rip.  This took about 5 min on my old macbook pro.
-
-```bash
-python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control
-```
-
-### 3) Analyzing data
-
-Bpipe keeps a log of all the commands it runs in 'commadlog.txt'. This can be useful for debugging.  
-
-The pipeline does not carry out any secondary analysis. It only provides putative variants and information regarding how trustworthy those calls are.  It is up to you to sort through the putative variants (found in mapq/all.sum.csv) using Excel (booo!!) or R (Hooray!!).  Currently we are setting a p.value cut off of 0.01 (p.val<0.01) and for most applications a frequency cut off of 0.5% (freq.var>0.5%).  Additionally we require variants to be uniformly distributed across the reads on which they are found.  We achieve this by requiring the average read position to be in the middle 50% of the read length. (Read_pos>50 & Read_pos<200, for a Miseq run with 2X250 reads).  
-
-An example of how to begin analysis on these samples can be found in the results directory.
-
 
 Adapted and developed by JT McCrone based on work done by
 Chris Gates/Peter Ulintz

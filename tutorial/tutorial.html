@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>
-  README.md
+  tutorial.md
   
     - Grip
   
@@ -44,180 +44,111 @@
               
                 <h3>
                   <span class="octicon octicon-book"></span>
-                  README.md
+                  tutorial.md
                 </h3>
               
               <div class="markdown-body entry-content">
                 <h1>
-<a id="user-content-lauring-variant-pipeline" class="anchor" href="#lauring-variant-pipeline" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lauring Variant Pipeline</h1>
+<a id="user-content-pipeline-tutorial" class="anchor" href="#pipeline-tutorial" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pipeline Tutorial</h1>
 
-<p>Nominates candidate variants by comparing the sequences in a test sample to those found in a plasmid control.
-The Pipeline runs as one phase which takes in fastq files and outputs putative variants.  It is then up to the user to filter the putative variants based on the characteristics provided (p value, frequency, and read distribution are the most useful at this point)</p>
+<p>For this example we will run a small data set through using a command line approach.  We are working with one MFE sample and the a wsn33 plasmid control. For computational speed these fastq files have been reduced by 75%.  We will later show how this approach can be implemented using pbs on a computing cluster.</p>
 
-<h2>
-<a id="user-content-directory-list" class="anchor" href="#directory-list" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directory list</h2>
+<p>For consistency all these commands can be run from the variant_pipeline/tutorial directory.</p>
 
-<ul>
-<li>bin
+<h3>
+<a id="user-content-0-dependencies-getting-started" class="anchor" href="#0-dependencies-getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>0) Dependencies getting started</h3>
 
-<ul>
-<li>variantPipeline.py : align reads, sort, call variants using deepSNV, and characterize putative variants.</li>
-<li>variant_pipeline.pbs : an example pbs script used to implement the Pipeline</li>
-</ul>
-</li>
-<li>doc
+<pre><code>Begin by copying the variant_pipeline directory either to you scratch folder on flux or a directory on your machine.  There are up to data copies in the Box Sync folder or in /scratch/alauring_fluxm/common. This will give you your own working copy. (We can talk about git and tracking changes later)
+*Note: the pipeline has problems using paths that contain spaces. So please don't use spaces in your directory names.*
 
-<ul>
-<li>workflow diagram, examples</li>
-</ul>
-</li>
-<li>lib
+The variant pipeline is essentially R, bowtie2, samtools, python, and picard wrapped in a bpipe pipeline. Picard and bpipe come prepacked in the libs directory so there is no need to install those.
+Bowtie2, samtools, and the R and python libraries can be installed using the instructions in the README doc.  
 
-<ul>
-<li>supporting libraries (mostly R libraries)</li>
-</ul>
-</li>
-<li>scripts
+If running on flux you only need to install the R packages.  The other dependencies are already available and are simply loaded as modules. (see bin/variant_pipeline.pbs for an example.) To load R on flux type
 
-<ul>
-<li>supporting scripts (bpipe, python, R)</li>
-<li>note that variantPipeline.bpipe.config holds several default config variables</li>
-</ul>
-</li>
-<li>
-<p>test</p>
-
-<ul>
-<li>automated tests (mostly python)</li>
-</ul>
-</li>
-<li><p>tutorial
-    * a directories needed to run the tutorial. Instructions can be found in tutorial.html.</p></li>
-</ul>
-
-<h2>
-<a id="user-content-workflow-summary" class="anchor" href="#workflow-summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Workflow summary</h2>
-
-<p><a href="doc/workflow.png" target="_blank"><img src="doc/workflow.png" alt="variantPipeline workflow image" style="max-width:100%;"></a></p>
-
-<h2>
-<a id="user-content-binvariantpipelinepy" class="anchor" href="#binvariantpipelinepy" aria-hidden="true"><span class="octicon octicon-link"></span></a>bin/variantPipeline.py</h2>
-
-<p>This script is a thin bash wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory</p>
-
-<p>Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name}</p>
-
-<ul>
-<li>
-<p>Inputs:  </p>
-
-<ul>
-<li>-i dir containing left fastq, right fastq named as sample.#.read_direction[1,2].fastq
-
-<ul>
-<li>the python scripts change_names* can be used as a fast means of renaming fastq to this format.</li>
-</ul>
-</li>
-<li>-r path to the reference genome for alignment made using</li>
-</ul>
-
-<div class="highlight highlight-bash"><pre>bowtie2-build WSN33.fa WSN33</pre></div>
-
-<p>Where WSN33.fa is your fasta file</p>
-
-<ul>
-<li>-p plasmid control : the sample name of the plasmid control fastq.</li>
-</ul>
-
-<p>See the tutorial for more information.</p>
-</li>
-<li>
-<p>Outputs:</p>
-
-<ul>
-<li>
-<strong>01_fastqc</strong> : zips containing a brief summary report on quality of input fastqs (in development)</li>
-<li>
-<strong>03_align</strong> : bam files from bowtie2 alignment</li>
-<li>
-<strong>04_remove_duplicates</strong> : bam files with duplicates marked by picard</li>
-<li>
-<strong>05_Coverage</strong> : pileup and .cov (text) files containing the coverage at each basepair</li>
-<li>
-<strong>variants</strong> : csv files of the deepSNV variant calls (bonferroni p&lt;0.1) and .fa consensus sequences
-
-<ul>
-<li>an empty csv is made for the plasmid control in order to appease bpipe.</li>
-</ul>
-</li>
-<li>
-<strong>mapq</strong> : sum.csv files made by adding mapping quality, read position, and phred information to the putative variants found in the variant output, and reads.csv containing similar information for each read responsible for a variant</li>
-<li>mapq and 05_Coverage contain files begining in "all" these files contain the output for each sample concatenated into one file for your viewing and analyzing pleasure.</li>
-<li>
-<strong>doc</strong> : Bpipe makes a cool/qausi-useful html report in doc/index.html</li>
-<li>
-<strong>.bpipe</strong>: a hidden directory that contains information bpipe uses to restart failed runs.  <em>Note: It is sometimes useful to delete this and start fresh</em>
-</li>
-</ul>
-</li>
-</ul>
-
-<h2>
-<a id="user-content-dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
-
-<p>The pipeline comes with many of the required programs (bpipe and pycard); however, bowtie2, samtools and certain R  and python libraries are required by the variant calling.</p>
-
-<p>Note: <em>The R packages may need to be installed under your username on Flux.  The other dependencies are simply added as modules.</em></p>
-
-<ul>
-<li>
-<p>R (installation instructions to be run in R)</p>
-
-<ul>
-<li>
-<p>deepSNV</p>
-
-<div class="highlight highlight-R"><pre>source(<span class="pl-s"><span class="pl-pds">"</span>http://bioconductor.org/biocLite.R<span class="pl-pds">"</span></span>)
-biocLite(<span class="pl-s"><span class="pl-pds">"</span>deepSNV<span class="pl-pds">"</span></span>)</pre></div>
-</li>
-<li>
-<p>plyr</p>
-
-<div class="highlight highlight-R"><pre>install.packages(<span class="pl-s"><span class="pl-pds">"</span>plyr<span class="pl-pds">"</span></span>)</pre></div>
-</li>
-<li>
-<p>reshape2</p>
-
-<pre><code>```R
-install.packages("reshape2")
+```bash
+module load med
+module load R/3.1.1
+R
 ```
-</code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p>python    (installed through pip in terminal)</p>
+To see if you already have the needed packages you can run
 
-<ul>
-<li>
-<p>pysam 0.8.2.1</p>
-
-<pre><code>```bash
-pip install pysam
+```R
+library("library_of_interest")
 ```
-</code></pre>
-</li>
-</ul>
-</li>
-<li><p>bowtie2
-<a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#obtaining-bowtie-2">How to install bowtie2</a></p></li>
-<li><p>samtools
-<a href="http://www.htslib.org">Installing samtools</a></p></li>
-</ul>
+in R
 
-<p>Adapted and developed by JT McCrone based on work done by
-Chris Gates/Peter Ulintz
-UM BCRCF Bioinformatics Core</p>
+Ok, now that everything is set up let's get down to business.
+</code></pre>
+
+<h3>
+<a id="user-content-1-fastq-setup" class="anchor" href="#1-fastq-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>1) fastq setup</h3>
+
+<pre><code>Often the fastq files we are working with with be gzipped.  If this is the case they will end in .gz and we can unzip them using the command
+</code></pre>
+
+<div class="highlight highlight-bash"><pre> gunzip <span class="pl-k">*</span>.gz</pre></div>
+
+<p>This will unzip all the gzipped files in the current directory. It might take awhile if there are a lot (minutes).</p>
+
+<p>The next step will be to name the fastq file properly. Bpipe requires the fastq file to be named in the following format <em>sample_name.#.read_direction.fastq</em>, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2 and indicates forward or reverse reads.</p>
+
+<p>Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script we will test it to make sure we are naming things as we expect.  Note the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy or move anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode.  It will print what it proposes to do and make a mock log.  This ensures you don't do anything hastily.  For more information about the script simply type</p>
+
+<div class="highlight highlight-bash"><pre>python ../scripts/change_names_miseq.py -h</pre></div>
+
+<p>Let's run the test</p>
+
+<div class="highlight highlight-bash"><pre>python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/</pre></div>
+
+<p>Everything looks good so lets do it for real by adding the -run option</p>
+
+<p>Let's run the test</p>
+
+<div class="highlight highlight-bash"><pre>python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -run</pre></div>
+
+<p><em>Note: a log of the name changes was made in fastq/renaming_log.txt for posterity</em></p>
+
+<p>Now that we have our samples prepped we can run the pipeline.</p>
+
+<h3>
+<a id="user-content-2-running-the-pipeline" class="anchor" href="#2-running-the-pipeline" aria-hidden="true"><span class="octicon octicon-link"></span></a>2) Running the pipeline</h3>
+
+<p>The pipeline is run by in <a href="https://code.google.com/p/bpipe/wiki/Overview">bpipe</a> using a python wrapper.  To see our options type.</p>
+
+<div class="highlight highlight-bash"><pre>python ../bin/variantPipeline.py -h</pre></div>
+
+<p>We need to provide the directory containing the fastq files, the directory were we want the output  to go ( it will be made if it doesn't exist), our reference for bowtie (made above), and the name of our control sample.  To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.</p>
+
+<div class="highlight highlight-bash"><pre>python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -t</pre></div>
+
+<p>It seems like everything is in order so we'll let it rip.  This took about 5 min on my old macbook pro.</p>
+
+<div class="highlight highlight-bash"><pre>python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control</pre></div>
+
+<p><strong>If you are running on the flux</strong> Then instead of running the above command from the commad line we will run this command in a pbs script.  An example of this can be found in bin/variant_pipeline.pbs.  For larger sample sets you'll need to adjusted the memory and walltime limits.  We can use a total of 2 processors and 48 gb of mem.  A detailed description of pbs scripts can be found <a href="http://arc-ts.umich.edu/software/torque/">here</a>.</p>
+
+<p>submit the job using</p>
+
+<div class="highlight highlight-bash"><pre>qsub ../bin/variant_pipeline.pbs</pre></div>
+
+<p>and check the status of it using</p>
+
+<div class="highlight highlight-bash"><pre>qstat -u yourusername</pre></div>
+
+<p><em>You may find yourself in the unfortunate position of seeing a failed pipeline once in a while. If a certain stage fails, I have found it helpful to delete the your_output_dir/.bpipe directory, which is a hidden directory, and resubmitting the pipeline. Bpipe will rerun the pipeline from the begining, but it will skip steps whose output already exists.</em></p>
+
+<p>The output from a successfull run can be found in your_output_dir/mapq.all.sum.csv.
+This contains the called variants and the data needed to filter them to your hearts desire.</p>
+
+<h3>
+<a id="user-content-3-analyzing-data" class="anchor" href="#3-analyzing-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>3) Analyzing data</h3>
+
+<p>Bpipe keeps a log of all the commands it runs in 'commadlog.txt'. This can be useful for debugging.  </p>
+
+<p>The pipeline does not carry out any secondary analysis. It only provides putative variants and information regarding how trustworthy those calls are.  It is up to you to sort through the putative variants (found in mapq/all.sum.csv) using Excel (booo!!) or R (Hooray!!).  Currently we are setting a p.value cut off of 0.01 (p.val &lt; 0.01) and for most applications a frequency cut off of 0.5% (freq.var&gt;0.5%).  Additionally we require variants to be uniformly distributed across the reads on which they are found.  We achieve this by requiring the average read position to be in the middle 50% of the read length. (Read_pos&gt;50 &amp; Read_pos&lt;200, for a Miseq run with 2X250 reads).  </p>
+
+<p>An example of how to begin analysis on these samples can be found in the results directory.</p>
 
               </div>
             </div>

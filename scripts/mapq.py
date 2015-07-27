@@ -10,18 +10,18 @@ csv=csv.split("/")[-1]
 bam=sys.argv[2].split(".bam")[0]
 bam=bam.split("/")[-1]
 
-# Ensure the bam and csv file match
+Ensure the bam and csv file match
 if csv==bam:
     print("working with csv: "+csv + " and bam: " +bam)
 else:
-    print( "bam:"+bam +" does not match csv: " +csv)
-    sys.exit(1)
+   print( "bam:"+bam +" does not match csv: " +csv)
+   sys.exit(1)
 
 
 
 
-                                                  
-                
+
+
 #Put header on true false and exp csv files
 with open(sys.argv[4],"a") as read_csv:
     read_csv.write("Sample,Mutation,Category,Mapq,Pos,Phred\n")
@@ -31,10 +31,10 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
     with open(sys.argv[1],'r') as in_var:
         with open(sys.argv[3],"w") as outfile_csv:
 
-            header=in_var.readline().strip()+",MapQ" +",Read_pos"+",Phred" +'\n' # add the mapq column to the header of the input csv
+            header=in_var.readline().strip()+",Value" +",Count"+'\n' # add the mapq column to the header of the input csv
             outfile_csv.write(header) # write the header to the output file
-            
-            
+
+
             for line in in_var:
                 mapq=[]# This will hold a list of the mapping qualtties that map to the variant
                 phred=[] #This will hold a list of the phred that map to the variant
@@ -49,7 +49,7 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
                 var=line[4]
                 sample= line[17]
                 mutation= line[18] # mutation name
-               # print(mutation) 
+               # print(mutation)
                 for pileupcolumn in bamfile.pileup(chr,py_pos,py_pos+1,truncate=True,stepper="all",max_depth=1E6):
                     if pileupcolumn.pos==py_pos:
                         for pileupread in pileupcolumn.pileups:
@@ -66,12 +66,12 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
                 if mean_map==[]:
                     print( "OOPS didn't find the variant looks like you didn't fix the bug")
                     sys.exit(1)
-                
-                data=data+","+str(mean_map)+","+str(mean_Read_pos)+","+str(mean_phred)+'\n'              
+
+                data=data+","+str(mean_map)+","+str(mean_Read_pos)+","+str(mean_phred)+'\n'
                 outfile_csv.write(data) # write to the summary file
-                
-                
-                
+
+
+
                 mapq=Counter(mapq)
                 phred=Counter(phred)
                 Read_pos=Counter(Read_pos)
@@ -83,4 +83,3 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
                         read_csv.write(sample+","+mutation+","+"Read_pos"+","+str(qual)+","+str(Read_pos[qual])+'\n')
                     for qual in phred:
                         read_csv.write(sample+","+mutation+","+"Phred"+","+str(qual)+","+str(phred[qual])+'\n')
-

@@ -5,7 +5,6 @@ library(tools)
 set.seed(42)
 
 args <- commandArgs(TRUE)
-<<<<<<< HEAD
 if (length(args) != 5) {
     stop(paste("Usage:", "deepSNV.R" ,"{library_location} {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)}",sep=""), call.=FALSE)
 } 

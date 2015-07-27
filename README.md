@@ -18,7 +18,7 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 	* automated tests (mostly python)
 
 * tutorial
-		* a directories needed to run the tutorial. Instructions can be found in tutorial.html.
+		* directories needed to run the tutorial. Instructions can be found at tutorial/tutorial.html.
 
 ## Workflow summary
 ![variantPipeline workflow image](doc/workflow.png)

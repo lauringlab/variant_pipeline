@@ -92,7 +92,7 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 </ul>
 </li>
 <li><p>tutorial
-    * a directories needed to run the tutorial. Instructions can be found in tutorial.html.</p></li>
+    * The directories and instructions needed to run the tutorial. Instructions can be found in tutorial.html.</p></li>
 </ul>
 
 <h2>
@@ -103,7 +103,7 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 <h2>
 <a id="user-content-binvariantpipelinepy" class="anchor" href="#binvariantpipelinepy" aria-hidden="true"><span class="octicon octicon-link"></span></a>bin/variantPipeline.py</h2>
 
-<p>This script is a thin bash wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory</p>
+<p>This script is a thin python wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory and stored in the output directory as a log of what was run.</p>
 
 <p>Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name}</p>
 
@@ -112,7 +112,7 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 <p>Inputs:  </p>
 
 <ul>
-<li>-i dir containing left fastq, right fastq named as sample.#.read_direction[1,2].fastq
+<li>-i dir containing left fastq, right fastq named as sample.read_direction[1,2].#.fastq
 
 <ul>
 <li>the python scripts change_names* can be used as a fast means of renaming fastq to this format.</li>
@@ -167,53 +167,27 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 
 <p>The pipeline comes with many of the required programs (bpipe and pycard); however, bowtie2, samtools and certain R  and python libraries are required by the variant calling.</p>
 
-<p>Note: <em>The R packages may need to be installed under your username on Flux.  The other dependencies are simply added as modules.</em></p>
+<p>Note: <em>The R package deepSNV may need to be installed under your username on Flux.  The other dependencies are simply added as modules.</em></p>
 
-<ul>
-<li>
-<p>R (installation instructions to be run in R)</p>
+<p>To open R on flux simply type</p>
 
-<ul>
-<li>
-<p>deepSNV</p>
-
-<div class="highlight highlight-R"><pre>source(<span class="pl-s"><span class="pl-pds">"</span>http://bioconductor.org/biocLite.R<span class="pl-pds">"</span></span>)
-biocLite(<span class="pl-s"><span class="pl-pds">"</span>deepSNV<span class="pl-pds">"</span></span>)</pre></div>
-</li>
-<li>
-<p>plyr</p>
-
-<div class="highlight highlight-R"><pre>install.packages(<span class="pl-s"><span class="pl-pds">"</span>plyr<span class="pl-pds">"</span></span>)</pre></div>
-</li>
-<li>
-<p>reshape2</p>
-
-<pre><code>```R
-install.packages("reshape2")
-```
+<pre><code>module load med
+module load R\3.1.1
+R
 </code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p>python    (installed through pip in terminal)</p>
+
+<pre><code>This can be done from any directory.
+</code></pre>
 
 <ul>
-<li>
-<p>pysam 0.8.2.1</p>
+<li>deepSNV</li>
+</ul>
 
-<pre><code>```bash
-pip install pysam
-```
+<pre><code>source("http://bioconductor.org/biocLite.R")
+biocLite("deepSNV")
 </code></pre>
-</li>
-</ul>
-</li>
-<li><p>bowtie2
-<a href="http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#obtaining-bowtie-2">How to install bowtie2</a></p></li>
-<li><p>samtools
-<a href="http://www.htslib.org">Installing samtools</a></p></li>
-</ul>
+
+<p>You will be prompted to install in a local directory beginning with ~/. This means you are installing in your home directory and the library will be available just to you.  Installation should take a while.</p>
 
 <p>Adapted and developed by JT McCrone based on work done by
 Chris Gates/Peter Ulintz

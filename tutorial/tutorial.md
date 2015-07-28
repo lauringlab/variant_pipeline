@@ -87,8 +87,8 @@ module add java
 module add bowtie2
 module add samtools
 module add python
-module add R\3.1.1
-module add pysam\0.8.2.1
+module add R/3.1.1
+module add pysam/0.8.2.1
 ```
 
 Ok, now that everything is set up let's get down to business.
@@ -208,7 +208,7 @@ At the bottom we should find
 The output data from a successful run can be found in your_output_dir/mapq.all.sum.csv.
 This contains the called variants and the data needed to filter them to your hearts desire.
 
-Additionally Bpipe keeps a log of all the commands it runs in 'commadlog.txt'. This can be useful for debugging.  
+Additionally Bpipe keeps a log of all the commands it runs in 'commandlog.txt'. This can be useful for debugging.  
 
 ### 3) Analyzing data
 

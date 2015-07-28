@@ -66,7 +66,7 @@ Note: *The R package deepSNV may need to be installed under your username on Flu
 To open R on flux simply type
 ```
 module load med
-module load R\3.1.1
+module load R/3.1.1
 R
 ```
 

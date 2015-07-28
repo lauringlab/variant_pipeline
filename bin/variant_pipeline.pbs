@@ -19,13 +19,9 @@ module add java
 module add bowtie2
 module add samtools
 module add python
-<<<<<<< HEAD
-module add R\3.1.1
-module add pysam\0.8.2.1
-=======
 module add R/3.1.1
 module add pysam/0.8.2.1
->>>>>>> b5ce5730638f4c0afcbc2f632badc1555d6a4f36
+
 
 cd $PBS_O_WORKDIR
 

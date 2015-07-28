@@ -5,9 +5,9 @@ library(tools)
 set.seed(42)
 
 args <- commandArgs(TRUE)
-if (length(args) != 5){
-    stop(paste0("Usage:", "deepSNV.R" ,"{library_location} {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)}"), call.=FALSE)
-}
+if (length(args) != 5) {
+    stop(paste("Usage:", "deepSNV.R" ,"{library_location} {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)}",sep=""), call.=FALSE)
+} 
 
 #print(args)
 library.location <- args[1]
@@ -54,7 +54,7 @@ consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 #flu_result.vcf <- summary(deepsnv.result, value='VCF')
 #writeVcf(flu_result.vcf, paste(output_file_name,".vcf", sep=""))
 
-deepsnv_sum<-summary(deepsnv.result,sig.level = 0.1, adjust.method=method)
+deepsnv_sum<-summary(deepsnv.result, adjust.method=method)
 deepsnv_sum$Id<-sample_name # set the sample name for csv
 
 

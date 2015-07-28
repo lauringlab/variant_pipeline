@@ -1,6 +1,6 @@
 
 # Pipeline Tutorial
-For this example we will run a small data set through using a command line approach.  We are working with one MFE sample and the a wsn33 plasmid control. For computational speed these fastq files have been reduced by 75%.  We will later show how this approach can be implemented using pbs on a computing cluster.
+For this example we will run a small data set through using a command line approach.  We are working with one MFE sample and the a wsn33 plasmid control. For computational speed these fastq files have been reduced by 75%.  This approach can be run on flux as is, or run through a pbs for larger data sets.
 
 For consistency all these commands can be run from the variant_pipeline/tutorial directory.
 
@@ -11,7 +11,8 @@ Log onto the flux platform  by typing the following in terminal.
 ```
 ssh your_username@flux-login.engin.umich.edu
 ```
- you will be prompted for your MToken.  No characters will appear as you type.  You make a mistake you will be locked out until you bring cookies to lab.  Just kidding, but you do have to wait until your MToken refreshes to a new number.
+
+ You will be prompted for your MToken.  No characters will appear as you type.  You make a mistake you will be locked out until you bring cookies to lab.  Just kidding, but you do have to wait until your MToken refreshes to a new number.
 
  You will then be asked for your level one.  Again no characters appear as you type.
 
@@ -78,6 +79,7 @@ in R
 
 We will need to load the needed programs using
 
+
 ```
 module add med
 module add fastqc
@@ -93,7 +95,10 @@ Ok, now that everything is set up let's get down to business.
 ### 1) fastq setup
 
 
-Often the fastq files we are working with with be gzipped.  If this is the case they will end in .gz and we can unzip them using the command
+
+Ok, now that everything is set up let's get down to business.
+### 1) fastq setup
+
 
 
 ```bash
@@ -105,22 +110,20 @@ The next step will be to name the fastq file properly. Bpipe requires the fastq 
 
 Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script we will test it to make sure we are naming things as we expect.  Note the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy or move anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode.  It will print what it proposes to do and make a mock log.  This ensures you don't do anything hastily.  For more information about the script simply type
 
- ```
+```
 python ../scripts/change_names_miseq.py -h
- ```
+```
 Let's run the test
 
 *Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made*
- ```
-	python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/
- ```
+```
+python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/
+```
+Everything looks good so lets do it for real by adding the -run option
 
- Everything looks good so lets do it for real by adding the -run option
-
- Let's run the test
- ```
+```
 python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -run
- ```
+```
 *Note: a log of the name changes was made in fastq/renaming_log.txt for posterity*
 
 Now that we have our samples prepped we can run the pipeline.
@@ -132,7 +135,8 @@ The pipeline is run by in [bpipe](https://code.google.com/p/bpipe/wiki/Overview)
 ```
 python ../bin/variantPipeline.py -h
 ```
-We need to provide the directory containing the fastq files, the directory were we want the output  to go ( it will be made if it doesn't exist), our reference for bowtie (made above), and the name of our control sample.  To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.
+
+We need to provide the directory containing the fastq files, the directory were we want the output  to go ( it will be made if it doesn't exist), our reference for bowtie (provided by the tutorial, see README on how to make one for your sample set), and the name of our control sample.  To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.
 
 ```
 python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -t
@@ -161,15 +165,15 @@ nano ../bin/variant_pipeline.pbs
 
 The line
 
->#PBS -N test_PR8
+> #PBS -N test_PR8
 
 signifies the name of the job.  Let's change "test_PR8" to "tutorial"
 
->#PBS -M mccrone@umich.edu
+> #PBS -M mccrone@umich.edu
 
 Tells the computer to send you an email at the start and end of the job let's change it so Will doesn't get all the emails.
 
->#PBS -l nodes=1:ppn=2,mem=48gb,walltime=10:00:00
+> #PBS -l nodes=1:ppn=2,mem=48gb,walltime=10:00:00
 
 signifies how many nodes, processors per node, memory, and max time we want the job to run.  For this small job lets use 10gb of memory and limit the wall time to 10 min 00:10:00.
 
@@ -189,6 +193,7 @@ qstat -u yourusername
 
 *You may find yourself in the unfortunate position of seeing a failed pipeline once in a while. If a certain stage fails, I have found it helpful to delete the your_output_dir/.bpipe directory, which is a hidden directory, and resubmitting the pipeline. Bpipe will rerun the pipeline from the begining, but it will skip steps whose output already exists.*
 
+
 A log of the job output can be found at tutorial.o########## where tutorial is the name of the job and ####### is the job Id.  We can page through the output using
 
 ```
@@ -203,12 +208,13 @@ At the bottom we should find
 The output data from a successful run can be found in your_output_dir/mapq.all.sum.csv.
 This contains the called variants and the data needed to filter them to your hearts desire.
 
+Additionally Bpipe keeps a log of all the commands it runs in 'commadlog.txt'. This can be useful for debugging.  
 
 ### 3) Analyzing data
 
-Bpipe keeps a log of all the commands it runs in 'commadlog.txt'. This can be useful for debugging.  
 
-The pipeline does not carry out any secondary analysis. It only provides putative variants and information regarding how trustworthy those calls are.  It is up to you to sort through the putative variants (found in mapq/all.sum.csv) using Excel (booo!!) or R (Hooray!!).  Currently we are setting a p.value cut off of 0.01 (p.val < 0.01) and for most applications a frequency cut off of 0.5% (freq.var>0.5%).  Additionally we require variants to be uniformly distributed across the reads on which they are found.  We achieve this by requiring the average read position to be in the middle 50% of the read length. (Read_pos>50 & Read_pos<200, for a Miseq run with 2X250 reads).  
+
+The pipeline does not carry out any secondary analysis. It only provides putative variants and information regarding how trustworthy those calls are.  It is up to you to sort through the putative variants (found in mapq/all.sum.csv) using Excel (booo!!) or R (Hooray!!).  Currently we are setting a p.value cut off of 0.01 (p.val < 0.01) and for most applications a frequency cut off of 0.5% (freq.var>0.5%).  Additionally we require variants to be uniformly distributed across the reads on which they are found.  We achieve this by requiring the average read position to be in the middle 50% of the read length. (Read\_pos>50 & Read\_pos<200, for a Miseq run with 2X250 reads).  
 
 To analyze the data transfer the mapq/all.mapq.* and 05_Coverage/all.cov.csv to your own machine using your favorite file transfer software.  Cyberduck and Filezilla are good places to start.
 

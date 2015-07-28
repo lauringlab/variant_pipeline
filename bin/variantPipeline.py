@@ -2,7 +2,7 @@ import os
 import os.path
 import argparse
 import shutil
-import subprocess
+import subprocess as s
 import sys
 
 
@@ -51,12 +51,16 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
 #throttled to 8 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 if test==False:
-    command="time "+ bpipe_command + " run -n 8 -r " + script_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
+    command= bpipe_command + " run -n 8 -r " + script_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
 else:
-    command="time "+ bpipe_command + " test -n 8 " + script_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
+    command=bpipe_command + " test -n 8 " + script_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
 print "submitting command: \n"+command
 
-subprocess.call(command,shell=True)#, stdout=subprocess.PIPE)
+#p = s.Popen("time", stdin=s.PIPE, stdout=s.PIPE, stderr=s.STDOUT)
+#p.stdin.write(command)
+#out, err = p.communicate()
+
+s.call(command,shell=True)#, stdout=subprocess.PIPE)
 #output = process.communicate()[0]
 
 sys.exit(0)

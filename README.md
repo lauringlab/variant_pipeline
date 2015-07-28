@@ -64,19 +64,19 @@ The pipeline comes with many of the required programs (bpipe and pycard); howeve
 Note: *The R package deepSNV may need to be installed under your username on Flux.  The other dependencies are simply added as modules.*
 
 To open R on flux simply type
-	```
-	module load med
-	module load R\3.1.1
-	R
-	```
+```
+module load med
+module load R\3.1.1
+R
+```
 
 	This can be done from any directory.
 * deepSNV
 
-		```
-		source("http://bioconductor.org/biocLite.R")
-		biocLite("deepSNV")
-		```
+```
+source("http://bioconductor.org/biocLite.R")
+biocLite("deepSNV")
+```
 
 You will be prompted to install in a local directory beginning with ~/. This means you are installing in your home directory and the library will be available just to you.  Installation should take a while.
 

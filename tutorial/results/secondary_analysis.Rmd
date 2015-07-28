@@ -1,0 +1,185 @@
+---
+title: "Variant Pipeline Tutorial"
+author: "JT McCrone"
+date: "July 24, 2015"
+output: html_document
+---
+
+We'll load the needed packages. (You may have to install these)
+```{r,setup,tidy=TRUE,message=F,warning=FALSE}
+require(ggplot2)
+theme_set(new = theme_classic(base_size=20)) # to make nice plots
+require(Biostrings)
+require(plyr)
+require(knitr)
+opts_chunk$set(fig.width=6, fig.height=6,message=F,fig.align='center')
+
+```
+
+## Coverage
+
+Our first step is to read in the data.
+
+```{r,tidy=TRUE}
+cov.df<-read.csv("../worked_data/05_coverage/all.cov.csv",stringsAsFactor=F)
+head(cov.df)
+```
+
+Initially we can look at the coverage for each sample by segment.
+
+```{r,tidy=TRUE}
+seg.cov<-ggplot(cov.df,aes(x=Position,y=Coverage,color=Sample))+geom_line()+facet_wrap(~Segment)
+seg.cov
+```
+
+We then have to do a little work to concatenate the genome but it's not much.
+
+```{r,tidy=TRUE}
+## Getting some info about the genome from the reference fasta.
+reference.fasta<-"../data/reference/wsn33_wt_plasmid.fa"
+segments <- fasta.info(reference.fasta)
+regions.bed <- data.frame(chr = gsub("[ ].*","", names(segments)), start=1, stop=segments, row.names=NULL)
+regions.bed<-mutate(regions.bed,chr=as.character(chr))
+regions.bed<-mutate(regions.bed,chr=gsub("N_A","NA",chr)) # rename N_A segment to NA
+
+cov.df$Segment[cov.df$Segment=="N_A"]<-as.character("NA")
+cov.df$Segment<-factor(cov.df$Segment,levels=c("PB2","PB1","PA","HA","NP","NA","M","NS"))
+
+##setting up information to concatenate the genome.
+
+prior.seg.length<-c()
+for(k in 1:length(regions.bed$chr)){ 
+  prior.seg.length[k]<-sum(regions.bed$stop[1:k])  # the end positions of each segment relative to one sequence not including the trimming step
+}
+prior.seg.length<-c(0,prior.seg.length)
+
+cov.df<-mutate(cov.df, # the concatenated position relative to the usual order
+                    concat.pos=Position+prior.seg.length[match(Segment,regions.bed$chr)])
+```
+
+Now we are ready to plot the concatenated coverage.
+
+```{r,concat.cov,tidy=TRUE}
+concat.cov<-ggplot(cov.df,aes(x=concat.pos,y=Coverage,color=Sample))+geom_line()+xlab("Concatenated position")+scale_x_discrete(labels = "")
+concat.cov
+```
+
+But this can be crazy with many samples so often is is useful to do a sliding window mean on each sample and combine the samples together using a box plot.
+
+### If you only want boxplots start here
+
+If a position of a sample (usually position 1 of a segment) has no coverage it will be left out of our initial data. So we use this function to add in the missing 0s.
+```{r,box.cov,tidy=TRUE}
+# if a position had no coverage it will be left out of our initial data.  This can lead to a shift in the box plots of different samples. So we use this function to add in the missing 0s.
+fill.cov<-function(x){
+  pos<-x$Position
+  seg<-x$Segment[1]
+  expected.pos<-seq.int(from=1,to=regions.bed$stop[regions.bed$chr==seg],by=1)
+  missing<-which(!(expected.pos %in% pos))
+  rows<-length(missing)
+  sample<-x$Sample[1]
+  
+  data.frame(Segment=rep(seg,times=rows),Position=missing,Coverage=rep(0,times=rows),Sample=rep(sample,times=rows))
+  
+}
+```
+Now we'll read in the data again for those starting here.
+```{r,cov.data1,tidy=TRUE}
+## Read in the data again
+cov.df<-read.csv("../worked_data/05_coverage/all.cov.csv",stringsAsFactor=F)
+```
+
+Here we fill in the missing 0s.
+```{r,tidy=TRUE}
+cov.df$Segment[cov.df$Segment=="N_A"]<-as.character("NA")
+cov.df$Segment<-factor(cov.df$Segment,levels=c("PB2","PB1","PA","HA","NP","NA","M","NS"))
+z.cov<-ddply(cov.df,~Sample+Segment,fill.cov) # applying the fill in function
+cov.df<-rbind(cov.df,z.cov)# combining the 0s to the data
+cov.df<-cov.df[order(cov.df$Sample,cov.df$Segment,cov.df$Position),] # reorder to account for the added data
+```
+Here we make and apply a function for the sliding window.
+```{r,cov.man,tidy=TRUE}
+# funciton to make the sliding windows
+slideFunct <- function(data, window, step){ #dapted from http://coleoguy.blogspot.com/2014/04/sliding-window-analysis.html
+  coverage<-data$Coverage
+  pos<-data$Position
+  # c.pos<-data$concat.pos
+  total <- length(coverage)
+  spots <- seq(from=1, to=(total-window), by=step)
+  result <- data.frame(mean=rep(F,times=length(spots)),pos=rep(F,times=length(spots)))
+  for(i in 1:length(spots)){
+    result$mean[i] <- mean(coverage[spots[i]:(spots[i]+window)])
+    result$pos[i]<-mean(pos[spots[i]:(spots[i]+window)])
+    #result$concat.pos[i]<-mean(c.pos[spots[i]:(spots[i]+window)])
+  }
+  return(result)
+}
+
+
+wind<-100 # window
+step<-100 #step size
+cov.slid.df<-ddply(cov.df,~Sample+Segment,function(x) slideFunct(x,window = wind,step=step)) # applies the sliding window
+```
+
+And now we'll add the concatenated genome position.
+```{r,tidy=TRUE}
+## Getting some info about the genome from the reference fasta.
+reference.fasta<-"../data/reference/wsn33_wt_plasmid.fa"
+segments <- fasta.info(reference.fasta)
+regions.bed <- data.frame(chr = gsub("[ ].*","", names(segments)), start=1, stop=segments, row.names=NULL)
+regions.bed<-mutate(regions.bed,chr=as.character(chr))
+regions.bed<-mutate(regions.bed,chr=gsub("N_A","NA",chr)) # rename N_A segment to NA
+
+
+##setting up information to concatenate the genome.
+
+prior.seg.length<-c()
+for(k in 1:length(regions.bed$chr)){ 
+  prior.seg.length[k]<-sum(regions.bed$stop[1:k])  # the end positions of each segment relative to one sequence not including the trimming step
+}
+prior.seg.length<-c(0,prior.seg.length)
+
+
+cov.slid.df<-mutate(cov.slid.df, # the concatenated position relative to the usual order
+                    concat.pos=pos+prior.seg.length[match(Segment,regions.bed$chr)]) # position is relative to each segement
+```
+
+And we plot using ggplot as before.
+
+
+```{r,tidy=TRUE}
+## Plotting
+cov.plot<-ggplot(cov.slid.df,
+                 mapping=aes(x=as.factor(concat.pos),
+                             y=mean,fill=Segment))+geom_boxplot()
+
+cov.plot<-cov.plot+ggtitle("Sequencing coverage")+ylab("Read depth")+xlab("")+xlab("Concatenated Genome Position")
+cov.plot<-cov.plot+scale_x_discrete(labels = "")#+scale_y_continuous(limits=c(0,35000),breaks=c(10000,20000,30000))
+cov.plot<-cov.plot+theme(axis.title.y = element_text(vjust=1.2))
+cov.plot<-cov.plot+theme(legend.position="top",legend.text=element_text(size=18))
+
+cov.plot
+```
+
+# Filtering out False variants
+
+To filter out false variants we'll apply 3 criteria, a p value read positional cut off, and a frequency cut. 
+
+```{r,var,tidy=TRUE}
+sum.df<-read.csv("../worked_data/mapq//all.sum.csv")
+kable(sum.df,digits=2)
+```
+
+So for starters there are only 5 putative variants. Remember we only used 1/4 of the reads in this example.
+
+To filter we simply use subset.
+
+```{r,filtered,tidy=TRUE}
+filter.df<-subset(sum.df,p.val<0.01 & Read_pos>50 & Read_pos<200)
+kable(filter.df,digits=2)
+```
+
+
+I'm not a betting man but I bet that's the one we would suspect!
+
+Enjoy!!

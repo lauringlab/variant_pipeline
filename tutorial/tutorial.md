@@ -16,36 +16,20 @@ ssh your_username@flux-login.engin.umich.edu
 
  You will then be asked for your level one.  Again no characters appear as you type.
 
- Once on flux you will automatic all begin in your home directory (~/ which is a shortcut for /home2/username/).  We have limmited space in these directories so we will typically work from scratch directories which provide more memory for active work but should not be used for longterm storage.
+ Once on flux you will automatic all begin in your home directory (~/ which is a shortcut for /home2/username/).  We have limmited space in these directories so we will typically work from scratch directories which provide more memory for active work but should not be used for longterm storage.  We will add the variant pipeline to our home directory so it is easily accessible from anywhere.
 
- Navigate to the lab scratch dir using
+ You are reading this tutorial so you must be on github.  Our first task will be to clone the github repository (the variant caller in all its glory) to you home directory on flux.
+ 
+ On flux type
+ 
+ ```
+ git clone https://username:password@github.com/jtmccr1/variant_pipeline.git
+ ```
+where username:password are your github username and password.
+ 
+ Now we will make sure all scripts are exicutable.  
 
  ```
- cd /scratch/alauring_fluxm/
- ```
-
- To see what is available type
-
- ```
- ls
- ```
-
- Look there is a folder here just for you! There also is a common folder which is good for collaborative work as everyone in the lab has access to it.
-
- Generally I will keep the data I'm working with in my scratch folder and scripts I would like to easily access in my home dir.
-
- A copy of the variant caller is in the common folder. Let's copy it to our home directories so we can each have a working copy.
-
- ```
- cp -r common/variant_pipeline ~/
- ```
-
- The -r option means we are copying recursively (all subdirectories)
-
- Now we will cd to our home directory and make sure all scripts are exicutable.  
-
- ```
- cd ~/
  ls -l
  ```
 
@@ -219,3 +203,8 @@ The pipeline does not carry out any secondary analysis. It only provides putativ
 To analyze the data transfer the mapq/all.mapq.* and 05_Coverage/all.cov.csv to your own machine using your favorite file transfer software.  Cyberduck and Filezilla are good places to start.
 
 An example of how to subset the data and plot coverage can be found in the results directory of the tutorial.  You can look at this my opening it from the box sync folder.
+
+
+### 4) Modifying for your own data
+
+

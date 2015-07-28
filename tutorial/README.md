@@ -94,11 +94,11 @@ module add pysam/0.8.2.1
 Ok, now that everything is set up let's get down to business.
 ### 1) fastq setup
 
-
+Sometimes the fastq files will be gzipped we can g-unzip them with this command. But we don't have to here.
 
 
 ```bash
- gunzip *.gz
+ gunzip fastq_original/*.gz
  ```
 This will unzip all the gzipped files in the current directory. It might take awhile if there are a lot (minutes).
 

@@ -4,7 +4,7 @@ import os
 import argparse
 import shutil
 
-parser = argparse.ArgumentParser(description='This program takes hiseq fastq files and renames them as sample.#.read_direction.fastq and keeps a log of the change, it may need to be adjusted if the sequencing core changes their scheme')
+parser = argparse.ArgumentParser(description='This program takes hiseq fastq files and renames them as sample.read_direction.#.fastq and keeps a log of the change, it may need to be adjusted if the sequencing core changes their scheme')
 parser.add_argument('-s',action='store',dest='s',help='The sorce directory containing the original fastq files')
 parser.add_argument('-f',action='store',dest='o',help='The final directory that will hold the renamed fastq files')
 parser.add_argument('-k',action='store',dest='key',help='The output csv given by the sequencing core that serves as the key for renaming')

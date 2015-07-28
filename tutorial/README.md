@@ -96,10 +96,6 @@ Ok, now that everything is set up let's get down to business.
 
 
 
-Ok, now that everything is set up let's get down to business.
-### 1) fastq setup
-
-
 
 ```bash
  gunzip *.gz

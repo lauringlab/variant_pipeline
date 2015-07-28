@@ -66,7 +66,7 @@ The first characters mean this is directory (d) and the owner (mccrone) has read
 Now we are ready to begin the tutorial. Let's go there now.
 
 ```
-cd tutorial
+cd variant_pipeline/tutorial
 ```
 
 The variant pipeline is essentially R, bowtie2, samtools, python, and picard wrapped in a bpipe pipeline. Picard and bpipe come prepacked in the libs directory so there is no need to install those. Samtools and bowtie2 are already on flux.  So all we need to do is install the deepSNV package per the instructions in the README doc.

@@ -229,7 +229,7 @@ ls
 ```
 Look there is folder just for you! cd into it and we can begin.
 
-## setup 
+## 4.1 Setup 
 Let's setup an experimental directory
 ```
 mkdir exp_label
@@ -240,7 +240,7 @@ mkdir scripts
 
 *Note you may have to make a reference file for bowtie to align to.  I like to keep mine in data/reference.  You can use the command in the readme file to make your reference so long as you already have a fasta file.*
 
-
+## 4.2 Running
 Now we'll rename and move our fastq's from the NAS to our data directory.  We just have to tell the computer where to find our scripts.  These commands should look familar.
 
 ```

@@ -4,7 +4,7 @@ For this example we will run a small data set through using a command line appro
 
 For consistency all these commands can be run from the variant_pipeline/tutorial directory.
 
-### 0) Getting started
+## 0) Getting started
 
 Log onto the flux platform  by typing the following in terminal.
 
@@ -92,7 +92,7 @@ module add pysam/0.8.2.1
 ```
 
 Ok, now that everything is set up let's get down to business.
-### 1) fastq setup
+## 1) fastq setup
 
 Sometimes the fastq files will be gzipped we can g-unzip them with this command. But we don't have to here.
 
@@ -124,7 +124,7 @@ python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -
 
 Now that we have our samples prepped we can run the pipeline.
 
-### 2) Running the pipeline
+## 2) Running the pipeline
 
 The pipeline is run by in [bpipe](https://code.google.com/p/bpipe/wiki/Overview) using a python wrapper.  To see our options type.
 
@@ -206,7 +206,7 @@ This contains the called variants and the data needed to filter them to your hea
 
 Additionally Bpipe keeps a log of all the commands it runs in 'commandlog.txt'. This can be useful for debugging.  
 
-### 3) Analyzing data
+## 3) Analyzing data
 
 
 
@@ -217,7 +217,7 @@ To analyze the data transfer the mapq/all.mapq.* and 05_Coverage/all.cov.csv to 
 An example of how to subset the data and plot coverage can be found in the results directory of the tutorial.  You can look at this my opening it from the box sync folder.
 
 
-### 4) Modifying for your own data
+## 4) Modifying for your own data
 
 So you just got some illumina data back! Bully for you! How to analyze it.  Using either cyberduck or better still globus (see command line tools in box synce) transfer your run data to the appropriate directory on NAS ( which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. Put your raw data in the appropriate directory.
 
@@ -229,7 +229,7 @@ ls
 ```
 Look there is folder just for you! cd into it and we can begin.
 
-## 4.1 Setup 
+### 4.1 Setup 
 Let's setup an experimental directory
 ```
 mkdir exp_label
@@ -240,7 +240,7 @@ mkdir scripts
 
 *Note you may have to make a reference file for bowtie to align to.  I like to keep mine in data/reference.  You can use the command in the readme file to make your reference so long as you already have a fasta file.*
 
-## 4.2 Running
+### 4.2 Running
 Now we'll rename and move our fastq's from the NAS to our data directory.  We just have to tell the computer where to find our scripts.  These commands should look familar.
 
 ```

@@ -223,4 +223,50 @@ An example of how to subset the data and plot coverage can be found in the resul
 
 ### 4) Modifying for your own data
 
+So you just got some illumina data back! Bully for you! How to analyze it.  Using either cyberduck or better still globus (see command line tools in box synce) transfer your run data to the appropriate directory on NAS ( which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. Put your raw data in the appropriate directory.
+
+Next cd the scratch directory where we have more memory to run our large jobs
+
+```
+cd /scratch/alauring_fluxm/
+ls
+```
+Look there is folder just for you! cd into it and we can begin.
+
+## setup 
+Let's setup an experimental directory
+```
+mkdir exp_label
+cd exp_label
+mkdir data
+mkdir scripts
+```
+
+*Note you may have to make a reference file for bowtie to align to.  I like to keep mine in data/reference.  You can use the command in the readme file to make your reference so long as you already have a fasta file.*
+
+
+Now we'll rename and move our fastq's from the NAS to our data directory.  We just have to tell the computer where to find our scripts.  These commands should look familar.
+
+```
+python ~/variant_pipeline/scripts/change_names_miseq.py -s path/to/data/on/NAS -f data/fastq/ 
+```
+If this looks good let's run it
+
+```
+python ~/variant_pipeline/scripts/change_names_miseq.py -s path/to/data/on/NAS -f data/fastq/ -run
+```
+
+Now we can copy the pbs script from the tutorial and modify it to suit our purposes.  
+
+```
+cp ~/variant_pipeline/bin/variant_pipeline.pbs
+```
+
+The last line should read
+
+```
+python ~/variant_pipeline/bin/variantPipeline.py -i data/fastq/ -o worked_data/ -r path/to/reference/name -p your_plasmid_control
+```
+
+Then just submit using qsub as before and sit back while the computer does the rest.
 

@@ -57,11 +57,20 @@ The variant pipeline is essentially R, bowtie2, samtools, python, and picard wra
 
 To see if you already have deepSNV you can run
 ```
+module load med
+module load R/3.1.1
+R
 library("deepSNV")
 ```
-in R
+If you don't have it you can install it using
 
-We will need to load the needed programs using
+```
+source("http://bioconductor.org/biocLite.R")
+biocLite("deepSNV")
+```
+while still in R.  It should take a while to install and you will be prompted to install in your private packages.  Please respond y when prompted.
+
+Next, we will need to load the needed programs using
 
 
 ```

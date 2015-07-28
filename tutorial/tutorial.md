@@ -70,6 +70,13 @@ biocLite("deepSNV")
 ```
 while still in R.  It should take a while to install and you will be prompted to install in your private packages.  Please respond y when prompted.
 
+use 
+
+```
+q()
+```
+to exit R when you are done.
+
 Next, we will need to load the needed programs using
 
 

@@ -171,9 +171,9 @@ signifies the name of the job.  Let's change "test_PR8" to "tutorial"
 
 > #PBS -M mccrone@umich.edu
 
-Tells the computer to send you an email at the start and end of the job let's change it so Will doesn't get all the emails.
+Tells the computer to send you an email at the start and end of the job let's change it so I don't get all your emails.
 
-> #PBS -l nodes=1:ppn=2,mem=48gb,walltime=10:00:00
+> #PBS -l nodes=1:ppn=2,mem=24gb,walltime=2:00:00
 
 signifies how many nodes, processors per node, memory, and max time we want the job to run.  For this small job lets use 10gb of memory and limit the wall time to 10 min 00:10:00.
 

@@ -70,7 +70,8 @@ module load R/3.1.1
 R
 ```
 
-	This can be done from any directory.
+
+This can be done from any directory.
 * deepSNV
 
 ```

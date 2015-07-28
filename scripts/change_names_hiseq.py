@@ -18,7 +18,8 @@ key=arg.key
 mv_switch=args.mv_switch
 test=args.test
 
-
+if not os.path.exists(o):
+    os.makedirs(o)
 # input argument is the sample sheet
 junk_names = [] # The names given by the sequencing core sampleid_index
 new_names = []

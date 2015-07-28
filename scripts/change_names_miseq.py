@@ -16,6 +16,9 @@ mv_switch=args.mv_switch
 test=args.test
 # input argument is fastq directory
 
+if not os.path.exists(f):
+    os.makedirs(f)
+
 outfile = open(f+'renaming_log.txt','w')
 #os.chdir(sys.argv[1])
 if test==False:

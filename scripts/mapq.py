@@ -10,7 +10,7 @@ csv=csv.split("/")[-1]
 bam=sys.argv[2].split(".bam")[0]
 bam=bam.split("/")[-1]
 
-Ensure the bam and csv file match
+#Ensure the bam and csv file match
 if csv==bam:
     print("working with csv: "+csv + " and bam: " +bam)
 else:

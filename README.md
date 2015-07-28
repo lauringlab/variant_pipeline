@@ -18,20 +18,20 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 	* automated tests (mostly python)
 
 * tutorial
-		* a directories needed to run the tutorial. Instructions can be found in tutorial.html.
+		* The directories and instructions needed to run the tutorial. Instructions can be found in tutorial.html.
 
 ## Workflow summary
 ![variantPipeline workflow image](doc/workflow.png)
 
 
 ## bin/variantPipeline.py
- This script is a thin bash wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory
+ This script is a thin python wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory and stored in the output directory as a log of what was run.
 
 
 Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name}
 
 * Inputs:  
-	* -i dir containing left fastq, right fastq named as sample.#.read_direction[1,2].fastq
+	* -i dir containing left fastq, right fastq named as sample.read_direction[1,2].#.fastq
 		* the python scripts change_names* can be used as a fast means of renaming fastq to this format.
 	* -r path to the reference genome for alignment made using
 
@@ -61,37 +61,24 @@ Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plas
 
 The pipeline comes with many of the required programs (bpipe and pycard); however, bowtie2, samtools and certain R  and python libraries are required by the variant calling.
 
-Note: *The R packages may need to be installed under your username on Flux.  The other dependencies are simply added as modules.*
+Note: *The R package deepSNV may need to be installed under your username on Flux.  The other dependencies are simply added as modules.*
 
-* R (installation instructions to be run in R)
- 	* deepSNV
+To open R on flux simply type
+	```
+	module load med
+	module load R\3.1.1
+	R
+	```
 
-		```R
+	This can be done from any directory.
+* deepSNV
+
+		```
 		source("http://bioconductor.org/biocLite.R")
 		biocLite("deepSNV")
 		```
-	* plyr
 
-		```R
-		install.packages("plyr")
-		```
-	* reshape2
-
-			```R
-			install.packages("reshape2")
-			```
-
-* python	(installed through pip in terminal)
-	* pysam 0.8.2.1
-
-			```bash
-			pip install pysam
-			```
-* bowtie2
-	[How to install bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#obtaining-bowtie-2)
-
-* samtools
-	[Installing samtools](http://www.htslib.org)
+You will be prompted to install in a local directory beginning with ~/. This means you are installing in your home directory and the library will be available just to you.  Installation should take a while.
 
 Adapted and developed by JT McCrone based on work done by
 Chris Gates/Peter Ulintz

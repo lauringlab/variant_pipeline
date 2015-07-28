@@ -268,5 +268,5 @@ The last line should read
 python ~/variant_pipeline/bin/variantPipeline.py -i data/fastq/ -o worked_data/ -r path/to/reference/name -p your_plasmid_control
 ```
 
-Then just submit using qsub as before and sit back while the computer does the rest.
+Then just submit using qsub as before and sit back while the computer does the rest. :smiley"
 

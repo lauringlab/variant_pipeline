@@ -3,7 +3,7 @@ import os
 import argparse
 import shutil
 
-parser = argparse.ArgumentParser(description='This program takes Miseq fastq files and renames them as sample.#.read_direction.fastq and keeps a log of the change')
+parser = argparse.ArgumentParser(description='This program takes Miseq fastq files and renames them as sample.read_direction.#.fastq and keeps a log of the change')
 parser.add_argument('-s',action='store',dest='s',help='The sorce directory containing the original fastq files')
 parser.add_argument('-f',action='store',dest='f',help='The final directory that will hold the renamed fastq files')
 parser.add_argument('-mv',action='store_true',dest='mv_switch',default=False,help="boolean switch that moves inputs to output, default is to copy. NOTE: ACTIVATING THIS SWITCH WILL OVERWRITE THE ORIGINAL")

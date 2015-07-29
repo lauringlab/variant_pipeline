@@ -6,9 +6,9 @@ For consistency all of the commands can be run from the variant_pipeline/tutoria
 
 ## Before you begin, you will need
 - Access to the lab's allocation on flux. Adam will need to email administrator
-- An MToken for two factor authentication. See [MSIS])(http://www.mais.umich.edu/mtoken/mtoken_distribution.html)
--Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools
--Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools
+- An MToken for two factor authentication. See [MSIS](http://www.mais.umich.edu/mtoken/mtoken_distribution.html)
+- Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools
+- Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools
 
 ## 0) Getting started
 
@@ -22,7 +22,7 @@ ssh your_username@flux-login.engin.umich.edu
 
  You will then be asked for your level one. Again no characters appear as you type.
 
- Once on flux you will automatically begin in your home directory (~/ which is a shortcut for /home/username/ ).  We have limmited space in these directories (80gb) so we will typically work from scratch directories which provide more memory for active work. However, scratch should not be used for longterm storage. We will add the variant pipeline to our home directory so it is easily accessible from anywhere.
+ Once on flux you will automatically begin in your home directory (~/ which is a shortcut for /home/username/ ).  We have limited space in these directories (80gb) so we will typically work from scratch directories which provide more memory for active work. However, scratch should not be used for longterm storage. We will add the variant pipeline to our home directory so it is easily accessible from anywhere.
 
  You are reading this tutorial so you must be on github. Our first task will be to clone the github repository (the latest version of the variant caller in all its glory) to you home directory on flux.
  

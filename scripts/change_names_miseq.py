@@ -44,15 +44,19 @@ for filename in os.listdir(s):
     outfile.write(s+filename + "\t COPIED to \t" + f+perfect_name + "\n")
     if test==True:
         shutil.copy(s+filename,f+perfect_name)
-    for file in glob.glob(f + "/*.gz"):
+#    print(f + "*.gz")
 
-        inF = gzip.GzipFile(file, 'rb')
-        s = inF.read()
-        inF.close()
+for zipfile in glob.glob(f + "*.gz"):
+    print "unzipping:" + zipfile
 
-        outF = file(os.path.splitext(file)[0], 'wb')
-        outF.write(s)
-        outF.close()
+    inF = gzip.GzipFile(zipfile, 'rb')
+    s = inF.read()
+    inF.close()
+    #print(os.path.splitext(zipfile)[0])
+    outF = file(os.path.splitext(zipfile)[0], 'wb')
+    outF.write(s)
+    outF.close()
+    os.remove(zipfile)
 
 
 outfile.close()

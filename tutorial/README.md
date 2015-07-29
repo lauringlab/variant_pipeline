@@ -1,8 +1,14 @@
 
 # Pipeline Tutorial
-For this example we will run a small data set through using a command line approach.  We are working with one MFE sample and the a wsn33 plasmid control. For computational speed these fastq files have been reduced by 75%.  This approach can be run on flux as is, or run through a pbs for larger data sets.
+In this example we will run a small data set through using a command line approach. We are working with one MFE sample and a wsn33 plasmid control. For computational speed these fastq files have been reduced by 75%. This approach can be run on flux as is, or run through a pbs for larger data sets.
 
-For consistency all these commands can be run from the variant_pipeline/tutorial directory.
+For consistency all of the commands can be run from the variant_pipeline/tutorial directory.
+
+## Before you begin, you will need
+Access to the lab's allocation on flux. Adam will need to email administrator
+An MToken for two factor authentication. http://www.mais.umich.edu/mtoken/mtoken_distribution.html
+Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools
+Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools
 
 ## 0) Getting started
 
@@ -12,13 +18,13 @@ Log onto the flux platform  by typing the following in terminal.
 ssh your_username@flux-login.engin.umich.edu
 ```
 
- You will be prompted for your MToken.  No characters will appear as you type.  You make a mistake you will be locked out until you bring cookies to lab.  Just kidding, but you do have to wait until your MToken refreshes to a new number.
+ You will be prompted for your MToken. No characters will appear as you type. If you make a mistake, you will be locked out until you bring cookies to lab. Just kidding, but you do have to wait until your MToken refreshes to a new number.
 
- You will then be asked for your level one.  Again no characters appear as you type.
+ You will then be asked for your level one. Again no characters appear as you type.
 
- Once on flux you will automatic all begin in your home directory (~/ which is a shortcut for /home2/username/).  We have limmited space in these directories so we will typically work from scratch directories which provide more memory for active work but should not be used for longterm storage.  We will add the variant pipeline to our home directory so it is easily accessible from anywhere.
+ Once on flux you will automatically begin in your home directory (~/ which is a shortcut for /home2/username/).  We have limmited space in these directories so we will typically work from scratch directories which provide more memory for active work. However, scratch should not be used for longterm storage. We will add the variant pipeline to our home directory so it is easily accessible from anywhere.
 
- You are reading this tutorial so you must be on github.  Our first task will be to clone the github repository (the variant caller in all its glory) to you home directory on flux.
+ You are reading this tutorial so you must be on github. Our first task will be to clone the github repository (the latest version of the variant caller in all its glory) to you home directory on flux.
  
  On flux type
  
@@ -44,6 +50,7 @@ The first characters mean this is directory (d) and the owner (mccrone) has read
  ```
  chmod -R +x variant_pipeline
  ```
+___Add a section here on git pull?
 
  (Again the -R is a recursive option) You need to do this to be able to run the scripts that come with the pipeline.
 
@@ -53,7 +60,7 @@ Now we are ready to begin the tutorial. Let's go there now.
 cd variant_pipeline/tutorial
 ```
 
-The variant pipeline is essentially R, bowtie2, samtools, python, and picard wrapped in a bpipe pipeline. Picard and bpipe come prepacked in the libs directory so there is no need to install those. Samtools and bowtie2 are already on flux.  So all we need to do is install the deepSNV package per the instructions in the README doc.
+The variant pipeline is essentially R, bowtie2, samtools, python, and picard wrapped in a bpipe pipeline. Picard and bpipe come prepacked in the libs directory so there is no need to install those. Samtools and bowtie2 are already on flux. So all we need to do is install the deepSNV package per the instructions in the README doc.
 
 To see if you already have deepSNV you can run
 ```
@@ -68,7 +75,7 @@ If you don't have it you can install it using
 source("http://bioconductor.org/biocLite.R")
 biocLite("deepSNV")
 ```
-while still in R.  It should take a while to install and you will be prompted to install in your private packages.  Please respond y when prompted.
+while still in R.  It should take a while to install and you will be prompted to install in your private packages. Please respond y when prompted. You may also be prompted to update all/some/none of the packages. Respond a when prompted.
 
 use 
 
@@ -91,7 +98,7 @@ module add R/3.1.1
 module add pysam/0.8.2.1
 ```
 
-Ok, now that everything is set up let's get down to business.
+Ok, now that everything is set up, let's get down to business.
 ## 1) fastq setup
 
 Sometimes the fastq files will be gzipped we can g-unzip them with this command. But we don't have to here.
@@ -104,7 +111,7 @@ This will unzip all the gzipped files in the current directory. It might take aw
 
 The next step will be to name the fastq file properly. Bpipe requires the fastq file to be named in the following format *sample_name.#.read_direction.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2 and indicates forward or reverse reads.
 
-Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script we will test it to make sure we are naming things as we expect.  Note the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy or move anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode.  It will print what it proposes to do and make a mock log.  This ensures you don't do anything hastily.  For more information about the script simply type
+Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script we will test it to make sure we are naming things as we expect.  Note the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy or move anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
 
 ```
 python ../scripts/change_names_miseq.py -h
@@ -132,20 +139,20 @@ The pipeline is run by in [bpipe](https://code.google.com/p/bpipe/wiki/Overview)
 python ../bin/variantPipeline.py -h
 ```
 
-We need to provide the directory containing the fastq files, the directory were we want the output  to go ( it will be made if it doesn't exist), our reference for bowtie (provided by the tutorial, see README on how to make one for your sample set), and the name of our control sample.  To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.
+We need to provide the directory containing the fastq files, the directory where we want the output to go (it will be made if it doesn't exist), our reference for bowtie (provided by the tutorial, see README on how to make one for your sample set), and the name of our control sample. To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.
 
 ```
 python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -t
 ```
 
-It seems like everything is in order so we'll let it rip.  This took about 5 min on my old macbook pro. On the flux it won't take long at all.
+It seems like everything is in order so we'll let it rip. This took about 5 min on my old macbook pro. On the flux it won't take long at all.
 
 ```
 python ../bin/variantPipeline.py -i data/fastq/ -o worked_data/ -r data/reference/wsn33_wt_plasmid -p Plasmid_control
 ```
 
 
-__If you are running on the flux__ Then instead of running the above command from the command line we would usually run this command in a pbs script. This is because running memory intensive commands on the login node slows everyone down.  A pbs script tells flux to set aside a separate node just for our work. An example of this can be found in bin/variant_pipeline.pbs.  For larger sample sets you'll need to adjusted the memory and walltime limits.  We can use a total of 2 processors and 48 gb of mem.  A detailed description of pbs scripts can be found [here](http://arc-ts.umich.edu/software/torque/).
+__If you are running on the flux__ Then instead of running the above command from the command line we would usually run this command in a pbs script. This is because running memory intensive commands on the login node slows everyone down.  A pbs script tells flux to set aside a separate node just for our work. An example of this can be found in bin/variant_pipeline.pbs.  For larger sample sets you'll need to adjusted the memory and walltime limits___can you provide suggested times and memory for a hiseq run or a miseq run?___.  We can use a total of 2 processors and 48 gb of mem.  A detailed description of pbs scripts can be found [here](http://arc-ts.umich.edu/software/torque/).
 The script can be edited using nano.
 
 Let's run the same pipeline using a pbs script.
@@ -163,7 +170,7 @@ The line
 
 > #PBS -N test_PR8
 
-signifies the name of the job.  Let's change "test_PR8" to "tutorial"
+signifies the name of the job. Let's change "test_PR8" to "tutorial"
 
 > #PBS -M mccrone@umich.edu
 
@@ -212,14 +219,14 @@ Additionally Bpipe keeps a log of all the commands it runs in 'commandlog.txt'. 
 
 The pipeline does not carry out any secondary analysis. It only provides putative variants and information regarding how trustworthy those calls are.  It is up to you to sort through the putative variants (found in mapq/all.sum.csv) using Excel (booo!! :-1:) or R (Hooray!! :bowtie:).  Currently we are setting a p.value cut off of 0.01 (p.val < 0.01) and for most applications a frequency cut off of 0.5% (freq.var>0.5%).  Additionally we require variants to be uniformly distributed across the reads on which they are found.  We achieve this by requiring the average read position to be in the middle 50% of the read length. (Read\_pos>50 & Read\_pos<200, for a Miseq run with 2X250 reads).  
 
-To analyze the data transfer the mapq/all.mapq.* and 05_Coverage/all.cov.csv to your own machine using your favorite file transfer software.  Cyberduck and Filezilla are good places to start.
+To analyze the data transfer the mapq/all.mapq.* and 05_Coverage/all.cov.csv to your own machine using your favorite file transfer software. Cyberduck and Filezilla are good places to start.
 
-An example of how to subset the data and plot coverage can be found in the results directory of the tutorial.  You can look at this my opening it from the box sync folder.
+An example of how to subset the data and plot coverage can be found in the results directory of the tutorial. You can look at this by opening it from the box sync folder.
 
 
 ## 4) Modifying for your own data
 
-So you just got some illumina data back! Bully for you! How to analyze it.  Using either cyberduck or better still globus (see command line tools in box synce) transfer your run data to the appropriate directory on NAS ( which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. Put your raw data in the appropriate directory.
+So you just got some illumina data back! Bully for you! Now to analyze it. Using either cyberduck, or better still, globus (see command line tools in MBox) transfer your run data to the appropriate directory on NAS (which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. Put your raw data in the appropriate directory.
 
 Next cd the scratch directory where we have more memory to run our large jobs
 

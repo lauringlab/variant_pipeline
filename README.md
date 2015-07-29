@@ -38,6 +38,8 @@ Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plas
 	* -p plasmid control : the sample name of the plasmid control fastq.
 
 	See the tutorial for more information.
+	
+	*NOTE: Your fasta is used in the variant calling step and needs to end in .fa*
 
 
 * Outputs:

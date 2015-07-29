@@ -22,6 +22,7 @@ output_dir=os.path.abspath(args.output_dir)
 ref=os.path.abspath(args.ref)
 control=args.control
 bin_dir=os.getcwd()
+print bin_dir
 script_dir=os.path.abspath('../scripts/')
 lib_dir=os.path.abspath('../lib/')
 bpipe_command=lib_dir+'/bpipe-0.9.8.7/bin/bpipe'

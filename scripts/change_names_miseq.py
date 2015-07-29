@@ -24,7 +24,7 @@ outfile = open(f+'renaming_log.txt','w')
 if test==False:
     print "running in test mode add option -r to run"
 for filename in os.listdir(s):
-    print filename
+ #   print filename
     name=filename.split("_L")
     good_name = name[0].split("_")[0]
     lane_junk = name[1]

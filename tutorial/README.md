@@ -4,6 +4,12 @@ In this example we will run a small data set through using a command line approa
 
 For consistency all of the commands can be run from the variant_pipeline/tutorial directory.
 
+## Table of Contents
+
+* [Before you begin](#gefore-you-begin,-you-will-need)
+* [0) Getting started](#0\)-getting-started)
+* [1) Fastq Setup](#fastq-setup)
+
 ## Before you begin, you will need
 - Access to the lab's allocation on flux. Adam will need to email administrator
 - An MToken for two factor authentication. See [MSIS](http://www.mais.umich.edu/mtoken/mtoken_distribution.html)

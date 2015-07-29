@@ -114,7 +114,7 @@ module add pysam/0.8.2.1
 Ok, now that everything is set up, let's get down to business.
 ## 1) fastq setup
 
-The first step is to name the fastq file properly. Bpipe requires the fastq file to be named in the following format *sample_name.#.read_direction.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2 and indicates forward or reverse reads.
+The first step is to name the fastq file properly. Bpipe requires the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2 and indicates forward or reverse reads.
 
 Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script we will test it to make sure we are naming things as we expect.  Note the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy or move anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
 
@@ -141,7 +141,7 @@ Sometimes the fastq files will be gzipped we can g-unzip them with this command.
  ```
 This will unzip all the gzipped files in the current directory. It might take awhile if there are a lot (minutes).
 
-You can copy and rename zipped files by adding a -gz tag to the renaming command. (see the help option for more details.)
+*Note:You can copy and rename zipped files by adding a -gz tag to the renaming command. (see the help option for more details.)*
 
 
 Now that we have our samples prepped we can run the pipeline.
@@ -243,8 +243,11 @@ An example of how to subset the data and plot coverage can be found in the resul
 
 ## 4) Modifying for your own data
 
-So you just got some illumina data back! Bully for you! Now to analyze it. Using either cyberduck, or better still, globus (see command line tools in MBox) transfer your run data to the appropriate directory on NAS (which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. Put your raw data in the appropriate directory.
+So you just got some illumina data back! Bully for you! Now to analyze it. Using either cyberduck, or better still, [globus](http://arc.umich.edu/flux-and-other-hpc-resources/flux/using-flux/transferring-files-with-globus-gridftp/) transfer your run data to the appropriate directory on NAS (which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. 
 
+### Flux directory structure
+
+![Dir structure](doc/flux_organization.png)
 Next cd the scratch directory where we have more memory to run our large jobs
 
 ```

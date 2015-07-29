@@ -20,7 +20,8 @@ You will need:
 - An MToken for two factor authentication. See [MSIS](http://www.mais.umich.edu/mtoken/mtoken_distribution.html)
 - Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools
 - Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools
-- 
+
+
 
 <a name="getting-started"/>
 ## 0) Getting started

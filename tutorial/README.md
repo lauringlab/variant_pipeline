@@ -247,7 +247,7 @@ So you just got some illumina data back! Bully for you! Now to analyze it. Using
 
 ### Flux directory structure
 
-![Dir structure](doc/flux_organization.png)
+![Dir structure](https://github.com/jtmccr1/variant_pipeline/blob/master/doc/flux_organization.png)
 Next cd the scratch directory where we have more memory to run our large jobs
 
 ```

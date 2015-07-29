@@ -33,7 +33,7 @@ for filename in os.listdir(s):
     if zip==True:
         perfect_name= good_name.replace("-","_")+"."+read_number+"."+fastq_number+".fastq.gz"
     else:
-        perfect_name= good_name.replace("-","_")+"."+read_number+"."+fastq_number+".fastq.gz"
+        perfect_name= good_name.replace("-","_")+"."+read_number+"."+fastq_number+".fastq"
     # Write file to new name
 
     print("COPYING "+ s+filename + " to "+f+perfect_name)

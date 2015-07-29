@@ -6,16 +6,23 @@ For consistency all of the commands can be run from the variant_pipeline/tutoria
 
 ## Table of Contents
 
-* [Before you begin](#gefore-you-begin,-you-will-need)
-* [0) Getting started](#0\)-getting-started)
-* [1) Fastq Setup](#fastq-setup)
+* [Before you begin](#before-you-begin)
+* [0) Getting started](#getting-started)
+* [1) Fastq setup](#fastq-setup)
+* [2) Running the pipeline](#running-the-pipeline)
+* [3) Analysis](#analysis)
+* [4)Working with real data](#working-with-real-data)
 
-## Before you begin, you will need
+<a name="before-you-begin"/>
+## Before you begin
+You will need:
 - Access to the lab's allocation on flux. Adam will need to email administrator
 - An MToken for two factor authentication. See [MSIS](http://www.mais.umich.edu/mtoken/mtoken_distribution.html)
 - Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools
 - Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools
+- 
 
+<a name="getting-started"/>
 ## 0) Getting started
 
 Log onto the flux platform  by typing the following in terminal.
@@ -118,7 +125,9 @@ module add pysam/0.8.2.1
 ```
 
 Ok, now that everything is set up, let's get down to business.
-## 1) fastq setup
+
+<a name="fastq-setup"/>
+## 1) Fastq setup
 
 The first step is to name the fastq file properly. Bpipe requires the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2 and indicates forward or reverse reads.
 
@@ -153,7 +162,7 @@ This will unzip all the gzipped files in the current directory. It might take aw
 Now that we have our samples prepped we can run the pipeline.
 
 
-
+<a name="running-the-pipeline"/>
 ## 2) Running the pipeline
 
 The pipeline is run by in [bpipe](https://code.google.com/p/bpipe/wiki/Overview) using a python wrapper.  To see our options type.
@@ -236,7 +245,8 @@ This contains the called variants and the data needed to filter them to your hea
 
 Additionally Bpipe keeps a log of all the commands it runs in 'commandlog.txt'. This can be useful for debugging.  
 
-## 3) Analyzing data
+<a name="analysis"/>
+## 3) Analysis
 
 
 
@@ -246,8 +256,8 @@ To analyze the data transfer the mapq/all.mapq.* and 05_Coverage/all.cov.csv to 
 
 An example of how to subset the data and plot coverage can be found in the results directory of the tutorial. You can look at this by opening it from the box sync folder.
 
-
-## 4) Modifying for your own data
+<a name="working-with-real-data"/>
+## 4) Working with real data
 
 So you just got some illumina data back! Bully for you! Now to analyze it. Using either cyberduck, or better still, [globus](http://arc.umich.edu/flux-and-other-hpc-resources/flux/using-flux/transferring-files-with-globus-gridftp/) transfer your run data to the appropriate directory on NAS (which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. (See the flux directory sctructure below). It is a good idea to rename your directory prior to transfer so that it does not have spaces. Stay tuned for a uniform nomenclature for our lab.
 

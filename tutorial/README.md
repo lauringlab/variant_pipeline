@@ -249,7 +249,7 @@ An example of how to subset the data and plot coverage can be found in the resul
 
 ## 4) Modifying for your own data
 
-So you just got some illumina data back! Bully for you! Now to analyze it. Using either cyberduck, or better still, [globus](http://arc.umich.edu/flux-and-other-hpc-resources/flux/using-flux/transferring-files-with-globus-gridftp/) transfer your run data to the appropriate directory on NAS (which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. (See the flux directory sctructure below)
+So you just got some illumina data back! Bully for you! Now to analyze it. Using either cyberduck, or better still, [globus](http://arc.umich.edu/flux-and-other-hpc-resources/flux/using-flux/transferring-files-with-globus-gridftp/) transfer your run data to the appropriate directory on NAS (which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. (See the flux directory sctructure below). It is a good idea to rename your directory prior to transfer so that it does not have spaces. Stay tuned for a uniform nomenclature for our lab.
 
 ### Flux directory structure
 

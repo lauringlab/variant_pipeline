@@ -283,7 +283,7 @@ mkdir data/reference
 mkdir scripts
 ```
 
-*Note you may have to make a reference file for bowtie to align to.  I like to keep mine in data/reference.  You can use the command in the readme file to make your reference so long as you already have a fasta file.*
+*Note you may have to make a reference file for bowtie to align to.  I like to keep mine in data/reference.  You can use the command in the readme file to make your reference so long as you already have a fasta file. __IT MUST END IN .fa FOR THE VARIANT CALLER TO RECOGNIZE IT*
 
 ### 4.2 Running
 Now we'll rename and copy our fastq's from the NAS to our data directory.  We just have to tell the computer where to find our scripts.  These commands should look familar, and can be run from your experiment folder on scratch.

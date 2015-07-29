@@ -5,10 +5,10 @@ In this example we will run a small data set through using a command line approa
 For consistency all of the commands can be run from the variant_pipeline/tutorial directory.
 
 ## Before you begin, you will need
-Access to the lab's allocation on flux. Adam will need to email administrator
-An MToken for two factor authentication. http://www.mais.umich.edu/mtoken/mtoken_distribution.html
-Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools
-Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools
+- Access to the lab's allocation on flux. Adam will need to email administrator
+- An MToken for two factor authentication. See [MSIS])(http://www.mais.umich.edu/mtoken/mtoken_distribution.html)
+-Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools
+-Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools
 
 ## 0) Getting started
 
@@ -22,7 +22,7 @@ ssh your_username@flux-login.engin.umich.edu
 
  You will then be asked for your level one. Again no characters appear as you type.
 
- Once on flux you will automatically begin in your home directory (~/ which is a shortcut for /home2/username/).  We have limmited space in these directories so we will typically work from scratch directories which provide more memory for active work. However, scratch should not be used for longterm storage. We will add the variant pipeline to our home directory so it is easily accessible from anywhere.
+ Once on flux you will automatically begin in your home directory (~/ which is a shortcut for /home/username/ ).  We have limmited space in these directories (80gb) so we will typically work from scratch directories which provide more memory for active work. However, scratch should not be used for longterm storage. We will add the variant pipeline to our home directory so it is easily accessible from anywhere.
 
  You are reading this tutorial so you must be on github. Our first task will be to clone the github repository (the latest version of the variant caller in all its glory) to you home directory on flux.
  
@@ -50,9 +50,22 @@ The first characters mean this is directory (d) and the owner (mccrone) has read
  ```
  chmod -R +x variant_pipeline
  ```
-___Add a section here on git pull?
 
- (Again the -R is a recursive option) You need to do this to be able to run the scripts that come with the pipeline.
+(Again the -R is a recursive option) You need to do this to be able to run the scripts that come with the pipeline.
+
+Although the pipeline is fully functional, we may make slight modifications in the future. To ensure you are working with the most up to date version you can use 
+
+```
+git pull
+```
+
+This should be executed from somewhere in  the variant_pipeline directory and  will "pull" the most update version from github.  If you have modified any of the files you will be asked to commit those changes before you can execute "git pull". Without getting to much into git.
+
+```
+git commit -am "committing before a pull"
+```
+
+will commit your changes and label them "committing before a pull".  You can now pull.
 
 Now we are ready to begin the tutorial. Let's go there now.
 
@@ -101,15 +114,7 @@ module add pysam/0.8.2.1
 Ok, now that everything is set up, let's get down to business.
 ## 1) fastq setup
 
-Sometimes the fastq files will be gzipped we can g-unzip them with this command. But we don't have to here.
-
-
-```bash
- gunzip fastq_original/*.gz
- ```
-This will unzip all the gzipped files in the current directory. It might take awhile if there are a lot (minutes).
-
-The next step will be to name the fastq file properly. Bpipe requires the fastq file to be named in the following format *sample_name.#.read_direction.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2 and indicates forward or reverse reads.
+The first step is to name the fastq file properly. Bpipe requires the fastq file to be named in the following format *sample_name.#.read_direction.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2 and indicates forward or reverse reads.
 
 Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script we will test it to make sure we are naming things as we expect.  Note the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy or move anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
 
@@ -129,7 +134,19 @@ python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -
 ```
 *Note: a log of the name changes was made in fastq/renaming_log.txt for posterity*
 
+Sometimes the fastq files will be gzipped we can g-unzip them with this command. 
+
+```bash
+ gunzip fastq_original/*.gz
+ ```
+This will unzip all the gzipped files in the current directory. It might take awhile if there are a lot (minutes).
+
+You can copy and rename zipped files by adding a -gz tag to the renaming command. (see the help option for more details.)
+
+
 Now that we have our samples prepped we can run the pipeline.
+
+
 
 ## 2) Running the pipeline
 

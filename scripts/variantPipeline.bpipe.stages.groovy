@@ -9,10 +9,42 @@ fastqc = {
     doc "Run FASTQC to generate QC metrics for the fastq files"
     output.dir = "01_fastqc"
     output_dir = "01_fastqc"
-    produce("${output_dir}/*_fastqc.zip") {
-        exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
-        exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
-    }
+    if(input.input.size == 2){
+    	produce("${output_dir}/*_fastqc.zip") {
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
+    		}
+	}
+    if(input.input.size == 4){
+    	produce("${output_dir}/*_fastqc.zip") {
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input3"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input4"
+    		}
+	}
+    if(input.input.size == 6){
+    	produce("${output_dir}/*_fastqc.zip") {
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input3"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input4"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input5"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input6"        	
+    		}
+	}
+   if(input.input.size == 8){
+    	produce("${output_dir}/*_fastqc.zip") {
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input3"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input4"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input5"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input6"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input7"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input8"        	
+    		}
+	}
 }
 
 

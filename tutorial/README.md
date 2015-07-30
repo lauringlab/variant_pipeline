@@ -132,14 +132,14 @@ Ok, now that everything is set up, let's get down to business.
 
 The first step is to name the fastq file properly. They arrive from the sequencing core with names that Bpipe can't make sense of. Bpipe requires the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2, indicating forward or reverse reads.
 
-Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script, we will test it to make sure we are naming things as we expect. Note that the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy  anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
+Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script, we will test it to make sure we are naming things as we expect. Note that the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy or move anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
 
 ```
 python ../scripts/change_names_miseq.py -h
 ```
 Let's run the test
 
-*Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made. __Also, fastq files are gzipped when we get them from the seqeuncing core (they end in .gz). This script will detect files that end in ".fastq" and ".fastq.gz".  It will copy the unzipped and gzipped files from the -s directory (data/fastq_original/)  to  -f (data/fastq/) and then it will unzip all zipped files in -f so that we can use them in analysis.  This may take some time for large files__*
+*Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made*
 ```
 python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/
 ```
@@ -150,7 +150,14 @@ python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -
 ```
 *Note: a log of the name changes was made in fastq/renaming_log.txt for posterity*
 
+Sometimes the fastq files will be gzipped we can g-unzip them with this command. 
 
+```bash
+ gunzip fastq_original/*.gz
+ ```
+This will unzip all the gzipped files in the current directory. It might take a while if there are a lot (minutes).
+
+*Note:You can copy and rename zipped files by adding a -gz tag to the renaming command. (see the help option for more details.)*
 
 
 Now that we have our samples prepped we can run the pipeline.
@@ -259,7 +266,7 @@ So you just got some Illumina data back! Bully for you! Now to analyze it. Using
 
 ![Dir structure](https://github.com/jtmccr1/variant_pipeline/blob/master/doc/flux_organization.png)
 
-Once your data is in NAS be a good neighbor and make the data accessible to everyone in the lab. The first command makes alauring-lab the group for the files.  We have to do this because the default for some people in the lab is internalmed and for others is micro.  This makes the group something everyone belongs to.  The next command gives those in the group read, write,  and execute permission.
+Once your data is in NAS, be a good neighbor and make the data accessible to everyone in the lab. The first command makes alauring-lab the group for the files.  We have to do this because the default for some people in the lab is internalmed and for others is micro.  This makes the group something everyone belongs to.  The next command gives those in the group read, write,  and execute permission.
 
 ```
 chgrp -R alauring-lab path/to/your_data
@@ -276,8 +283,7 @@ Look there is folder just for you! cd into it and we can begin.
 
 ### 4.1 Setup 
 
-Let's setup an experimental directory
-From your scratch directory run. Where exp_label is an experimental label you choose
+Let's setup an experimental directory. This will hold all of the files and data that you use for a given experiment or flux run. From your scratch directory run, where "exp_label" is the name you choose for this experiment. Make it something that provides information about the experiment and/or a date.
 ```
 mkdir exp_label
 cd exp_label
@@ -286,6 +292,7 @@ mkdir data/fastq
 mkdir data/reference
 mkdir scripts
 ```
+You can now navigate through the exp_label directory and sub-directories to see that there is a directory called "data" that contains sub-directories for fastq files and reference files. There is also a sub-directory called "scripts" that you will rarely access.
 
 *Note you may have to make a reference file for bowtie to align to.  I like to keep mine in data/reference.  You can use the command in the readme file to make your reference so long as you already have a fasta file. __IT MUST END IN .fa FOR THE VARIANT CALLER TO RECOGNIZE IT*
 

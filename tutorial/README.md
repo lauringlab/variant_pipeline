@@ -26,7 +26,7 @@ You will need:
 <a name="getting-started"/>
 ## 0) Getting started
 
-Log onto the flux platform  by typing the following in terminal.
+Log onto the flux platform  by typing the following in a terminal window.
 
 ```
 ssh your_username@flux-login.engin.umich.edu
@@ -36,7 +36,7 @@ ssh your_username@flux-login.engin.umich.edu
 
  You will then be asked for your level one. Again no characters appear as you type.
 
- Once on flux you will automatically begin in your home directory (~/ which is a shortcut for /home/username/ ).  We have limited space in these directories (80gb) so we will typically work from scratch directories which provide more memory for active work. However, scratch should not be used for longterm storage. We will add the variant pipeline to our home directory so it is easily accessible from anywhere.
+ Once on flux you will automatically begin in your home directory (~/ which is a shortcut for /home/username/ ). If you want to check your location, simply type the unix command "pwd" and you should see /home/your_username. We have limited space in these directories (80gb) so we will typically work from scratch directories which provide more memory for active work. However, scratch should not be used for longterm storage. Therefore, we will add the variant pipeline to our home directory so it is easily accessible from anywhere.
 
  You are reading this tutorial so you must be on github. Our first task will be to clone the github repository (the latest version of the variant caller in all its glory) to you home directory on flux.
  
@@ -73,15 +73,15 @@ Although the pipeline is fully functional, we may make slight modifications in t
 git pull
 ```
 
-This should be executed from somewhere in  the variant_pipeline directory and  will "pull" the most update version from github.  If you have modified any of the files you will be asked to commit those changes before you can execute "git pull". Without getting to much into git.
+This should be executed from somewhere in  the variant_pipeline directory and  will "pull" the most update version from github.  If you have modified any of the files (and this is unlikely) you will be asked to commit those changes before you can execute "git pull". Without getting too much into git.
 
 ```
 git commit -am "committing before a pull"
 ```
 
-will commit your changes and label them "committing before a pull".  You can now pull.
+will commit your changes and label them "committing before a pull". You can now pull.
 
-Now we are ready to begin the tutorial. Let's go there now.
+Now the code for the variant pipeline is installed in your home directory in a sub-directory called variant_pipeline. We are ready to begin the tutorial. Let's go there now, by moving to a subdirectoy within the variant_pipeline directory.
 
 ```
 cd variant_pipeline/tutorial
@@ -96,7 +96,7 @@ module load R/3.1.1
 R
 library("deepSNV")
 ```
-If you don't have it you can install it using
+If you have R, you should see the cursor change to ">". If you don't have it you can install it using
 
 ```
 source("http://bioconductor.org/biocLite.R")

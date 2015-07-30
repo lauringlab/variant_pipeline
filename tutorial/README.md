@@ -1,8 +1,8 @@
 
 # Pipeline Tutorial
-In this example we will run a small data set through using a command line approach. We are working with one MFE sample and a wsn33 plasmid control. For computational speed these fastq files have been reduced by 75%. This approach can be run on flux as is, or run through a pbs for larger data sets.
+In this example we will run a small data set through using a command line approach. We are working with one MFE sample and a wsn33 plasmid control. For computational speed, these fastq files have been reduced by 75%. This approach can be run on flux as is, or run through a pbs for larger data sets. The last section provides instructions for working with real data.
 
-For consistency all of the commands can be run from the variant_pipeline/tutorial directory.
+For consistency all of the commands can be run from the variant_pipeline/tutorial directory. If you are running this from a different directory (for example, when you are working with your real data on scratch in section 4), make sure the paths to your files are correct. You may need to edit them in the commands provided.
 
 ## Table of Contents
 
@@ -11,7 +11,7 @@ For consistency all of the commands can be run from the variant_pipeline/tutoria
 * [1) Fastq setup](#fastq-setup)
 * [2) Running the pipeline](#running-the-pipeline)
 * [3) Analysis](#analysis)
-* [4)Working with real data](#working-with-real-data)
+* [4) Working with real data](#working-with-real-data)
 
 <a name="before-you-begin"/>
 ## Before you begin

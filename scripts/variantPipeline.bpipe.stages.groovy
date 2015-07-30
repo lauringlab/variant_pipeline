@@ -15,7 +15,13 @@ fastqc = {
     }
 }
 
-
+samtools_mapq_filter ={
+	doc " remove the reads that fail a mapping quality cut off"
+	output.dir = "02_filter"
+	filter("filtered"){
+		exec "samtools view -Shq 30 $input > $output"
+	}
+}
 
 // pydmx generates a directory of demultiplexed fastqs named using the specified barcode file
 //     it requires python2.7
@@ -152,7 +158,7 @@ coverage = {
 //Get the name of the control file. to use in deepSNV
 get_control={
 new File('.').eachFileRecurse{
-	if(it.name=~/.*$CONTROL.*\..*\.bam$/){
+	if(it.name=~/.*$CONTROL.*\..*\..*\bam$/){
 			CONTROL_BAM=it.getPath()
 			println "found control $CONTROL_BAM"
 		}

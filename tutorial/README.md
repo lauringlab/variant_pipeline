@@ -266,7 +266,7 @@ So you just got some Illumina data back! Bully for you! Now to analyze it. Using
 
 ![Dir structure](https://github.com/jtmccr1/variant_pipeline/blob/master/doc/flux_organization.png)
 
-Once your data is in NAS be a good neighbor and make the data accessible to everyone in the lab. The first command makes alauring-lab the group for the files.  We have to do this because the default for some people in the lab is internalmed and for others is micro.  This makes the group something everyone belongs to.  The next command gives those in the group read, write,  and execute permission.
+Once your data is in NAS, be a good neighbor and make the data accessible to everyone in the lab. The first command makes alauring-lab the group for the files.  We have to do this because the default for some people in the lab is internalmed and for others is micro.  This makes the group something everyone belongs to.  The next command gives those in the group read, write,  and execute permission.
 
 ```
 chgrp -R alauring-lab path/to/your_data
@@ -283,8 +283,7 @@ Look there is folder just for you! cd into it and we can begin.
 
 ### 4.1 Setup 
 
-Let's setup an experimental directory
-From your scratch directory run. Where exp_label is an experimental label you choose
+Let's setup an experimental directory. This will hold all of the files and data that you use for a given experiment or flux run. From your scratch directory run, where "exp_label" is the name you choose for this experiment. Make it something that provides information about the experiment and/or a date.
 ```
 mkdir exp_label
 cd exp_label
@@ -293,6 +292,7 @@ mkdir data/fastq
 mkdir data/reference
 mkdir scripts
 ```
+You can now navigate through the exp_label directory and sub-directories to see that there is a directory called "data" that contains sub-directories for fastq files and reference files. There is also a sub-directory called "scripts" that you will rarely access.
 
 *Note you may have to make a reference file for bowtie to align to.  I like to keep mine in data/reference.  You can use the command in the readme file to make your reference so long as you already have a fasta file. __IT MUST END IN .fa FOR THE VARIANT CALLER TO RECOGNIZE IT*
 
@@ -302,7 +302,7 @@ Now we'll rename and copy our fastq's from the NAS to our data directory.  We ju
 ```
 python ~/variant_pipeline/scripts/change_names_miseq.py -s path/to/data/on/NAS -f data/fastq/ 
 ```
-The only differences between this and what we did above are the paths to the scripts and the data. Because the pipeline is in your home directory you can easily access it with the shortcut "~/"
+The only differences between this and what we did above are the paths to the scripts and the data. The path to your data on NAS should be something like "/nfs/med-alauring/raw_data/2015/filename". Because the pipeline is in your home directory you can easily access it with the shortcut "~/"
 
 If this looks good let's run
 
@@ -310,12 +310,7 @@ If this looks good let's run
 python ~/variant_pipeline/scripts/change_names_miseq.py -s path/to/data/on/NAS -f data/fastq/ -run
 ```
 
-*Note if you data on NAS ends in .gz then it is gzipped.  We can copy it and then unzip it by adding the -gz tag to the change_names script. See -h for more details*
-
-```
-python ~/variant_pipeline/scripts/change_names_miseq.py -s path/to/data/on/NAS -f data/fastq/ -run -gz
-gunzip data/fastq/*.gz
-```
+*Note if you data on NAS ends in .gz then it is gzipped.  This script is able to copy and unzip zipped files automatically.*
 
 
 Now we can copy the pbs script from the tutorial and modify it to suit our purposes.  

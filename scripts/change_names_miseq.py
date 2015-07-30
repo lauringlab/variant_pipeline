@@ -43,7 +43,7 @@ for filename in glob.glob(s + "*.fastq"):
     read_number=lane_junk.split("_R")
     fastq_number=read_number[1][4]
     read_number=read_number[1][0]
-    ending=os.path.splitext(filename)[1]
+    #ending=os.path.splitext(filename)[1]
 
     perfect_name= good_name.replace("-","_")+"."+read_number+"."+fastq_number+".fastq"
 
@@ -63,7 +63,7 @@ for zipfilename in glob.glob(s + "*.fastq.gz"):
     read_number=lane_junk.split("_R")
     fastq_number=read_number[1][4]
     read_number=read_number[1][0]
-    ending=os.path.splitext(filename)[1]
+    #ending=os.path.splitext(zipfilename)[1]
 
     perfect_name= good_name.replace("-","_")+"."+read_number+"."+fastq_number+".fastq.gz"
 

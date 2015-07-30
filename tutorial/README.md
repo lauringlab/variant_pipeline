@@ -302,7 +302,7 @@ Now we'll rename and copy our fastq's from the NAS to our data directory.  We ju
 ```
 python ~/variant_pipeline/scripts/change_names_miseq.py -s path/to/data/on/NAS -f data/fastq/ 
 ```
-The only differences between this and what we did above are the paths to the scripts and the data. Because the pipeline is in your home directory you can easily access it with the shortcut "~/"
+The only differences between this and what we did above are the paths to the scripts and the data. The path to your data on NAS should be something like /nfs/med-alauring/raw_data/2015/filename. Because the pipeline is in your home directory you can easily access it with the shortcut "~/"
 
 If this looks good let's run
 

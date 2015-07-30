@@ -23,7 +23,7 @@ else:
 
 
 #Put header on true false and exp csv files
-with open(sys.argv[4],"a") as read_csv:
+with open(sys.argv[4],"w") as read_csv:
     read_csv.write("Sample,Mutation,Variable,Value,Count\n")
 
 
@@ -31,7 +31,7 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
     with open(sys.argv[1],'r') as in_var:
         with open(sys.argv[3],"w") as outfile_csv:
 
-            header=in_var.readline().strip()+",Value" +",Count"+'\n' # add the mapq column to the header of the input csv
+            header=in_var.readline().strip()+",\"MapQ\"" +",\"Read_pos\""+",\"Phred\""+'\n' # add the mapq column to the header of the input csv
             outfile_csv.write(header) # write the header to the output file
 
 

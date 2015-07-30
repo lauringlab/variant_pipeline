@@ -30,7 +30,7 @@ fastqc = {
         	exec "fastqc -o ${output_dir} --noextract -f fastq $input3"
         	exec "fastqc -o ${output_dir} --noextract -f fastq $input4"
         	exec "fastqc -o ${output_dir} --noextract -f fastq $input5"
-        	exec "fastqc -o ${output_dir} --noextract -f fastq $input6"        	
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input6"
     		}
 	}
    if(input.input.size == 8){
@@ -42,7 +42,7 @@ fastqc = {
         	exec "fastqc -o ${output_dir} --noextract -f fastq $input5"
         	exec "fastqc -o ${output_dir} --noextract -f fastq $input6"
         	exec "fastqc -o ${output_dir} --noextract -f fastq $input7"
-        	exec "fastqc -o ${output_dir} --noextract -f fastq $input8"        	
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input8"
     		}
 	}
 }
@@ -181,7 +181,7 @@ coverage = {
 	doc " this trims large .pileup file to a smaller file that is more easily transfered and presents coverage intuitively"
 	output.dir = "05_coverage"
 	produce("*.csv"){
-			exec "${SCRIPTS}/Trim_to_coverage.py $input.pileup $output.cov.csv"
+			exec "${SCRIPTS}/Trim_to_coverage.py $input.pileup $output.csv"
 	}
 }
 
@@ -240,5 +240,5 @@ combine = {
 
 	exec "python ${SCRIPTS}/combine.py ./mapq reads.csv all.reads.csv "
 	exec "python ${SCRIPTS}/combine.py ./mapq sum.csv all.sum.csv"
-	exec "python ${SCRIPTS}/combine_add_name.py ./05_coverage/ .csv all.cov.csv"
+	exec "python ${SCRIPTS}/combine_add_name.py ./05_coverage/ coverage.csv all.coverage.csv"
 }

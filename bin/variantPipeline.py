@@ -21,9 +21,9 @@ input_dir=os.path.abspath(args.input_dir)
 output_dir=os.path.abspath(args.output_dir)
 ref=os.path.abspath(args.ref)
 control=args.control
-bin_dir=os.getcwd()
-script_dir=os.path.abspath('../scripts/')
-lib_dir=os.path.abspath('../lib/')
+bin_dir=os.path.dirname(os.path.realpath(__file__))
+script_dir=os.path.abspath(bin_dir+'/..'+'/scripts/')
+lib_dir=os.path.abspath(bin_dir+'/..'+'/lib/')
 bpipe_command=lib_dir+'/bpipe-0.9.8.7/bin/bpipe'
 test=args.test
 
@@ -51,9 +51,9 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
 #throttled to 8 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 if test==False:
-    command= bpipe_command + " run -n 8 -r " + script_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
+    command= bpipe_command + " run -n 8 -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
 else:
-    command=bpipe_command + " test -n 8 " + script_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
+    command=bpipe_command + " test -n 8 " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
 print "submitting command: \n"+command
 
 #p = s.Popen("time", stdin=s.PIPE, stdout=s.PIPE, stderr=s.STDOUT)

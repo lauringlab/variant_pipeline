@@ -20,10 +20,6 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 * tutorial
 		* The directories and instructions needed to run the tutorial. Instructions can be found in tutorial.html.
 
-## Workflow summary
-![variantPipeline workflow image](doc/workflow.png)
-
-
 ## bin/variantPipeline.py
  This script is a thin python wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory and stored in the output directory as a log of what was run.
 
@@ -42,6 +38,8 @@ Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plas
 	* -p plasmid control : the sample name of the plasmid control fastq.
 
 	See the tutorial for more information.
+	
+	*NOTE: Your fasta is used in the variant calling step and needs to end in .fa*
 
 
 * Outputs:

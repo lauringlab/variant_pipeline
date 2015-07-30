@@ -24,7 +24,7 @@ else:
 
 #Put header on true false and exp csv files
 with open(sys.argv[4],"a") as read_csv:
-    read_csv.write("Sample,Mutation,Category,Mapq,Pos,Phred\n")
+    read_csv.write("Sample,Mutation,Variable,Value,Count\n")
 
 
 with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:

@@ -260,20 +260,20 @@ An example of how to subset the data and plot coverage can be found in the resul
 <a name="working-with-real-data"/>
 ## 4) Working with real data
 
-So you just got some illumina data back! Bully for you! Now to analyze it. Using either cyberduck, or better still, [globus](http://arc.umich.edu/flux-and-other-hpc-resources/flux/using-flux/transferring-files-with-globus-gridftp/) transfer your run data to the appropriate directory on NAS (which is backedup). The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. (See the flux directory sctructure below). It is a good idea to rename your directory prior to transfer so that it does not have spaces. Stay tuned for a uniform nomenclature for our lab.
+So you just got some Illumina data back! Bully for you! Now to analyze it. Using either cyberduck, or better still, [globus](http://arc.umich.edu/flux-and-other-hpc-resources/flux/using-flux/transferring-files-with-globus-gridftp/) transfer your run data to the appropriate directory on NAS (which is backed up regularly by the University and also backed up to a lab external hard drive). DO NOT delete your data from the portable hard drive unless you check with Adam first. NEVER edit these primary sequence files. The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. (See the flux directory sctructure below). It is a good idea to rename your directory prior to transfer so that it does not have spaces. Stay tuned for a uniform nomenclature for our lab.
 
 ### Flux directory structure
 
 ![Dir structure](https://github.com/jtmccr1/variant_pipeline/blob/master/doc/flux_organization.png)
 
-Once your data is in NAS be a good neighbor and make the data accessible to everyone in the lab.  The first command makes alauring-lab the group for the files.  We have to do this because the default for some people in the lab is internalmed and for others is micro.  This makes the group something everyone belongs to.  The next command gives those in the group read,write, and exicute permission.
+Once your data is in NAS be a good neighbor and make the data accessible to everyone in the lab. The first command makes alauring-lab the group for the files.  We have to do this because the default for some people in the lab is internalmed and for others is micro.  This makes the group something everyone belongs to.  The next command gives those in the group read, write,  and execute permission.
 
 ```
 chgrp -R alauring-lab path/to/your_data
 chmod -R g=rwx
 ```
 
-Now that the data in up on NAS. Let's get  directory set up on /scratch/ to hold our in progress work.
+Now that the data in up on NAS. Let's get a directory set up on /scratch/ where we will do our actual work.
 
 ```
 cd /scratch/alauring_fluxm/

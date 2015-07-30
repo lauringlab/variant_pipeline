@@ -310,12 +310,7 @@ If this looks good let's run
 python ~/variant_pipeline/scripts/change_names_miseq.py -s path/to/data/on/NAS -f data/fastq/ -run
 ```
 
-*Note if you data on NAS ends in .gz then it is gzipped.  We can copy it and then unzip it by adding the -gz tag to the change_names script. See -h for more details*
-
-```
-python ~/variant_pipeline/scripts/change_names_miseq.py -s path/to/data/on/NAS -f data/fastq/ -run -gz
-gunzip data/fastq/*.gz
-```
+*Note if you data on NAS ends in .gz then it is gzipped.  This script is able to copy and unzip zipped files automatically.*
 
 
 Now we can copy the pbs script from the tutorial and modify it to suit our purposes.  

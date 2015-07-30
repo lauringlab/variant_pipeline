@@ -16,10 +16,10 @@ For consistency all of the commands can be run from the variant_pipeline/tutoria
 <a name="before-you-begin"/>
 ## Before you begin
 You will need:
-- Access to the lab's allocation on flux. Adam will need to email administrator
-- An MToken for two factor authentication. See [MSIS](http://www.mais.umich.edu/mtoken/mtoken_distribution.html)
-- Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools
-- Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools
+- Access to the lab's allocation on flux. Adam will need to email the administrator at hpc.
+- An MToken for two factor authentication. See [MSIS](http://www.mais.umich.edu/mtoken/mtoken_distribution.html).
+- Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools.
+- Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools.
 
 
 

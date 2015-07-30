@@ -134,12 +134,15 @@ The first step is to name the fastq file properly. They arrive from the sequenci
 
 Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script, we will test it to make sure we are naming things as we expect. Note that the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy  anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
  		 
- ```		 ```
- python ../scripts/change_names_miseq.py -h		 python ../scripts/change_names_miseq.py -h
- ```		 ```
- Let's run the test		 Let's run the test
+ ```		
+ python ../scripts/change_names_miseq.py -h		 
+ ```
+
  		 
 -*Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made*		+*Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made. __Also, fastq files are gzipped when we get them from the sequencing core (they end in .gz). This script will detect files that end in ".fastq" and ".fastq.gz".  It will copy the unzipped and gzipped files from the -s directory (data/fastq_original/)  to  -f (data/fastq/) and then it will unzip all zipped files in -f so that we can use them in analysis.  This may take some time for large files__*
+
+Let's run the test.
+
 ```
 python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/
 ```
@@ -294,7 +297,7 @@ mkdir scripts
 ```
 You can now navigate through the exp_label directory and sub-directories to see that there is a directory called "data" that contains sub-directories for fastq files and reference files. There is also a sub-directory called "scripts" that you will rarely access.
 
-*Note you may have to make a reference file for bowtie to align to.  I like to keep mine in data/reference.  You can use the command in the readme file to make your reference so long as you already have a fasta file. __IT MUST END IN .fa FOR THE VARIANT CALLER TO RECOGNIZE IT*
+*Note you may have to make a reference file for bowtie to align to.  I like to keep mine in data/reference.  You can use the command in the readme file to make your reference so long as you already have a fasta file. __IT MUST END IN .fa FOR THE VARIANT CALLER TO RECOGNIZE IT__*
 
 ### 4.2 Running
 Now we'll rename and copy our fastq's from the NAS to our data directory.  We just have to tell the computer where to find our scripts.  These commands should look familar, and can be run from your experiment folder on scratch.

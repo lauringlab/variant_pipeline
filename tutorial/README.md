@@ -130,9 +130,9 @@ Ok, now that everything is set up, let's get down to business.
 <a name="fastq-setup"/>
 ## 1) Fastq setup
 
-The first step is to name the fastq file properly. Bpipe requires the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2 and indicates forward or reverse reads.
+The first step is to name the fastq file properly. They arrive from the sequencing core with names that Bpipe can't make sense of. Bpipe requires the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2, indicating forward or reverse reads.
 
-Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script we will test it to make sure we are naming things as we expect.  Note the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy or move anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
+Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script, we will test it to make sure we are naming things as we expect. Note that the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy or move anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
 
 ```
 python ../scripts/change_names_miseq.py -h
@@ -155,7 +155,7 @@ Sometimes the fastq files will be gzipped we can g-unzip them with this command.
 ```bash
  gunzip fastq_original/*.gz
  ```
-This will unzip all the gzipped files in the current directory. It might take awhile if there are a lot (minutes).
+This will unzip all the gzipped files in the current directory. It might take a while if there are a lot (minutes).
 
 *Note:You can copy and rename zipped files by adding a -gz tag to the renaming command. (see the help option for more details.)*
 
@@ -185,8 +185,8 @@ python ../bin/variantPipeline.py -i data/fastq/ -o worked_data/ -r data/referenc
 ```
 
 
-__If you are running on the flux__ Then instead of running the above command from the command line we would usually run this command in a pbs script. This is because running memory intensive commands on the login node slows everyone down.  A pbs script tells flux to set aside a separate node just for our work. An example of this can be found in bin/variant_pipeline.pbs.  For larger sample sets you'll need to adjusted the memory and walltime limits___can you provide suggested times and memory for a hiseq run or a miseq run?___.  We can use a total of 2 processors and 48 gb of mem.  A detailed description of pbs scripts can be found [here](http://arc-ts.umich.edu/software/torque/).
-The script can be edited using nano.
+__If you are running on the flux__ Then instead of running the above command from the command line we would usually run this command in a pbs script. This is because running memory intensive commands on the login node slows everyone down.  A pbs script tells flux to set aside a separate node just for our work. An example of a pbs script can be found in bin/variant_pipeline.pbs.  For larger sample sets you'll need to adjust the memory and walltime limits___can you provide suggested times and memory for a hiseq run or a miseq run?___.  We can use a total of 2 processors and 48 gb of mem.  A detailed description of pbs scripts can be found [here](http://arc-ts.umich.edu/software/torque/).
+The script can be edited using the easy text editor, nano.
 
 Let's run the same pipeline using a pbs script.
 
@@ -197,7 +197,7 @@ Let's make some modifications using nano.
 nano ../bin/variant_pipeline.pbs
 ```
 
-*Note you can't use the mouse to navigate and you can save by pressing cntrl+x*
+*Note you can't use the mouse to navigate in nano, but you can use the arrow keys. You can save by pressing cntrl+x*
 
 The line
 

@@ -190,13 +190,12 @@ coverage = {
 //Get the name of the control file. to use in deepSNV
 get_control={
 new File('.').eachFileRecurse{
-	if(it.name=~/.*$CONTROL.*\..*\..*\bam$/){
+	if(it.name=~/.*$CONTROL.*\..*\.bam$/){
 			CONTROL_BAM=it.getPath()
 			println "found control $CONTROL_BAM"
 		}
 	}
 }
-
 deepsnv = {
 	doc "Runs a basic deepSNV script to call variants in each sample saving the outputs as .Rdata files and csv of the summary output"
 	output.dir = "variants"

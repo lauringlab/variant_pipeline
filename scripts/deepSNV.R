@@ -24,9 +24,9 @@ sample_name=strsplit(test_file_prefix,".",fixed=T)[[1]][1]
 control_name=strsplit(control_file_prefix,".",fixed=T)[[1]][1]
 output_file_control=paste0("deepSNV/",control_file_prefix)
 
-print(paste0("test is :",test_file_prefix ))
+print(paste0("test is :",sample_name ))
 
-print(paste0("control is:",control_file_prefix))
+print(paste0("control is:",control_name))
 if(test_file_prefix==control_file_prefix){
 	print("we don't need to run the control!")
 	stop()
@@ -100,7 +100,7 @@ cov.con<-rowSums(control(deepsnv.result,total=T)[,1:4]) # no deletions
 cov.con.df=data.frame(coverage=cov.con,concat.pos=1:length(cov.con))
 
 ddply(cov.con.df,~concat.pos,summarize, coverage=coverage,concat.pos=concat.pos,chr= as.character(regions.bed$chr[max(which(prior.seg.length<concat.pos))]),
-      chr.pos=concat.pos-prior.seg.length[max(which(prior.seg.length<concat.pos))])->cov.df
+      chr.pos=concat.pos-prior.seg.length[max(which(prior.seg.length<concat.pos))])->cov.con.df
 
 
 

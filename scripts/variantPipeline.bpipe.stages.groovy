@@ -189,8 +189,8 @@ coverage = {
 
 //Get the name of the control file. to use in deepSNV
 get_control={
-new File('.').eachFileRecurse{
-	if(it.name=~/.*$CONTROL.*\..*\.bam$/){
+new File('04_removed_duplicates').eachFileRecurse{
+         if(it.name=~/.*$CONTROL.*bam$/){
 			CONTROL_BAM=it.getPath()
 			println "found control $CONTROL_BAM"
 		}

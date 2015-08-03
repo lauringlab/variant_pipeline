@@ -42,13 +42,13 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
                 line=line.strip()
                 data=line # save the line as it is to append the data to later
                 line=line.replace('"','').split(",")
-                chr=line[1]
-                pos=int(line[2])
+                chr=line[0]
+                pos=int(line[1])
                 py_pos=pos-1
-                ref=line[3]
-                var=line[4]
-                sample= line[17]
-                mutation= line[18] # mutation name
+                ref=line[2]
+                var=line[3]
+                sample= line[16]
+                mutation= line[17] # mutation name
                # print(mutation)
                 for pileupcolumn in bamfile.pileup(chr,py_pos,py_pos+1,truncate=True,stepper="all",max_depth=1E6):
                     if pileupcolumn.pos==py_pos:
@@ -56,7 +56,7 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
                             if  not pileupread.is_del and not pileupread.is_refskip:
                                 called_base=pileupread.alignment.query_sequence[pileupread.query_position]
                                 called_phred=pileupread.alignment.query_qualities[pileupread.query_position]
-                                if called_phred>25 and called_base==var:
+                                if called_phred>25 and called_base==var: # change this if you change the phred cut off in deepSNV
                                     mapq.append(pileupread.alignment.mapping_quality)
                                     phred.append(called_phred)
                                     Read_pos.append(pileupread.query_position)

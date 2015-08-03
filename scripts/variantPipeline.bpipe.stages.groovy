@@ -198,7 +198,7 @@ new File('.').eachFileRecurse{
 }
 deepsnv = {
 	doc "Runs a basic deepSNV script to call variants in each sample saving the outputs as .Rdata files and csv of the summary output"
-	output.dir = "variants"
+	output.dir = "deepSNV"
 	def in_bam=file(input).name
 	def control = file(CONTROL_BAM).name.replace(".bam","")
 	def test = file(input.bam).name.replace(".bam","")
@@ -206,7 +206,7 @@ deepsnv = {
 	println "control:" + control
 	if( test!=control) {
 				produce("variants/*.csv","variants/*.fa"){
-					exec "Rscript  ${SCRIPTS}/deepSNV.R ${LIBRARY_LOCATION}/R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni"
+					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni"
 				}
 	} else {
 		produce("variants/*.csv"){
@@ -217,7 +217,7 @@ deepsnv = {
 
 mapq_conditional = {
         doc "runs a python script that for each variant called calculates the average mapped quality of the variant and adds the whole summary line + this value to the summary.csv file "
-        output.dir="mapq"
+        output.dir="Variants"
         //I've been having some trouble getting the right inputs and outputs to line up. The best way to do this might be to make a map that explicitly describes how the sample pair up. bUt that might take a little too long to figure out how to do now.
         def csv = file(input.csv).name.replace(".csv","")
         def bam = file(input.bam).name.replace(".bam","")
@@ -238,7 +238,7 @@ mapq_conditional = {
 combine = {
 	doc "combines the coverage, reads and variant calls into one file that can easily be imported into R for analysis"
 
-	exec "python ${SCRIPTS}/combine.py ./mapq reads.csv all.reads.csv "
-	exec "python ${SCRIPTS}/combine.py ./mapq sum.csv all.sum.csv"
-	exec "python ${SCRIPTS}/combine_add_name.py ./05_coverage/ coverage.csv all.coverage.csv"
+	exec "python ${SCRIPTS}/combine.py ./Variants reads.csv all.reads.csv "
+	exec "python ${SCRIPTS}/combine.py ./Variants sum.csv all.sum.csv"
+	exec "python ${SCRIPTS}/combine.py ./deepSNV cov.csv all.coverage.csv"
 }

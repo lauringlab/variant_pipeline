@@ -1,20 +1,20 @@
 # Rscript --vanilla --slave ../../lauring-variant-pipeline/bin/deepSNV.r ../../lauring-variant-pipeline/lib/ ../04-mark_duplicates/001-0_2a.marked.bam ../04-mark_duplicates/011-PR8control_a.marked.bam ../flu_regions.csv
 #
-library(tools)
+suppressMessages(library(tools))
 #set seed to make distribiutions determinsitic
 set.seed(42)
 
 args <- commandArgs(TRUE)
-if (length(args) != 5) {
-    stop(paste("Usage:", "deepSNV.R" ,"{library_location} {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)}",sep=""), call.=FALSE)
+if (length(args) != 4) {
+    stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)}",sep=""), call.=FALSE)
 } 
 
 #print(args)
-library.location <- args[1]
-reference.fasta <- args[2]
-test.bam <- args[3]
-control.bam <- args[4]
-method<-args[5]
+#library.location <- args[1]
+reference.fasta <- args[1]
+test.bam <- args[2]
+control.bam <- args[3]
+method<-args[4]
 
 
 test_file_prefix = basename(file_path_sans_ext(test.bam))
@@ -35,9 +35,9 @@ if(test_file_prefix==control_file_prefix){
 #suppressPackageStartupMessages(library("deepSNV", lib.loc=library.location))
 #suppressPackageStartupMessages(library("plyr", lib.loc=library.location))
 #suppressPackageStartupMessages(library("reshape2", lib.loc=library.location))
-library("plyr")
-library("deepSNV")
-library("reshape2")
+suppressMessages(library("plyr"))
+suppressMessages(library("deepSNV"))
+suppressMessages(library("reshape2"))
 
 cat(paste("loading regions from [", reference.fasta, "]...\n", sep=""))
 segments <- fasta.info(reference.fasta)
@@ -58,19 +58,47 @@ deepsnv_sum<-summary(deepsnv.result, adjust.method=method)
 deepsnv_sum$Id<-sample_name # set the sample name for csv
 
 
+
+
 deepsnv_sum<-subset(deepsnv_sum,var!="-" & ref !="-") # removes the indels
 mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
 
 
+## Coverage ##
 
+cov<-rowSums(test(deepsnv.result,total=T)[,1:4]) # no deletions
+
+# make coverage data.frame
+
+cov.df=data.frame(coverage=cov,concat.pos=1:length(cov))
+
+#setup for segment name and position
+prior.seg.length<-c()
+for(k in 1:length(regions.bed$chr)){ 
+  prior.seg.length[k]<-sum(regions.bed$stop[1:k])  # the end positions of each segment relative to one sequence not including the trimming step
+}
+prior.seg.length<-c(0,prior.seg.length)
+
+ddply(cov.df,~concat.pos,summarize, coverage=coverage,concat.pos=concat.pos,chr= as.character(regions.bed$chr[max(which(prior.seg.length<concat.pos))]),
+      chr.pos=concat.pos-prior.seg.length[max(which(prior.seg.length<concat.pos))])->cov.df
+
+
+
+cov.df$Id<-sample_name # set the sample name for csv
 
 #print(head(deepsnv_sum))
-cat(paste("saving to [",output_file_name,".csv].\n", sep=""))
-write.csv(deepsnv_sum, paste(output_file_name,".csv", sep=""))
+cat(paste("saving summary to [",output_file_name,".csv].\n", sep=""))
+write.csv(deepsnv_sum, paste(output_file_name,".csv", sep=""), row.names=FALSE)
+
+#print(head(deepsnv_sum))
+cat(paste("saving coverage to [",output_file_name,".cov.csv].\n", sep=""))
+write.csv(cov.df, paste(output_file_name,".cov.csv", sep=""), row.names=FALSE)
 
 cat(paste("saving to [",output_file_name,".fa].\n",sep=""))
 #save(list=consensus_fa,file=paste(output_file_name,".fa",sep=""))
 write(as.character(consensus_fa),file=paste(output_file_name,".fa",sep=""))
+
+
 #cat(paste("saving to [",output_file_name,".RData]\n",sep=""))
 #eval(parse(text=paste0("snv_",test_file_prefix,"<-deepsnv.result")))
 #save(list=ls(pattern=test_file_prefix),file=paste(output_file_name,".RData",sep=""))

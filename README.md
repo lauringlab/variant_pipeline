@@ -43,14 +43,14 @@ Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plas
 
 
 * Outputs:
-	* __01_fastqc__ : zips containing a brief summary report on quality of input fastqs (in development)
+	* __01_fastqc__ : zips containing a brief summary report on quality of input fastqs 
 	* __03_align__ : bam files from bowtie2 alignment
 	* __04_remove_duplicates__ : bam files with duplicates marked by picard
-	* __05_Coverage__ : pileup and .cov (text) files containing the coverage at each basepair
-	* __variants__ : csv files of the deepSNV variant calls (bonferroni p<0.1) and .fa consensus sequences
+	* __Variants__ : sum.csv files made by adding mapping quality, read position, and phred information to the putative variants found in the variant output, and reads.csv containing similar information for each read responsible for a variant
+	* __deepSNV__ : csv files of the deepSNV variant calls (bonferroni p<0.1), coverage data for each sample (*.cov.csv) .fa consensus sequences
 		* an empty csv is made for the plasmid control in order to appease bpipe.
-	* __mapq__ : sum.csv files made by adding mapping quality, read position, and phred information to the putative variants found in the variant output, and reads.csv containing similar information for each read responsible for a variant
-	* mapq and 05_Coverage contain files begining in "all" these files contain the output for each sample concatenated into one file for your viewing and analyzing pleasure.
+		* the variant csvs in this directory does not include data concerning read position, mapQ, or Phred information.  That can be foun in the Variants dir.
+	* Variants and deepSNV contain files begining in "all" these files contain the output for each sample concatenated into one file for your viewing and analyzing pleasure.
 	* __doc__ : Bpipe makes a cool/qausi-useful html report in doc/index.html
 	* __.bpipe__: a hidden directory that contains information bpipe uses to restart failed runs.  *Note: It is sometimes useful to delete this and start fresh*
 

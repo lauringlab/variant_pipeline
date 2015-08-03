@@ -116,7 +116,7 @@ cat(paste("saving coverage to [",output_file_name,".cov.csv].\n", sep=""))
 write.csv(cov.df, paste(output_file_name,".cov.csv", sep=""), row.names=FALSE)
 
 cat(paste("saving control coverage to [",output_file_control,".cov.csv].\n", sep=""))
-write.csv(cov.df, paste(output_file_control,".cov.csv", sep=""), row.names=FALSE)
+write.csv(cov.con.df, paste(output_file_control,".cov.csv", sep=""), row.names=FALSE)
 
 cat(paste("saving to [",output_file_name,".fa].\n",sep=""))
 #save(list=consensus_fa,file=paste(output_file_name,".fa",sep=""))

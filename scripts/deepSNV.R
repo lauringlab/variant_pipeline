@@ -21,6 +21,8 @@ test_file_prefix = basename(file_path_sans_ext(test.bam))
 control_file_prefix = basename(file_path_sans_ext(control.bam))
 output_file_name = paste0("deepSNV/",test_file_prefix)
 sample_name=strsplit(test_file_prefix,".",fixed=T)[[1]][1]
+control_name=strsplit(control_file_prefix,".",fixed=T)[[1]][1]
+output_file_control=paste0("deepSNV/",control_file_prefix)
 
 print(paste0("test is :",test_file_prefix ))
 
@@ -89,6 +91,22 @@ ddply(cov.df,~concat.pos,summarize, coverage=coverage,concat.pos=concat.pos,chr=
 
 cov.df$Id<-sample_name # set the sample name for csv
 
+### Control coverage
+
+cov.con<-rowSums(control(deepsnv.result,total=T)[,1:4]) # no deletions
+
+# make coverage data.frame
+
+cov.con.df=data.frame(coverage=cov.con,concat.pos=1:length(cov.con))
+
+ddply(cov.con.df,~concat.pos,summarize, coverage=coverage,concat.pos=concat.pos,chr= as.character(regions.bed$chr[max(which(prior.seg.length<concat.pos))]),
+      chr.pos=concat.pos-prior.seg.length[max(which(prior.seg.length<concat.pos))])->cov.df
+
+
+
+cov.con.df$Id<-control_name # set the sample name for csv
+
+
 #print(head(deepsnv_sum))
 cat(paste("saving summary to [",output_file_name,".csv].\n", sep=""))
 write.csv(deepsnv_sum, paste(output_file_name,".csv", sep=""), row.names=FALSE)
@@ -96,6 +114,9 @@ write.csv(deepsnv_sum, paste(output_file_name,".csv", sep=""), row.names=FALSE)
 #print(head(deepsnv_sum))
 cat(paste("saving coverage to [",output_file_name,".cov.csv].\n", sep=""))
 write.csv(cov.df, paste(output_file_name,".cov.csv", sep=""), row.names=FALSE)
+
+cat(paste("saving control coverage to [",output_file_control,".cov.csv].\n", sep=""))
+write.csv(cov.df, paste(output_file_control,".cov.csv", sep=""), row.names=FALSE)
 
 cat(paste("saving to [",output_file_name,".fa].\n",sep=""))
 #save(list=consensus_fa,file=paste(output_file_name,".fa",sep=""))

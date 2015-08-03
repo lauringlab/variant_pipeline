@@ -7,7 +7,7 @@ set.seed(42)
 args <- commandArgs(TRUE)
 if (length(args) != 4) {
     stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)}",sep=""), call.=FALSE)
-} 
+}
 
 #print(args)
 #library.location <- args[1]
@@ -19,9 +19,12 @@ method<-args[4]
 
 test_file_prefix = basename(file_path_sans_ext(test.bam))
 control_file_prefix = basename(file_path_sans_ext(control.bam))
-output_file_name = paste0("variants/",test_file_prefix)
+output_file_name = paste0("deepSNV/",test_file_prefix)
 sample_name=strsplit(test_file_prefix,".",fixed=T)[[1]][1]
 
+print(paste0("test is :",test_file_prefix ))
+
+print(paste0("control is:",control_file_prefix))
 if(test_file_prefix==control_file_prefix){
 	print("we don't need to run the control!")
 	stop()
@@ -74,7 +77,7 @@ cov.df=data.frame(coverage=cov,concat.pos=1:length(cov))
 
 #setup for segment name and position
 prior.seg.length<-c()
-for(k in 1:length(regions.bed$chr)){ 
+for(k in 1:length(regions.bed$chr)){
   prior.seg.length[k]<-sum(regions.bed$stop[1:k])  # the end positions of each segment relative to one sequence not including the trimming step
 }
 prior.seg.length<-c(0,prior.seg.length)

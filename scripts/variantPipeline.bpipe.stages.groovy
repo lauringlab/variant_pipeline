@@ -205,11 +205,11 @@ deepsnv = {
 	println "test:" + test
 	println "control:" + control
 	if( test!=control) {
-				produce("variants/*.csv","variants/*.fa"){
+				produce("deepSNV/*.csv","variants/*.fa"){
 					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni"
 				}
 	} else {
-		produce("variants/*.csv"){
+		produce("deepSNV/*.csv"){
 			exec "touch ${output}.csv"
 		}
 	}

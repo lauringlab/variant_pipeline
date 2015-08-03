@@ -267,7 +267,7 @@ So you just got some Illumina data back! Bully for you! Now to analyze it. Using
 
 ### Flux directory structure
 
-![Dir structure](https://github.com/jtmccr1/variant_pipeline/blob/master/doc/flux_organization.png)
+![Dir structure](https://github.com/jtmccr1/variant_pipeline/blob/master/doc/Flux.jpeg)
 
 Once your data is in NAS, be a good neighbor and make the data accessible to everyone in the lab. The first command makes alauring-lab the group for the files.  We have to do this because the default for some people in the lab is internalmed and for others is micro.  This makes the group something everyone belongs to.  The next command gives those in the group read, write,  and execute permission.
 

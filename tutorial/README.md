@@ -65,7 +65,7 @@ The first characters mean this is directory (d) and the owner (mccrone) has read
  chmod -R +x variant_pipeline
  ```
 
-(Again the -R is a recursive option) You need to do this to be able to run the scripts that come with the pipeline.
+(The -R is a recursive option) You need to do this to be able to run the scripts that come with the pipeline.
 
 Although the pipeline is fully functional, we may make slight modifications in the future. To ensure you are working with the most up to date version you can use 
 
@@ -96,7 +96,7 @@ module load R/3.1.1
 R
 library("deepSNV")
 ```
-If you have R, you should see the cursor change to ">". If you don't have it you can install it using
+If you are in R, you should see the cursor change to ">". If you get a message saying you don't have deepSNV  you can install it using
 
 ```
 source("http://bioconductor.org/biocLite.R")
@@ -132,14 +132,14 @@ Ok, now that everything is set up, let's get down to business.
 
 The first step is to name the fastq file properly. They arrive from the sequencing core with names that Bpipe can't make sense of. Bpipe requires the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2, indicating forward or reverse reads.
 
-Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script, we will test it to make sure we are naming things as we expect. Note that the default is to copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy  anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
+Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script, we will test it to make sure we are naming things as we expect. Note that the script will copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
  		 
  ```		
  python ../scripts/change_names_miseq.py -h		 
  ```
 
  		 
--*Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made*		+*Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made. __Also, fastq files are gzipped when we get them from the sequencing core (they end in .gz). This script will detect files that end in ".fastq" and ".fastq.gz".  It will copy the unzipped and gzipped files from the -s directory (data/fastq_original/)  to  -f (data/fastq/) and then it will unzip all zipped files in -f so that we can use them in analysis.  This may take some time for large files__*
+*Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made. __Also, fastq files are gzipped when we get them from the sequencing core (they end in .gz). This script will detect files that end in ".fastq" and ".fastq.gz".  It will copy the unzipped and gzipped files from the -s directory (data/fastq_original/)  to  -f (data/fastq/) and then it will unzip all zipped files in -f so that we can use them in analysis.  This may take some time for large files__*
 
 Let's run the test.
 
@@ -153,14 +153,6 @@ python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -
 ```
 *Note: a log of the name changes was made in fastq/renaming_log.txt for posterity*
 
-Sometimes the fastq files will be gzipped we can g-unzip them with this command. 
-
-```bash
- gunzip fastq_original/*.gz
- ```
-This will unzip all the gzipped files in the current directory. It might take a while if there are a lot (minutes).
-
-*Note:You can copy and rename zipped files by adding a -gz tag to the renaming command. (see the help option for more details.)*
 
 
 Now that we have our samples prepped we can run the pipeline.

@@ -52,7 +52,8 @@ cat(paste("loaded regions: ", paste(regions.bed$chr, collapse=","),"\n"))
 
 cat("calling variants with deepSNV\n")
 cat(paste("\ttest [",test.bam,"]\n\tcontrol [",control.bam,"]...\n", sep=""))
-deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,q=25,pseudo.count=0.5,model='betabin')
+deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,q=25)
+deepsnv.result<-estimateDispersion(deepsnv.result,alternative="two.sided")
 
 consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 #cat(paste("saving to [",output_file_name,".vcf].\n", sep=""))

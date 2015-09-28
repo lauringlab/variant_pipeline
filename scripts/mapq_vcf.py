@@ -69,7 +69,7 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
 			print( "OOPS didn't find the variant looks like you didn't fix the bug")
 			sys.exit(1)
 
-		record.add_info('MAPQ',mean_map)
+		record.add_info('MapQ',mean_map)
 		record.add_info('Read_pos',mean_Read_pos)
 		record.add_info('Phred',mean_phred)
 #         print record.INFO

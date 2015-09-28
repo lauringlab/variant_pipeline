@@ -7,17 +7,17 @@ from collections import Counter
 import vcf 
 
 
-input=sys.argv[1].split(".vcf")[0]
+input=sys.argv[1].split(".")[0]
 input=input.split("/")[-1]
-bam=sys.argv[2].split(".bam")[0]
+bam=sys.argv[2].split(".")[0]
 bam=bam.split("/")[-1]
 
 #Ensure the bam and csv file match
-if input==bam:
-    print("working with vcf: "+input + " and bam: " +bam)
-else:
-   print( "bam:"+bam +" does not match vcf: " +input)
-   sys.exit(1)
+#if input==bam:
+#        print("working with vcf: "+input + " and bam: " +bam)
+#else:
+#   print( "bam:"+bam +" does not match vcf: " +input)
+#   sys.exit(1)
 
 
 
@@ -32,7 +32,7 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
 
 #with pysam.AlignmentFile('../data/5_5.removed.bam', "rb") as bamfile:
 	for record in variants:
-		print(record)
+		#print(record)
 		mapq=[]# This will hold a list of the mapping qualtties that map to the variant
 		phred=[] #This will hold a list of the phred that map to the variant
 		Read_pos=[]  # This will hold a list of position relative to the read

@@ -15,12 +15,15 @@ parser.add_argument('-r',action='store',dest='ref',help='The name of the referen
 parser.add_argument('-p',action='store',dest='control',help='The sample name of the plasmid control used for varinat calling')
 parser.add_argument('-t',action='store_true',dest='test',default=False,help='Boolean switch to run program in test mode. Everything will be set up but bpipe will run in test mode')
 
+parser.add_argument('-d',action='store',dest='disp',help='Dispersion estimation to be used in deepSNV. options are c("two.sided","one.sided","bin"')
+
 args=parser.parse_args()
 
 input_dir=os.path.abspath(args.input_dir)
 output_dir=os.path.abspath(args.output_dir)
 ref=os.path.abspath(args.ref)
 control=args.control
+disp=args.disp
 bin_dir=os.path.dirname(os.path.realpath(__file__))
 script_dir=os.path.abspath(bin_dir+'/..'+'/scripts/')
 lib_dir=os.path.abspath(bin_dir+'/..'+'/lib/')
@@ -46,7 +49,7 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
     config.write('SCRIPTS='+ '\"'+script_dir+ '\"'+'\n')
     config.write('LIBRARY_LOCATION='+ '\"'+lib_dir+'\"'+ '\n')
     config.write('CONTROL='+ '\"'+control+ '\"'+'\n')
-
+    config.write('DISP='+ '\"'+disp+ '\"'+'\n')
 
 #throttled to 8 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory

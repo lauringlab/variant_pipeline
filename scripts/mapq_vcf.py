@@ -4,7 +4,7 @@ import sys
 import numpy as np
 import pysam
 from collections import Counter
-import vcf 
+import vcf
 
 
 input=sys.argv[1].split(".")[0]
@@ -66,18 +66,15 @@ print "done updating"
 iter(variants)
 vcf_writer = vcf.Writer(open(sys.argv[3], 'w'), in_var)
 csv=open(sys.argv[4],'w')
-header="CHROM,POS,REF,ALT,ID"
+header="CHROM,POS,REF,ALT,QUAL,ID"
 for entry in record.INFO.keys():
     header=header+","+entry
 csv.write(header+"\n")
 for record in variants:
-    line=record.CHROM+","+str(record.POS)+","+record.REF+","+str(record.ALT[0])+","+input
+    line=record.CHROM+","+str(record.POS)+","+record.REF+","+str(record.ALT[0])+","+str(record.QUAL)+","+input
     for entry in record.INFO:
         line=line+","+str(record.INFO[entry]).replace(",",":")
     csv.write(line+"\n")
-    vcf_writer.write_record(record)    
+    vcf_writer.write_record(record)
 csv.close()
 vcf_writer.close()
-    
-    
-    

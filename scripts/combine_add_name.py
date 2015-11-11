@@ -22,7 +22,6 @@ with open(csv_files[0],"r") as first_file:
     print("working with " + csv_files[0])
     header=first_file.readline().strip()+",Sample\n"
     fout.write(header)
-    next(first_file)
     sample=csv_files[0].split('.')[0]
     for line in first_file:
         fout.write(line.strip()+','+sample+'\n')

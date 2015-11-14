@@ -12,12 +12,24 @@ parser.add_argument('-run',action='store_true',dest='test',default=False,help='B
 
 args=parser.parse_args()
 s=args.s
-o=args.f
+f=args.f
 key=arg.key
 test=args.test
 
-if not os.path.exists(o):
-    os.makedirs(o)
+if not os.path.exists(f):
+    os.makedirs(f)
+
+# add slash to final location if it was forgotten
+if f[-1] != '/':
+    f=f+'/'
+#print f
+
+if s[-1] != '/':
+    s=s+'/'
+#print s
+
+
+
 # input argument is the sample sheet
 junk_names = [] # The names given by the sequencing core sampleid_index
 new_names = []
@@ -32,9 +44,12 @@ for line in f:
     new_names.append(new)
 f.close()
 
-outfile = open(o+'renaming_log.txt','w')
+if test==False:
+    print "running in test mode add option -run to run"
+    
+outfile = open(f+'renaming_log.txt','w')
 
-for filename in os.listdir(s):
+for filename in glob.glob(s + "*.fastq"):
     name=filename.split("_L")
     bad_name = name[0]
     lane_junk = name[1]
@@ -49,6 +64,39 @@ for filename in os.listdir(s):
         print("COPYING "+ s+filename + " to "+o+perfect_name)
         outfile.write(s+filename + "\t COPIED to \t" + o+perfect_name + "\n")
         if test==True:
-            shutil.copy(s+filename,o+perfect_name)
+            shutil.copy(s+filename,f+perfect_name)
+            
+for zipfilename in glob.glob(s + "*.fastq.gz"):
+    zipfilename= os.path.basename(zipfilename)
+    name=filename.split("_L")
+    bad_name = name[0]
+    lane_junk = name[1]
+    read_number=lane_junk.split("_R")
+    fastq_number=read_number[1][4]
+    read_number=read_number[1][0]
+    if bad_name in junk_names:
+        name_index = junk_names.index(bad_name)
+        better_name= new_names[name_index]
+        perfect_name= better_name+"."+read_number+"."+fastq_number+".fastq"
+        # Write file to new name
+        print("COPYING "+ s+filename + " to "+o+perfect_name)
+        outfile.write(s+filename + "\t COPIED to \t" + o+perfect_name + "\n")
+        if test==True:
+            shutil.copy(s+filename,f+perfect_name)
+            
+for zipfile in glob.glob(f + "*.gz"):
+    print "unzipping:" + zipfile
+
+    inF = gzip.GzipFile(zipfile, 'rb')
+    s = inF.read()
+    inF.close()
+    #print(os.path.splitext(zipfile)[0])
+    outF = file(os.path.splitext(zipfile)[0], 'wb')
+    outF.write(s)
+    outF.close()
+    os.remove(zipfile)
+
 
 outfile.close()
+
+

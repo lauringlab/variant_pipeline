@@ -43,7 +43,7 @@ ssh your_username@flux-login.engin.umich.edu
  On flux type
  
  ```
- git clone https://username:password@github.com/jtmccr1/variant_pipeline.git
+ git clone https://username:password@github.com/lauringlab/variant_pipeline.git
  ```
 where username:password are your github username and password.
  

@@ -24,7 +24,7 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
  This script is a thin python wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory and stored in the output directory as a log of what was run.
 
 
-Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name} -d {one.sided,two.sided,BH}
+Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name} -d {one.sided,two.sided,bin}
 
 * Inputs:  
 	* -i dir containing left fastq, right fastq named as sample.read_direction[1,2].#.fastq

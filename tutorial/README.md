@@ -319,7 +319,7 @@ cp ~/variant_pipeline/bin/variant_pipeline.pbs ./experiment_name.pbs
 You can use the command "nano experiment_name.pbs" to open the text editor and edit the pbs script. Make sure you edit the path to the variantPipeline.py script by directing it to your home directory (~/). The last line should read
 
 ```
- python ~/variant_pipeline/bin/variantPipeline.py -i data/fastq/ -o worked_data/ -r path/to/reference/name -p your_plasmid_control -d onesided or twosided test
+ python ~/variant_pipeline/bin/variantPipeline.py -i data/fastq/ -o worked_data/ -r path/to/reference/name -p your_plasmid_control -d one.sided or two.sided test
 ```
 
 Then just submit using qsub as before and sit back while the computer does the rest. :smiley:

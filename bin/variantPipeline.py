@@ -13,6 +13,8 @@ parser.add_argument('-i',action='store',dest='input_dir',help='Directory contain
 parser.add_argument('-o',action='store',dest='output_dir',help='The final directory that will hold the output. If it does\'t exsit it will be made')
 parser.add_argument('-r',action='store',dest='ref',help='The name of the reference files used for bowtie alignment')
 parser.add_argument('-p',action='store',dest='control',help='The sample name of the plasmid control used for varinat calling')
+parser.add_argument('-a',action='store',dest='p',help='The p value cut off to used. Any variant with a p.val>a will be removed')
+parser.add_argument('-m',action='store',dest='method',help='The method used to combine the p value from each strand "fisher","average","max".')
 parser.add_argument('-t',action='store_true',dest='test',default=False,help='Boolean switch to run program in test mode. Everything will be set up but bpipe will run in test mode')
 
 parser.add_argument('-d',action='store',dest='disp',help='Dispersion estimation to be used in deepSNV. options are c("two.sided","one.sided","bin"')
@@ -24,6 +26,8 @@ output_dir=os.path.abspath(args.output_dir)
 ref=os.path.abspath(args.ref)
 control=args.control
 disp=args.disp
+p_cut=args.p
+method=args.method
 bin_dir=os.path.dirname(os.path.realpath(__file__))
 script_dir=os.path.abspath(bin_dir+'/..'+'/scripts/')
 lib_dir=os.path.abspath(bin_dir+'/..'+'/lib/')
@@ -50,7 +54,8 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
     config.write('LIBRARY_LOCATION='+ '\"'+lib_dir+'\"'+ '\n')
     config.write('CONTROL='+ '\"'+control+ '\"'+'\n')
     config.write('DISP='+ '\"'+disp+ '\"'+'\n')
-
+    config.write('P.CUT='+ '\"'+p_cut+ '\"'+'\n')
+    config.write('P.COM.METH='+ '\"'+method+ '\"'+'\n')
 #throttled to 8 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 if test==False:

@@ -206,7 +206,7 @@ deepsnv = {
 	println "control:" + control
 	if( test!=control) {
 				produce("deepSNV/*.csv","variants/*.fa"){
-					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni $DISP"
+					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P.CUT} ${P.COM.METH} ${DISP}"
 				}
 	} else {
 		produce("deepSNV/*.csv"){

@@ -5,7 +5,7 @@ suppressMessages(library(tools))
 set.seed(42)
 
 args <- commandArgs(TRUE)
-if (length(args) != 5) {
+if (length(args) != 7) {
     stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)} {p.val.cut} {c(fisher,average,max)}  {c(two.sided,one.sided,bin)}",sep=""), call.=FALSE)
  }
 
@@ -68,7 +68,9 @@ consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 #writeVcf(flu_result.vcf, paste(output_file_name,".vcf", sep=""))
 
 #head(deepsnv.result)
-deepsnv_sum<-summary(deepsnv.result,sig.level=p.cut, adjust.method=method)
+print("making summary dataframe")
+deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=method)
+print("made dataframe")
 deepsnv_sum$Id<-sample_name # set the sample name for csv
 
 

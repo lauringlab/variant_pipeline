@@ -35,6 +35,7 @@ outfile = open(f+'renaming_log.txt','w')
 if test==False:
     print "running in test mode add option -run to run"
 # copy fastq files
+# The goal here is just to take out the junk added to the fastq file name
 for filename in glob.glob(s + "*.fastq"):
     filename= os.path.basename(filename)
     name=filename.split("_L")
@@ -54,7 +55,6 @@ for filename in glob.glob(s + "*.fastq"):
     if test==True:
         shutil.copy(s+filename,f+perfect_name)
 #    print(f + "*.gz")
-
 for zipfilename in glob.glob(s + "*.fastq.gz"):
     zipfilename= os.path.basename(zipfilename)
     name=zipfilename.split("_L")
@@ -74,17 +74,17 @@ for zipfilename in glob.glob(s + "*.fastq.gz"):
     if test==True:
         shutil.copy(s+zipfilename,f+perfect_name)
 
-for zipfile in glob.glob(f + "*.gz"):
-    print "unzipping:" + zipfile
+#for zipfile in glob.glob(f + "*.gz"):
+#    print "unzipping:" + zipfile
 
-    inF = gzip.GzipFile(zipfile, 'rb')
-    s = inF.read()
-    inF.close()
-    #print(os.path.splitext(zipfile)[0])
-    outF = file(os.path.splitext(zipfile)[0], 'wb')
-    outF.write(s)
-    outF.close()
-    os.remove(zipfile)
+#    inF = gzip.GzipFile(zipfile, 'rb')
+#    s = inF.read()
+#    inF.close()
+#    #print(os.path.splitext(zipfile)[0])
+#    outF = file(os.path.splitext(zipfile)[0], 'wb')
+#    outF.write(s)
+#    outF.close()
+#    os.remove(zipfile)
 
 
 outfile.close()

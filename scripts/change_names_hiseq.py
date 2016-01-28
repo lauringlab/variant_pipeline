@@ -20,6 +20,7 @@ test=args.test
 dir=args.dir
 old=args.old
 
+#make the output dir if it doesn't exist
 if not os.path.exists(f):
     os.makedirs(f)
 
@@ -37,10 +38,12 @@ if dir==True:
 
 # input argument is the sample sheet
 junk_names = [] # The names given by the sequencing core sampleid_index
-new_names = []
-# add the bad names from the sample sheet to a list
+new_names = [] # the names we want, which are in the same row as the data taht is used to make the bad names. 
+
+# so junk_names[i] should be the junk name for new_names[i] as they both come from the ith column.
+# add the bad names from the sample sheet to a list. This uses columns of the sheet to construct the names according to the capricous nature of the sequencing core.Although they may have finally settled down a bit.
 names =  open(key,"r")
-next(names)
+next(names) # skip the header of the csv
 for line in names:
     line = line.strip()
     line = line.split(',')
@@ -60,30 +63,31 @@ if test==False:
 outfile = open(f+'renaming_log.txt','w')
 
 
-
+# Now to search through the fastq files or fastq.gz and copy them to the new makes
 for filename in glob.glob(s + "*.fastq"):
-    path=os.path.abspath(filename)
-    if old==True:
+    path=os.path.abspath(filename) # getteh full name and path
+    if old==True: # split the fastq name before the extra data added by illumina
         name=filename.split("_L")
     if old==False:
         name=filename.split("_S")
-    bad_name = name[0]
+    bad_name = name[0] # the bad name is the first bit
     lane_junk = name[1]
-    read_number=lane_junk.split("_R")
+    read_number=lane_junk.split("_R") # info about the read 
     fastq_number=read_number[1][4]
     read_number=read_number[1][0]
-    if bad_name in junk_names:
+    if bad_name in junk_names: # the new name and the bad name have the same index in their respective lists
         name_index = junk_names.index(bad_name)
         better_name= new_names[name_index]
         perfect_name= better_name+"."+read_number+"."+fastq_number+".fastq"
         # Write file to new name
         print("COPYING "+ path + " to "+f+perfect_name)
-        outfile.write(path + "\t COPIED to \t" + f+perfect_name + "\n")
+        outfile.write(path + "\t COPIED to \t" + f+perfect_name + "\n") # log the move in a renaming_log.txt
         if test==True:
             shutil.copy(path,f+perfect_name)
             
-print(junk_names)
+#print(junk_names)
 #print(new_names)
+#This is the same except for zipped files
 for zipfilename in glob.glob(s + "*.fastq.gz"):
     path=os.path.abspath(zipfilename)
     zipfilename= os.path.basename(zipfilename)

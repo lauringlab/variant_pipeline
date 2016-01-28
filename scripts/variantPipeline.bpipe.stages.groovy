@@ -173,7 +173,7 @@ new File('04_removed_duplicates').eachFileRecurse{
 	}
 }
 get_control.post_align={
-new File($INPUT_DIR).eachFileRecurse{ // I\m not groovy with groovy and may need to play with how this input_dir variable is called
+new File(INPUT_DIR).eachFileRecurse{ // I\m not groovy with groovy and may need to play with how this input_dir variable is called
          if(it.name=~/.*$CONTROL.*bam$/){
                         CONTROL_BAM=it.getPath()
                         println "found control $CONTROL_BAM"

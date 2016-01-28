@@ -9,13 +9,51 @@ fastqc = {
     doc "Run FASTQC to generate QC metrics for the fastq files"
     output.dir = "01_fastqc"
     output_dir = "01_fastqc"
-    produce("${output_dir}/*_fastqc.zip") {
-        exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
-        exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
-    }
+    if(input.input.size == 2){
+    	produce("${output_dir}/*_fastqc.zip") {
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
+    		}
+	}
+    if(input.input.size == 4){
+    	produce("${output_dir}/*_fastqc.zip") {
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input3"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input4"
+    		}
+	}
+    if(input.input.size == 6){
+    	produce("${output_dir}/*_fastqc.zip") {
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input3"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input4"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input5"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input6"
+    		}
+	}
+   if(input.input.size == 8){
+    	produce("${output_dir}/*_fastqc.zip") {
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input2"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input3"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input4"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input5"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input6"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input7"
+        	exec "fastqc -o ${output_dir} --noextract -f fastq $input8"
+    		}
+	}
 }
 
-
+samtools_mapq_filter ={
+	doc " remove the reads that fail a mapping quality cut off"
+	output.dir = "02_filter"
+	filter("filtered"){
+		exec "samtools view -Shq 30 $input > $output"
+	}
+}
 
 // pydmx generates a directory of demultiplexed fastqs named using the specified barcode file
 //     it requires python2.7
@@ -143,7 +181,7 @@ coverage = {
 	doc " this trims large .pileup file to a smaller file that is more easily transfered and presents coverage intuitively"
 	output.dir = "05_coverage"
 	produce("*.csv"){
-			exec "${SCRIPTS}/Trim_to_coverage.py $input.pileup $output.cov.csv"
+			exec "${SCRIPTS}/Trim_to_coverage.py $input.pileup $output.csv"
 	}
 }
 
@@ -151,28 +189,27 @@ coverage = {
 
 //Get the name of the control file. to use in deepSNV
 get_control={
-new File('.').eachFileRecurse{
-	if(it.name=~/.*$CONTROL.*\..*\.bam$/){
+new File('04_removed_duplicates').eachFileRecurse{
+         if(it.name=~/.*$CONTROL.*bam$/){
 			CONTROL_BAM=it.getPath()
 			println "found control $CONTROL_BAM"
 		}
 	}
 }
-
 deepsnv = {
 	doc "Runs a basic deepSNV script to call variants in each sample saving the outputs as .Rdata files and csv of the summary output"
-	output.dir = "variants"
+	output.dir = "deepSNV"
 	def in_bam=file(input).name
 	def control = file(CONTROL_BAM).name.replace(".bam","")
 	def test = file(input.bam).name.replace(".bam","")
 	println "test:" + test
 	println "control:" + control
 	if( test!=control) {
-				produce("variants/*.csv","variants/*.fa"){
-					exec "Rscript  ${SCRIPTS}/deepSNV.R ${LIBRARY_LOCATION}/R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni"
+				produce("deepSNV/*.csv","variants/*.fa"){
+					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni $DISP"
 				}
 	} else {
-		produce("variants/*.csv"){
+		produce("deepSNV/*.csv"){
 			exec "touch ${output}.csv"
 		}
 	}
@@ -180,7 +217,7 @@ deepsnv = {
 
 mapq_conditional = {
         doc "runs a python script that for each variant called calculates the average mapped quality of the variant and adds the whole summary line + this value to the summary.csv file "
-        output.dir="mapq"
+        output.dir="Variants"
         //I've been having some trouble getting the right inputs and outputs to line up. The best way to do this might be to make a map that explicitly describes how the sample pair up. bUt that might take a little too long to figure out how to do now.
         def csv = file(input.csv).name.replace(".csv","")
         def bam = file(input.bam).name.replace(".bam","")
@@ -201,7 +238,7 @@ mapq_conditional = {
 combine = {
 	doc "combines the coverage, reads and variant calls into one file that can easily be imported into R for analysis"
 
-	exec "python ${SCRIPTS}/combine.py ./mapq reads.csv all.reads.csv "
-	exec "python ${SCRIPTS}/combine.py ./mapq sum.csv all.sum.csv"
-	exec "python ${SCRIPTS}/combine_add_name.py ./05_coverage/ .csv all.cov.csv"
+	exec "python ${SCRIPTS}/combine.py ./Variants reads.csv all.reads.csv "
+	exec "python ${SCRIPTS}/combine.py ./Variants sum.csv all.sum.csv"
+	exec "python ${SCRIPTS}/combine.py ./deepSNV cov.csv all.coverage.csv"
 }

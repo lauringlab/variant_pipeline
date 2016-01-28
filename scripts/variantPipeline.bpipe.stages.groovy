@@ -1,7 +1,3 @@
-rename = {
-	doc "runs basic shell script to rename remove everything after the _ in the sample name"
-	exec "${SCRIPTS}/rename1.sh input.fastq"
-}
 // fastqc generates two zipped directory files using a custom naming convention
 // input: two *.fastq files
 // output: two *_fastqc.zip files
@@ -114,13 +110,6 @@ bowtie2 = {
         }
     }
 }
-samtools_filter = {
-    doc "Filter the sam file to include only proper pair alignments"
-    output.dir = "03_align"
-    filter("proper"){
-        exec " samtools view -f 0X0002 -Sh $input.sam > $output.sam"
-    }
-}
 
 picard_sortsam = {
     doc "Sort SAM file so that its in reference order and convert to BAM."
@@ -173,27 +162,6 @@ picard_markdups = {
     }
 }
 
-samtools_mpileup = {
-	doc "mpileup to create the files needed to messure coverage across the samples"
-	output.dir = "05_coverage"
-	transform(".pileup"){
-
-	exec "samtools mpileup -d 1000000 $input.bam > $output.pileup" // + new File(input1).name.split("\\.[12]\\.bam")[0] + '.pileup'
-
-	}
-
-}
-
-
-coverage = {
-	doc " this trims large .pileup file to a smaller file that is more easily transfered and presents coverage intuitively"
-	output.dir = "05_coverage"
-	produce("*.csv"){
-			exec "${SCRIPTS}/Trim_to_coverage.py $input.pileup $output.csv"
-	}
-}
-
-
 
 //Get the name of the control file. to use in deepSNV
 get_control={
@@ -204,6 +172,15 @@ new File('04_removed_duplicates').eachFileRecurse{
 		}
 	}
 }
+get_control.post_align={
+new File($INPUT_DIR).eachFileRecurse{ // I\m not groovy with groovy and may need to play with how this input_dir variable is called
+         if(it.name=~/.*$CONTROL.*bam$/){
+                        CONTROL_BAM=it.getPath()
+                        println "found control $CONTROL_BAM"
+                }   
+        }   
+}
+
 deepsnv = {
 	doc "Runs a basic deepSNV script to call variants in each sample saving the outputs as .Rdata files and csv of the summary output"
 	output.dir = "deepSNV"
@@ -216,7 +193,7 @@ deepsnv = {
 				produce("deepSNV/*.csv","variants/*.fa"){
 					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP}"
 				}
-	} else {
+	} else { //The control can not be used to call variants on itself as no variants are called and then R reports an error when we try to organize and write an empty data.frame. So here we make and empty output
 		produce("deepSNV/*.csv"){
 			exec "touch ${output}.csv"
 		}

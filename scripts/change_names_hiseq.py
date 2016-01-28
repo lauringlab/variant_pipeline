@@ -107,18 +107,18 @@ for zipfilename in glob.glob(s + "*.fastq.gz"):
         if test==True:
             shutil.copy(path,f+perfect_name)
             
-if test==True:
-    for zipfile in glob.glob(f + "*.gz"):
-        print "unzipping:" + zipfile
+#if test==True:
+#    for zipfile in glob.glob(f + "*.gz"):
+#        print "unzipping:" + zipfile
 
-        inF = gzip.GzipFile(zipfile, 'rb')
-        s = inF.read()
-        inF.close()
+ #       inF = gzip.GzipFile(zipfile, 'rb')
+ #       s = inF.read()
+ #       inF.close()
         #print(os.path.splitext(zipfile)[0])
-        outF = file(os.path.splitext(zipfile)[0], 'wb')
-        outF.write(s)
-        outF.close()
-        os.remove(zipfile)
+ #       outF = file(os.path.splitext(zipfile)[0], 'wb')
+ #       outF.write(s)
+ #       outF.close()
+ #       os.remove(zipfile)
 
 
 outfile.close()

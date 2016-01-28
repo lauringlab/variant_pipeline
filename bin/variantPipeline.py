@@ -59,9 +59,9 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
 #throttled to 8 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 if test==False:
-    command= bpipe_command + " run -n 8 -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
+    command= bpipe_command + " run -n 3 -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
 else:
-    command=bpipe_command + " test -n 8 " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
+    command=bpipe_command + " test -n 3 " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
 print "submitting command: \n"+command
 
 #p = s.Popen("time", stdin=s.PIPE, stdout=s.PIPE, stderr=s.STDOUT)

@@ -52,7 +52,7 @@ cat(paste("loaded regions: ", paste(regions.bed$chr, collapse=","),"\n"))
 
 cat("calling variants with deepSNV\n")
 cat(paste("\ttest [",test.bam,"]\n\tcontrol [",control.bam,"]...\n", sep=""))
-deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,q=25)
+deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,q=30)
 if(disp=="two.sided"){
 deepsnv.result<-estimateDispersion(deepsnv.result,alternative="two.sided")
 }else if (disp=="one.sided"){
@@ -67,13 +67,16 @@ consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 
 #head(deepsnv.result)
 deepsnv_sum<-summary(deepsnv.result, adjust.method=method)
+if(dim(deepsnv_sum)[1]==0){
+print(paste0("no variants found in sample : ",sample_name)
+}else{
 deepsnv_sum$Id<-sample_name # set the sample name for csv
-
-
-
-
 deepsnv_sum<-subset(deepsnv_sum,var!="-" & ref !="-") # removes the indels
 mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
+}
+
+
+
 
 
 ## Coverage ##

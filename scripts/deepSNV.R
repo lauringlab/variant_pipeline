@@ -52,7 +52,7 @@ cat(paste("loaded regions: ", paste(regions.bed$chr, collapse=","),"\n"))
 
 cat("calling variants with deepSNV\n")
 cat(paste("\ttest [",test.bam,"]\n\tcontrol [",control.bam,"]...\n", sep=""))
-deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,q=30)
+deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,q=25)
 if(disp=="two.sided"){
 deepsnv.result<-estimateDispersion(deepsnv.result,alternative="two.sided")
 }else if (disp=="one.sided"){

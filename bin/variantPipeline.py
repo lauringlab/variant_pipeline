@@ -81,9 +81,9 @@ else: # Otherwise start with the fastqs
 print "submitting command: \n"+command
 
 
-
-
-
+git_command="git rev-list HEAD |head -n 1"
+print "using version : "
+s.call(git_command,shell=True)
 s.call(command,shell=True) # rub bpipe command
 
 sys.exit(0)

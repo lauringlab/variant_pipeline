@@ -24,7 +24,7 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
  This script is a thin python wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory and stored in the output directory as a log of what was run.
 
 
-Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name}
+Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name} -a {p.val cutoff} -m {fisher,max,average} -d {one.sided,two.sided} 
 
 * Inputs:  
 	* -i dir containing left fastq, right fastq named as sample.read_direction[1,2].#.fastq
@@ -36,6 +36,12 @@ Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plas
 	```
 	Where WSN33.fa is your fasta file
 	* -p plasmid control : the sample name of the plasmid control fastq.
+	* -a alpha : The p value cut off to used in the final output. Any variant with a p.val>a will be removed
+	* -m method : The method used to combine the p value from each strand "fisher","average","max".
+	* -t test :Boolean switch to run program in test mode. Everything will be set up but bpipe will run in test mode
+	* -d Dispersion : Dispersion estimation to be used in deepSNV. Options are c("two.sided","one.sided","bin"). Anything other 	than two.sided or one.sided will yield a binomial distribution. "two.sided" and "one.sided" estimate dispersion and use a beta binomial to model nucleotide counts. "two.sided" uses a two sided test and is most conservative and appropriate when dealing with high number of  PCR cycles.
+	* -bam bam : Boolean switch. Sometimes it is useful to rerun the deepSNV variant calling with different parameters (e.g. dispersion, p.combine). Activating this  takes bam files as inputs so you don\'t have to rerun the alignment and sorting. In this case the input directory should contain the bam files.
+	
 
 	See the tutorial for more information.
 	

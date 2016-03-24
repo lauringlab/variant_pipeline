@@ -170,13 +170,13 @@ python ../bin/variantPipeline.py -h
 We need to provide the directory containing the fastq files, the directory where we want the output to go (it will be made if it doesn't exist), our reference for bowtie (provided by the tutorial, see README on how to make one for your sample set), and the name of our control sample. To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.
 
 ```
-python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -d one.sided -t
+python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -a 0.01 -m fisher -d one.sided -t
 ```
 
 It seems like everything is in order so we'll let it rip. This took about 5 min on my old macbook pro. On the flux it won't take long at all.
 
 ```
-python ../bin/variantPipeline.py -i data/fastq/ -o worked_data/ -r data/reference/wsn33_wt_plasmid -p Plasmid_control -d one.sided
+python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -a 0.01 -m fisher -d one.sided 
 ```
 
 

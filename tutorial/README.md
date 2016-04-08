@@ -43,7 +43,7 @@ ssh your_username@flux-login.engin.umich.edu
  On flux type
  
  ```
- git clone https://username:password@github.com/jtmccr1/variant_pipeline.git
+ git clone https://username:password@github.com/lauringlab/variant_pipeline.git
  ```
 where username:password are your github username and password.
  
@@ -174,6 +174,8 @@ python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference
 ```
 
 It seems like everything is in order so we'll let it rip. This took about 5 min on my old macbook pro. On the flux it won't take long at all.
+
+_If you expect a high level of pcr errors then use a two sided distribution. Set the -d option to two.sided_
 
 ```
 python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -a 0.01 -m fisher -d one.sided 

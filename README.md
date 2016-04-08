@@ -24,7 +24,9 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
  This script is a thin python wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory and stored in the output directory as a log of what was run.
 
 
-Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name} -a {p.val cutoff} -m {fisher,max,average} -d {one.sided,two.sided} 
+
+Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name} -a {p.val cutoff} -m {fisher,max,average} -d {one.sided,two.sided}
+
 
 * Inputs:  
 	* -i dir containing left fastq, right fastq named as sample.read_direction[1,2].#.fastq
@@ -41,15 +43,16 @@ Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plas
 	* -t test :Boolean switch to run program in test mode. Everything will be set up but bpipe will run in test mode
 	* -d Dispersion : Dispersion estimation to be used in deepSNV. Options are c("two.sided","one.sided","bin"). Anything other 	than two.sided or one.sided will yield a binomial distribution. "two.sided" and "one.sided" estimate dispersion and use a beta binomial to model nucleotide counts. "two.sided" uses a two sided test and is most conservative and appropriate when dealing with high number of  PCR cycles.
 	* -bam bam : Boolean switch. Sometimes it is useful to rerun the deepSNV variant calling with different parameters (e.g. dispersion, p.combine). Activating this  takes bam files as inputs so you don\'t have to rerun the alignment and sorting. In this case the input directory should contain the bam files.
-	
+
+
 
 	See the tutorial for more information.
-	
+
 	*NOTE: Your fasta is used in the variant calling step and needs to end in .fa*
 
 
 * Outputs:
-	* __01_fastqc__ : zips containing a brief summary report on quality of input fastqs 
+	* __01_fastqc__ : zips containing a brief summary report on quality of input fastqs
 	* __03_align__ : bam files from bowtie2 alignment
 	* __04_remove_duplicates__ : bam files with duplicates marked by picard
 	* __Variants__ : sum.csv files made by adding mapping quality, read position, and phred information to the putative variants found in the variant output, and reads.csv containing similar information for each read responsible for a variant

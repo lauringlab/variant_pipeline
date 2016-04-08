@@ -54,7 +54,7 @@ cat(paste("loaded regions: ", paste(regions.bed$chr, collapse=","),"\n"))
 
 cat("calling variants with deepSNV\n")
 cat(paste("\ttest [",test.bam,"]\n\tcontrol [",control.bam,"]...\n", sep=""))
-deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,combine.method=p.com.meth,q=30) # This calls the variants using the binomial 
+deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,combine.method=p.com.meth,q=30) # This calls the variants using the binomial
 if(disp=="two.sided"){
 deepsnv.result<-estimateDispersion(deepsnv.result,alternative="two.sided")
 }else if (disp=="one.sided"){
@@ -68,16 +68,18 @@ consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 #writeVcf(flu_result.vcf, paste(output_file_name,".vcf", sep=""))
 
 #head(deepsnv.result)
-print("making summary dataframe")
+
+#print("making summary dataframe")
 deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=method)
-print("made dataframe")
+#print("made dataframe")
+
 deepsnv_sum$Id<-sample_name # set the sample name for csv
-
-
-
-
 deepsnv_sum<-subset(deepsnv_sum,var!="-" & ref !="-") # removes the indels
 mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
+
+
+
+
 
 
 ## Coverage ##

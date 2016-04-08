@@ -5,9 +5,9 @@ suppressMessages(library(tools))
 set.seed(42)
 
 args <- commandArgs(TRUE)
-if (length(args) != 5) {
-    stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)}  {c(two.sided,one.sided,bin)}",sep=""), call.=FALSE)
-}
+if (length(args) != 7) {
+    stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)} {p.val.cut} {c(fisher,average,max)}  {c(two.sided,one.sided,bin)}",sep=""), call.=FALSE)
+ }
 
 #print(args)
 #library.location <- args[1]
@@ -15,7 +15,9 @@ reference.fasta <- args[1]
 test.bam <- args[2]
 control.bam <- args[3]
 method<-args[4]
-disp<-args[5]
+p.cut<-args[5] # the p.value cut off for samples to be included in downstream analysis.
+p.com.meth<-args[6] # combine method for strands
+disp<-args[7]
 
 test_file_prefix = basename(file_path_sans_ext(test.bam))
 control_file_prefix = basename(file_path_sans_ext(control.bam))
@@ -52,7 +54,7 @@ cat(paste("loaded regions: ", paste(regions.bed$chr, collapse=","),"\n"))
 
 cat("calling variants with deepSNV\n")
 cat(paste("\ttest [",test.bam,"]\n\tcontrol [",control.bam,"]...\n", sep=""))
-deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,q=25)
+deepsnv.result <- deepSNV(test=test.bam, control=control.bam, regions=regions.bed,combine.method=p.com.meth,q=30) # This calls the variants using the binomial 
 if(disp=="two.sided"){
 deepsnv.result<-estimateDispersion(deepsnv.result,alternative="two.sided")
 }else if (disp=="one.sided"){
@@ -66,7 +68,9 @@ consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 #writeVcf(flu_result.vcf, paste(output_file_name,".vcf", sep=""))
 
 #head(deepsnv.result)
-deepsnv_sum<-summary(deepsnv.result, adjust.method=method)
+print("making summary dataframe")
+deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=method)
+print("made dataframe")
 deepsnv_sum$Id<-sample_name # set the sample name for csv
 
 

@@ -20,18 +20,18 @@ fout=open(sys.argv[3],"w")
 # first file:
 with open(csv_files[0],"r") as first_file:
     print("working with " + csv_files[0])
-    header=first_file.readline().strip()+",Sample\n"
-    fout.write(header)
-    sample=csv_files[0].split('.')[0]
     for line in first_file:
-        fout.write(line.strip()+','+sample+'\n')
+        fout.write(line)
 
-# now the rest:
+# now the rest:    
 for num in range(1,len(csv_files)):
     print("working with " + csv_files[num])
     with open(csv_files[num],"r") as next_file:
-        next_file.next() # skip the header
-        sample=csv_files[num].split('.')[0]
+        lines=[]
         for line in next_file:
-            fout.write(line.strip()+','+sample+'\n')
+            if line[0]!='#':
+                lines.append(line)
+        lines.pop(0)
+        for x in lines:
+            fout.write(x)
 fout.close()

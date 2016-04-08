@@ -29,9 +29,9 @@ bam=bam.split("/")[-1]
 
 in_var= vcf.Reader(open(sys.argv[1], 'r'))
 ## update infos ##
-in_var.infos['MapQ']=VcfInfo(id='MapQ',num=1,type='Float',desc="The average MapQ of the reads containing the called variant",source=None, version=None)
-in_var.infos['Read_pos']=VcfInfo(id='Read_pos',num=1,type='Float',desc="The average read cycle that called the given variant",source=None, version=None)
-in_var.infos['Phred']=VcfInfo(id='Phred',num=1,type='Float',desc="The average Phred score of the called variant",source=None, version=None)
+in_var.infos['MapQ']=VcfInfo(id='MapQ',num=1,type='Float',desc="The average MapQ of the reads containing the called variant")#,source=None, version=None)
+in_var.infos['Read_pos']=VcfInfo(id='Read_pos',num=1,type='Float',desc="The average read cycle that called the given variant")#,source=None, version=None)
+in_var.infos['Phred']=VcfInfo(id='Phred',num=1,type='Float',desc="The average Phred score of the called variant")#,source=None, version=None)
 
 
 

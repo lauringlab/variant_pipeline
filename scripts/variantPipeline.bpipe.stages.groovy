@@ -1,7 +1,3 @@
-rename = {
-	doc "runs basic shell script to rename remove everything after the _ in the sample name"
-	exec "${SCRIPTS}/rename1.sh input.fastq"
-}
 // fastqc generates two zipped directory files using a custom naming convention
 // input: two *.fastq files
 // output: two *_fastqc.zip files
@@ -86,31 +82,32 @@ bowtie2 = {
     doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
     output.dir = "03_align"
     if(input.input.size == 2){
-        produce ("03_align/*.sam") {
+ 	def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'       
+	println "expected outout " + sam_out
+	produce(sam_out) {
             exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
         }
     }
     if(input.input.size == 4){
-        produce ("03_align/*.sam") {
+        def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'    
+        println "expected outout " + sam_out
+        produce(sam_out) {
             exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
         }
     }
     if(input.input.size == 6){
-        produce ("03_align/*.sam") {
+        def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'    
+        println "expected outout " + sam_out
+        produce(sam_out) {
             exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
         }
     }
     if(input.input.size == 8){
-        produce ("03_align/*.sam") {
+       def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'    
+        println "expected outout " + sam_out
+        produce(sam_out) {
             exec "bowtie2 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
         }
-    }
-}
-samtools_filter = {
-    doc "Filter the sam file to include only proper pair alignments"
-    output.dir = "03_align"
-    filter("proper"){
-        exec " samtools view -f 0X0002 -Sh $input.sam > $output.sam"
     }
 }
 
@@ -165,27 +162,6 @@ picard_markdups = {
     }
 }
 
-samtools_mpileup = {
-	doc "mpileup to create the files needed to messure coverage across the samples"
-	output.dir = "05_coverage"
-	transform(".pileup"){
-
-	exec "samtools mpileup -d 1000000 $input.bam > $output.pileup" // + new File(input1).name.split("\\.[12]\\.bam")[0] + '.pileup'
-
-	}
-
-}
-
-
-coverage = {
-	doc " this trims large .pileup file to a smaller file that is more easily transfered and presents coverage intuitively"
-	output.dir = "05_coverage"
-	produce("*.csv"){
-			exec "${SCRIPTS}/Trim_to_coverage.py $input.pileup $output.csv"
-	}
-}
-
-
 
 //Get the name of the control file. to use in deepSNV
 get_control={
@@ -196,6 +172,15 @@ new File('04_removed_duplicates').eachFileRecurse{
 		}
 	}
 }
+get_control.post_align={
+new File(INPUT_DIR).eachFileRecurse{ // I\m not groovy with groovy and may need to play with how this input_dir variable is called
+         if(it.name=~/.*$CONTROL.*bam$/){
+                        CONTROL_BAM=it.getPath()
+                        println "found control $CONTROL_BAM"
+                }   
+        }   
+}
+
 deepsnv = {
 	doc "Runs a basic deepSNV script to call variants in each sample saving the outputs as .Rdata files and csv of the summary output"
 	output.dir = "deepSNV"
@@ -206,9 +191,9 @@ deepsnv = {
 	println "control:" + control
 	if( test!=control) {
 				produce("deepSNV/*.csv","variants/*.fa"){
-					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni $DISP"
+					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP}"
 				}
-	} else {
+	} else { //The control can not be used to call variants on itself as no variants are called and then R reports an error when we try to organize and write an empty data.frame. So here we make and empty output
 		produce("deepSNV/*.csv"){
 			exec "touch ${output}.csv"
 		}

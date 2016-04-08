@@ -16,14 +16,14 @@ done = {
 run  {
 
 // QC on reads
-    "%.*.fastq" * [ fastqc ] // + needs if statements to handle multiple fastq.  More than 2
+//    "%.*.fastq" * [ fastqc ] + // + needs if statements to handle multiple fastq.  More than 2
 
 // Align each pair of input files separately in parallel
     "%.*.fastq" * [ bowtie2 ] +
 
 // Sort, remove duplicates, call variants, and set coverage
     "%.sam" * [ picard_sortsam + picard_removedups  ] + get_control +
-    "%.bam" * [	samtools_mpileup + coverage,deepsnv + "%.csv"*[mapq_conditional]] +
+    "%.bam" * [deepsnv + "%.csv"*[mapq_conditional]] +
     combine +
      done
 }

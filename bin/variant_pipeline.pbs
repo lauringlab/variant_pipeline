@@ -25,6 +25,6 @@ module add pysam/0.8.2.1
 
 cd $PBS_O_WORKDIR
 
-python ../bin/variantPipeline.py -i data/fastq/ -o worked_data_pbs -r data/reference/wsn33_wt_plasmid -p Plasmid_control
+python ../bin/variantPipeline.py -i data/fastq/ -o processed -r data/reference/wsn33_wt_plasmid -p Plasmid_control -a 0.05 -m fisher -d two.sided
 
 echo Finish time: `date`

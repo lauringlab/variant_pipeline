@@ -66,6 +66,8 @@ Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plas
 
 ## Dependencies
 
+Note : *Flux is the name of the computing core used by our lab at the Univeristy of Michigan. Some of the directions may be specific to those working on this platform*
+
 The pipeline comes with many of the required programs (bpipe and pycard); however, bowtie2, samtools and certain R  and python libraries are required by the variant calling.
 
 Note: *The R package deepSNV may need to be installed under your username on Flux.  The other dependencies are simply added as modules.*

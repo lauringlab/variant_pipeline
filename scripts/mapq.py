@@ -62,7 +62,7 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile: # open the bam file
                             if  not pileupread.is_del and not pileupread.is_refskip:
                                 called_base=pileupread.alignment.query_sequence[pileupread.query_position] # what is the called base at the position
                                 called_phred=pileupread.alignment.query_qualities[pileupread.query_position] # what is the phred of that base
-                                if called_phred>30 and called_base==var: # change this if you change the phred cut off in deepSNV. deepSNV only looks a phred>30. and we only want those calles that match the variant.
+                                if called_phred>=30 and called_base==var: # change this if you change the phred cut off in deepSNV. deepSNV only looks a phred>30. and we only want those calles that match the variant.
                                     mapq.append(pileupread.alignment.mapping_quality)# add the mapping quality of the read to the list
                                     phred.append(called_phred)
                                     Read_pos.append(pileupread.query_position)

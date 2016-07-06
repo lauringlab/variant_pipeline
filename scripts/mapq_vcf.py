@@ -75,7 +75,7 @@ with pysam.AlignmentFile(sys.argv[2], "rb") as bamfile:
 #         print record.INFO
 #         print 'done with \n'
 #         print record
-print "done updating"
+print("done updating")
 iter(variants)
 vcf_writer = vcf.Writer(open(sys.argv[3], 'w'), in_var)
 for record in variants:

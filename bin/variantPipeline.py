@@ -70,14 +70,14 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
 
 if bam==True: #If bam is set only look for the bam files
     if test==False:
-        command= bpipe_command + " run -n 3 -r " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir + "/*.bam"
+        command= bpipe_command + " run -r " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir + "/*.bam"
     else:
-        command=bpipe_command + " test -n 3 " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir +"/*.bam"
+        command=bpipe_command + " test " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir +"/*.bam"
 else: # Otherwise start with the fastqs
     if test==False:
-        command= bpipe_command + " run -n 3 -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
+        command= bpipe_command + " run -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
     else:
-        command=bpipe_command + " test -n 3 " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
+        command=bpipe_command + " test " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
 print "submitting command: \n"+command
 
 

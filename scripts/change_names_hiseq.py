@@ -58,7 +58,7 @@ for line in names:
 names.close()
 
 if test==False:
-    print("running in test mode add option -run to run")
+    print "running in test mode add option -run to run"
     
 outfile = open(f+'renaming_log.txt','w')
 
@@ -96,7 +96,7 @@ for zipfilename in glob.glob(s + "*.fastq.gz"):
     if old==False:
         name=zipfilename.split("_S")
     bad_name = name[0]
-   # print(bad_name)
+    print(bad_name)
     lane_junk = name[1]
     read_number=lane_junk.split("_R")
     fastq_number=read_number[1][4]

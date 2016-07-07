@@ -33,7 +33,7 @@ if s[-1] != '/':
 outfile = open(f+'renaming_log.txt','w')
 #os.chdir(sys.argv[1])
 if test==False:
-    print("running in test mode add option -run to run")
+    print "running in test mode add option -run to run"
 # copy fastq files
 # The goal here is just to take out the junk added to the fastq file name
 for filename in glob.glob(s + "*.fastq"):

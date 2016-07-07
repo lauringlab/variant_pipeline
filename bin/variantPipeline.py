@@ -37,9 +37,9 @@ bpipe_command=lib_dir+'/bpipe-0.9.8.7/bin/bpipe' # The path to the bpipe command
 test=args.test
 bam=args.bam
 
-print("Processing fastqs from " + input_dir)
-print("Results will be saved to " + output_dir)
-print("Using " + ref +" for a reference and \n" + control + " as the control sample")
+print "Processing fastqs from " + input_dir
+print "Results will be saved to " + output_dir
+print "Using " + ref +" for a reference and \n" + control + " as the control sample"
 
 
 ## If the output dir does not exist make it 
@@ -70,19 +70,19 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
 
 if bam==True: #If bam is set only look for the bam files
     if test==False:
-        command= bpipe_command + " run -r " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir + "/*.bam"
+        command= bpipe_command + " run -n 3 -r " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir + "/*.bam"
     else:
-        command=bpipe_command + " test  " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir +"/*.bam"
+        command=bpipe_command + " test -n 3 " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir +"/*.bam"
 else: # Otherwise start with the fastqs
     if test==False:
-        command= bpipe_command + " run  -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
+        command= bpipe_command + " run -n 3 -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
     else:
-        command=bpipe_command + " test " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
-print("submitting command: \n"+command)
+        command=bpipe_command + " test -n 3 " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
+print "submitting command: \n"+command
 
 
 git_command="git rev-list HEAD |head -n 1"
-print("using version : ")
+print "using version : "
 s.call(git_command,shell=True)
 s.call(command,shell=True) # rub bpipe command
 

@@ -72,11 +72,13 @@ consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 #print("making summary dataframe")
 deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=method)
 #print("made dataframe")
-
-deepsnv_sum$Id<-sample_name # set the sample name for csv
-deepsnv_sum<-subset(deepsnv_sum,var!="-" & ref !="-") # removes the indels
-mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
-
+if(dim(deepsnv_sum)[1]>1){ # if varaints were found
+    deepsnv_sum$Id<-sample_name # set the sample name for csv
+    deepsnv_sum<-subset(deepsnv_sum,var!="-" & ref !="-") # removes the indels
+    mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
+}else{
+    names(deepsnv_sum)=c(names(deepsnv_sum),"Id","mutation") # adding the column names even though no variants were found
+} 
 
 
 

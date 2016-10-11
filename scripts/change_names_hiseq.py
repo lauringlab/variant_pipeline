@@ -11,6 +11,7 @@ parser.add_argument('-k',action='store',dest='key',help='The output csv given by
 parser.add_argument('-d',action='store_true',dest='dir',default=False,help='Boolean switch to use of the fastqs are in separate directories in this case the source directory should contain the sample directories which in turn hold the fastq. Some hiseq runs are returned like this.')
 parser.add_argument('-run',action='store_true',dest='test',default=False,help='Boolean switch to run program, without this the program runs in test mode: the log is made but no files are renamed')
 parser.add_argument('-old',action='store_true',dest='old',default=False,help='Boolean switch to use if the run is was done prior to July 2015 as the sequencing core constantly changes their sample sheets')
+parser.add_argument('-l',action='store',dest='l',help='The output file that will keep a log of the name changes')
 
 args=parser.parse_args()
 s=args.s
@@ -19,7 +20,7 @@ key=args.key
 test=args.test
 dir=args.dir
 old=args.old
-
+log=args.l
 #make the output dir if it doesn't exist
 if not os.path.exists(f):
     os.makedirs(f)
@@ -60,7 +61,7 @@ names.close()
 if test==False:
     print "running in test mode add option -run to run"
     
-outfile = open(f+'renaming_log.txt','w')
+outfile = open(log,'w')
 
 
 # Now to search through the fastq files or fastq.gz and copy them to the new makes
@@ -96,7 +97,7 @@ for zipfilename in glob.glob(s + "*.fastq.gz"):
     if old==False:
         name=zipfilename.split("_S")
     bad_name = name[0]
-    print(bad_name)
+    #print(bad_name)
     lane_junk = name[1]
     read_number=lane_junk.split("_R")
     fastq_number=read_number[1][4]

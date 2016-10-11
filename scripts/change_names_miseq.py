@@ -5,7 +5,7 @@ import shutil
 import gzip
 import glob
 
-parser = argparse.ArgumentParser(description='This program takes Miseq fastq files and renames them as sample.read_direction.#.fastq and keeps a log of the change. If the initial files are gzipped it will unzip the copies.\n It will unzip all gzipped files in the final (-f) directory.')
+parser = argparse.ArgumentParser(description='This program takes Miseq fastq files and renames them as sample.read_direction.#.fastq and keeps a log of the change.')
 parser.add_argument('-s',action='store',dest='s',help='The sorce directory containing the original fastq files')
 parser.add_argument('-f',action='store',dest='f',help='The final directory that will hold the renamed fastq files')
 parser.add_argument('-run',action='store_true',dest='test',default=False,help='Boolean switch to run program, without this the program runs in test mode: the log is made but no files are renamed')

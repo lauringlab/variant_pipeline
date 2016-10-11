@@ -63,6 +63,7 @@ deepsnv.result<-estimateDispersion(deepsnv.result) # one sided is the default
 deepsnv.result<-deepsnv.result
 }
 consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
+control_fa<-consensusSequence(control(deepsnv.result,total=T),vector=F,haploid=T)
 #cat(paste("saving to [",output_file_name,".vcf].\n", sep=""))
 #flu_result.vcf <- summary(deepsnv.result, value='VCF')
 #writeVcf(flu_result.vcf, paste(output_file_name,".vcf", sep=""))
@@ -77,7 +78,24 @@ if(dim(deepsnv_sum)[1]>1){ # if varaints were found
     deepsnv_sum<-subset(deepsnv_sum,var!="-" & ref !="-") # removes the indels
     mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
 }else{
-    names(deepsnv_sum)=c(names(deepsnv_sum),"Id","mutation") # adding the column names even though no variants were found
+   deepsnv_sum<-data.frame("chr"=character(),
+			   "pos"=integer(),
+			   "ref"=character(),
+			   "var" = character(),
+			   "p.val" = numeric(),
+		           "freq.var" = numeric(),
+ 			   "sigma2.freq.var"= numeric(),
+		           "n.tst.fw" = integer(),
+			   "cov.tst.fw" = integer(),
+		           "n.tst.bw" = integer(),
+		           "cov.tst.bw"= integer(),
+	                   "n.ctrl.fw"= integer(),
+	                   "cov.ctrl.fw" = integer(),
+	                   "n.ctrl.bw" = integer(),
+		           "cov.ctrl.bw" = integer(),
+		           "raw.p.val" = numeric(),
+			   "Id"=character(),
+			   "mutation"=character() ) # adding the column names even though no variants were found
 } 
 
 
@@ -136,6 +154,11 @@ write.csv(cov.con.df, paste(output_file_control,".cov.csv", sep=""), row.names=F
 cat(paste("saving to [",output_file_name,".fa].\n",sep=""))
 #save(list=consensus_fa,file=paste(output_file_name,".fa",sep=""))
 write(as.character(consensus_fa),file=paste(output_file_name,".fa",sep=""))
+
+
+cat(paste("saving to [",output_file_control,".fa].\n",sep=""))
+#save(list=consensus_fa,file=paste(output_file_name,".fa",sep=""))
+write(as.character(control_fa),file=paste(output_file_control,".fa",sep=""))
 
 
 #cat(paste("saving to [",output_file_name,".RData]\n",sep=""))

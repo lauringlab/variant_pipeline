@@ -190,7 +190,7 @@ deepsnv = {
 	println "test:" + test
 	println "control:" + control
 	if( test!=control) {
-				produce("deepSNV/*.csv","variants/*.fa"){
+				produce("deepSNV/*.csv","deepSNV/*.fa"){
 					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP}"
 				}
 	} else { //The control can not be used to call variants on itself as no variants are called and then R reports an error when we try to organize and write an empty data.frame. So here we make and empty output
@@ -218,6 +218,49 @@ mapq_conditional = {
         	}
           }
 }
+
+
+parse= {
+	doc "Take the concatenated consensus fasta file from deepSNV and deconcatenate it using the segmented positions in from the coverage file"
+	output.dir = "parsed_fa"
+	filter("parsed"){
+	//	exec "echo '>concat'>temp_file;cat $input>>temp_file ; mv temp_file $input"	
+		exec "python ${SCRIPTS}/parse_consensus.py ~/muscle3.8.31/  $input ${REFERENCE_FA} -out_fa $output -concat -megaopen -1000"
+	}
+}
+
+make_real_fasta = {
+	doc "Take a deepSNV concensus file that is just one line of characters and add the fasta identifier to it."
+	output.dir="deepSNV/real_Fasta"
+	filter("real"){
+		exec "python ${SCRIPTS}/deepsnv2fasta.py $input $output concat"
+	}
+}
+
+add_amino_data = { 
+        doc "Add amino acid data to variant calls based a reference sequence"
+        output.dir = "${MAIN_DIR}/AA_var"
+        def csv = file(input.csv).name.replace("removed.mapq.sum.csv","")
+        def fa = file(input.fa).name.replace("removed.real.parsed.fa","")
+        if(csv==fa){
+                println "Found match : " + csv + " : csv and " + fa + " : fa"
+                filter("AA"){
+                        exec "python ${SCRIPTS}/AA_var.py $input.fa ${OR} $input.csv $output"
+                }   
+        } else {
+                println "csv : " + csv " doens't match fa : " + fa
+        }   
+
+}
+
+sift = {
+	doc "Variant csv file and filter based on quality scores"
+	output.dir = "${MAIN_DIR}/Filter_var"
+	filter("filtered"){
+		exec "python ${SCRIPTS}/filter_var.py $input $output -mapping 20 -phred 35 -p 0.01 -freq 0.001 -pos 62 188 "
+	}
+}
+
 
 
 combine = {

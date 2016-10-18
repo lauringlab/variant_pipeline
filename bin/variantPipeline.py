@@ -65,7 +65,7 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
     config.write('LIBRARY_LOCATION='+ '\"'+lib_dir+'\"'+ '\n') # The library dir
     config.write('CONTROL='+ '\"'+control+ '\"'+'\n') # The name of the plasmid control
     config.write('DISP='+ '\"'+disp+ '\"'+'\n')# The Dispersion estimation to be used
-    config.write('P_CUT='+ '\"'+p_cut+ '\"'+'\n') # The p cut off
+    config.write('P_CUT='+ '\"'+str(p_cut)+ '\"'+'\n') # The p cut off
     config.write('P_COM_METH='+ '\"'+method+ '\"'+'\n') # The combination method used to combine the pvalues from each strand
     config.write('INPUT_DIR='+ '\"'+input_dir+ '\"'+'\n') # copy the input dir to the config file to help find the control when running in bam
     config.write('OR='+ '\"'+open_reading+ '\"'+'\n') # copy the open reading frame file

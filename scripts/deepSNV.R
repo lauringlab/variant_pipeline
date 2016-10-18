@@ -5,8 +5,8 @@ suppressMessages(library(tools))
 set.seed(42)
 
 args <- commandArgs(TRUE)
-if (length(args) != 7) {
-    stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)} {p.val.cut} {c(fisher,average,max)}  {c(two.sided,one.sided,bin)}",sep=""), call.=FALSE)
+if (length(args) != 9) {
+    stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)} {p.val.cut} {c(fisher,average,max)}  {c(two.sided,one.sided,bin)} output.csv output.fa",sep=""), call.=FALSE)
  }
 
 #print(args)
@@ -18,6 +18,8 @@ method<-args[4]
 p.cut<-args[5] # the p.value cut off for samples to be included in downstream analysis.
 p.com.meth<-args[6] # combine method for strands
 disp<-args[7]
+csv<-args[8]
+fa<-args[9]
 
 test_file_prefix = basename(file_path_sans_ext(test.bam))
 control_file_prefix = basename(file_path_sans_ext(control.bam))
@@ -29,10 +31,10 @@ output_file_control=paste0("deepSNV/",control_file_prefix)
 print(paste0("test is :",sample_name ))
 
 print(paste0("control is:",control_name))
-if(test_file_prefix==control_file_prefix){
-	print("we don't need to run the control!")
-	stop()
-}
+#if(test_file_prefix==control_file_prefix){
+#	print("we don't need to run the control!")
+#	stop()
+#}
 
 #print(test_file_prefix)
 #print(control_file_prefix)
@@ -136,14 +138,11 @@ cov.con.df=data.frame(coverage=cov.con,concat.pos=1:length(cov.con))
 ddply(cov.con.df,~concat.pos,summarize, coverage=coverage,concat.pos=concat.pos,chr= as.character(regions.bed$chr[max(which(prior.seg.length<concat.pos))]),
       chr.pos=concat.pos-prior.seg.length[max(which(prior.seg.length<concat.pos))])->cov.con.df
 
-
-
 cov.con.df$Id<-control_name # set the sample name for csv
 
-
 #print(head(deepsnv_sum))
-cat(paste("saving summary to [",output_file_name,".csv].\n", sep=""))
-write.csv(deepsnv_sum, paste(output_file_name,".csv", sep=""), row.names=FALSE)
+cat(paste("saving summary to [",csv,"].\n", sep=""))
+write.csv(deepsnv_sum, csv, row.names=FALSE)
 
 #print(head(deepsnv_sum))
 cat(paste("saving coverage to [",output_file_name,".cov.csv].\n", sep=""))
@@ -152,15 +151,13 @@ write.csv(cov.df, paste(output_file_name,".cov.csv", sep=""), row.names=FALSE)
 cat(paste("saving control coverage to [",output_file_control,".cov.csv].\n", sep=""))
 write.csv(cov.con.df, paste(output_file_control,".cov.csv", sep=""), row.names=FALSE)
 
-cat(paste("saving to [",output_file_name,".fa].\n",sep=""))
+cat(paste("saving to [",fa,"].\n",sep=""))
 #save(list=consensus_fa,file=paste(output_file_name,".fa",sep=""))
-write(as.character(consensus_fa),file=paste(output_file_name,".fa",sep=""))
+write(as.character(consensus_fa),file=fa)
 
-
-cat(paste("saving to [",output_file_control,".fa].\n",sep=""))
+#cat(paste("saving to [",output_file_control,".fa].\n",sep=""))
 #save(list=consensus_fa,file=paste(output_file_name,".fa",sep=""))
-write(as.character(control_fa),file=paste(output_file_control,".fa",sep=""))
-
+#write(as.character(control_fa),file=paste(output_file_control,".fa",sep=""))
 
 #cat(paste("saving to [",output_file_name,".RData]\n",sep=""))
 #eval(parse(text=paste0("snv_",test_file_prefix,"<-deepsnv.result")))

@@ -83,7 +83,7 @@ bowtie2 = {
     output.dir = "03_align"
     if(input.input.size == 2){
  	def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
-	println "expected outout " + sam_out
+	//println "expected outout " + sam_out
 	produce(sam_out) {
             exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
         }
@@ -189,15 +189,15 @@ deepsnv = {
 	def test = file(input.bam).name.replace(".bam","")
 	println "test:" + test
 	println "control:" + control
-	if( test!=control) {
-				produce("deepSNV/*.csv","deepSNV/*.fa"){
-					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP}"
+	//if( test!=control) {
+				transform("csv","fasta"){
+					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP} $output.csv $output.fasta"
 				}
-	} else { //The control can not be used to call variants on itself as no variants are called and then R reports an error when we try to organize and write an empty data.frame. So here we make and empty output
-		produce("deepSNV/*.csv"){
-			exec "touch ${output}.csv"
-		}
-	}
+	//} else { //The control can not be used to call variants on itself as no variants are called and then R reports an error when we try to organize and write an empty data.frame. So here we make and empty output
+	//	produce("deepSNV/*.csv"){
+	//		exec "touch ${output}.csv"
+	//	}
+	//}
 }
 
 mapq_conditional = {
@@ -226,6 +226,7 @@ parse= {
 	filter("parsed"){
 		exec "python ${SCRIPTS}/parse_consensus.py ${REFERENCE_FA} $input $output "
 	}
+	forward input.csv
 }
 
 

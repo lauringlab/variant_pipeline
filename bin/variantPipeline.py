@@ -52,10 +52,10 @@ os.chdir(output_dir)
 
 # Copy the stages script and the pipeline to the output dir
 shutil.copy(script_dir+'/variantPipeline.bpipe.stages.groovy',output_dir)
-if bam==True: # copy the pipeline that starts post alignment if the bam flag is set.
-    shutil.copy(script_dir+'/variantPipeline.postalign.bpipe.groovy',output_dir)
-else: # otherwise just keep keepin on
-    shutil.copy(script_dir+'/variantPipeline.bpipe.groovy',output_dir)
+# if bam==True: # copy the pipeline that starts post alignment if the bam flag is set.
+#     shutil.copy(script_dir+'/variantPipeline.postalign.bpipe.groovy',output_dir)
+# else: # otherwise just keep keepin on
+shutil.copy(script_dir+'/variantPipeline.bpipe.groovy',output_dir)
 
 # add variables to the bpipe config file to pass them to the pipeline
 with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:

@@ -224,18 +224,11 @@ parse= {
 	doc "Take the concatenated consensus fasta file from deepSNV and deconcatenate it using the segmented positions in from the coverage file"
 	output.dir = "parsed_fa"
 	filter("parsed"){
-	//	exec "echo '>concat'>temp_file;cat $input>>temp_file ; mv temp_file $input"	
-		exec "python ${SCRIPTS}/parse_consensus.py ~/muscle3.8.31/  $input ${REFERENCE_FA} -out_fa $output -concat -megaopen -1000"
+		exec "python ${SCRIPTS}/parse_consensus.py ${REFERENCE_FA} $input $output "
 	}
 }
 
-make_real_fasta = {
-	doc "Take a deepSNV concensus file that is just one line of characters and add the fasta identifier to it."
-	output.dir="deepSNV/real_Fasta"
-	filter("real"){
-		exec "python ${SCRIPTS}/deepsnv2fasta.py $input $output concat"
-	}
-}
+
 
 add_amino_data = { 
         doc "Add amino acid data to variant calls based a reference sequence"

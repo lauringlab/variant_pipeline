@@ -1,0 +1,23 @@
+#YAML
+
+
+# Options for calling variants
+#
+input_dir: ./fastq #'Directory containing the input fastqs'
+output: ./output # 'The final directory that will hold the output. If it does\'t exsit it will be made')
+ref: ./reference.fa # 'The name of the reference files used for bowtie alignment' (no extension) Also there should be file with the same name but .fa extension
+control: # The sample name of the plasmid control used for varinat calling
+p: # 'The p value cut off to used. Any variant with a p.val>a will be removed at the variant calling step'
+method: # 'The method used to combine the p value from each strand "fisher","average","max".'
+disp: # Dispersion estimation to be used in deepSNV. options are c("two.sided","one.sided","bin"). Anything other than two.sided or one.sided will yield a binomial distribution'
+
+# Options for filtering and classifyting variants
+
+open_reading : # a file fasta file that contains the open reading frames of the the genome. Each open reading frame ID should contain the ID of the appropriate chromosome in the reference fasta file 
+classify_var : #Classify nonsynomyous and synomymous variants against the sample reference or the reference used to call variants options are  'sample' or 'reference'
+mapping : 
+phred : 
+p_cut : 
+freq : 
+pos :
+muscle_path : 

@@ -6,8 +6,8 @@
 input_dir: ./data/fastq/ #'Directory containing the input fastqs'
 output: ./yaml_testing # 'The final directory that will hold the output. If it does\'t exsit it will be made')
 ref: ./data/reference/wsn33_wt_plasmid # 'The name of the reference files used for bowtie alignment' (no extension) Also there should be file with the same name but .fa extension
-control: Plasmid_control# The sample name of the plasmid control used for varinat calling
-p: 0.1# 'The p value cut off to used. Any variant with a p.val>a will be removed at the variant calling step'
+control: Plasmid_control # The sample name of the plasmid control used for varinat calling
+p: 0.1 # 'The p value cut off to used. Any variant with a p.val>a will be removed at the variant calling step'
 method : fisher # 'The method used to combine the p value from each strand "fisher","average","max".'
 disp: one.sided # Dispersion estimation to be used in deepSNV. options are c("two.sided","one.sided","bin"). Anything other than two.sided or one.sided will yield a binomial distribution'
 

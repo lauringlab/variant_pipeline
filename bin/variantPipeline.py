@@ -4,7 +4,7 @@ import argparse
 import shutil
 import subprocess as s
 import yaml
-
+import sys
 
 parser = argparse.ArgumentParser(description='This is a wrapper to set up and run the bpipe command')
 

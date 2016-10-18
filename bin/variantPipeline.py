@@ -16,7 +16,7 @@ args=parser.parse_args()
 
 with open(args.options[0], 'r') as stream:
     try:
-        options=yaml.safe_load(stream))
+        options=yaml.safe_load(stream)
     except yaml.YAMLError as exc:
         raise "YAML error"
 

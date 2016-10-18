@@ -189,15 +189,10 @@ deepsnv = {
 	def test = file(input.bam).name.replace(".bam","")
 	println "test:" + test
 	println "control:" + control
-	//if( test!=control) {
 				transform("csv","fasta"){
 					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP} $output.csv $output.fasta"
 				}
-	//} else { //The control can not be used to call variants on itself as no variants are called and then R reports an error when we try to organize and write an empty data.frame. So here we make and empty output
-	//	produce("deepSNV/*.csv"){
-	//		exec "touch ${output}.csv"
-	//	}
-	//}
+
 }
 
 mapq_conditional = {
@@ -249,9 +244,9 @@ add_amino_data = {
 
 sift = {
 	doc "Variant csv file and filter based on quality scores"
-	output.dir = "${MAIN_DIR}/Filter_var"
+	output.dir = "Filter_var"
 	filter("filtered"){
-		exec "python ${SCRIPTS}/filter_var.py $input $output -mapping 20 -phred 35 -p 0.01 -freq 0.001 -pos 62 188 "
+		exec "python ${SCRIPTS}/filter_var.py $input $output ${OPTIONS} "
 	}
 }
 

@@ -22,6 +22,8 @@ with open(args.options[0], 'r') as stream:
 
 
 ## Give the input arguments better names ##
+
+options_file = os.path.abspath(args.options[0])
 input_dir=os.path.abspath(options["input_dir"])
 output_dir=os.path.abspath(options["output"])
 ref=os.path.abspath(options["ref"])
@@ -29,7 +31,10 @@ control=options["control"]
 disp=options["disp"]
 p_cut=options["p"]
 method=options["method"]
+## options for processing variants ###
 open_reading=os.path.abspath(options["open_reading"])
+
+
 bin_dir=os.path.dirname(os.path.realpath(__file__)) # The path to this file so we can find the scripts and lib
 script_dir=os.path.abspath(bin_dir+'/..'+'/scripts/')# The path to the scripts dir relative to this location
 lib_dir=os.path.abspath(bin_dir+'/..'+'/lib/') # The path to the lib dir relative to this location
@@ -69,6 +74,7 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
     config.write('P_COM_METH='+ '\"'+method+ '\"'+'\n') # The combination method used to combine the pvalues from each strand
     config.write('INPUT_DIR='+ '\"'+input_dir+ '\"'+'\n') # copy the input dir to the config file to help find the control when running in bam
     config.write('OR='+ '\"'+open_reading+ '\"'+'\n') # copy the open reading frame file
+    config.write('OPTIONS=' + '\"' + options_file + '\"\n') # Copy the options file 
 #throttled to 3 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 

@@ -76,7 +76,7 @@ control_fa<-consensusSequence(control(deepsnv.result,total=T),vector=F,haploid=T
 deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=method)
 print(deepsnv_sum)
 #print("made dataframe")
-if(dim(deepsnv_sum)[1]>1){ # if varaints were found
+if(dim(deepsnv_sum)[1]>0){ # if varaints were found
     deepsnv_sum$Id<-sample_name # set the sample name for csv
     deepsnv_sum<-subset(deepsnv_sum,var!="-" & ref !="-") # removes the indels
     mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum

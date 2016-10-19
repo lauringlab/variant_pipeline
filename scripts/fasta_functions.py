@@ -1,3 +1,14 @@
+from Bio.Seq import Seq 
+from Bio import SeqIO
+from Bio.Alphabet import IUPAC
+import pandas as pd
+import os
+import tempfile
+import sys 
+import subprocess
+import numpy
+import copy
+
 def ReadFASTA(fastafile):
     """Reads sequences from a FASTA file.
 
@@ -41,7 +52,7 @@ def Align(headers_seqs, progpath, musclegapopen=None):
     if not (isinstance(headers_seqs, list) and len(headers_seqs) >= 2):
         raise# ValueError, 'header_seqs does not specify a list with at least two entries.'
     if not os.path.isdir(progpath):
-        raise# ValueError, "Cannot find directory %s." % progpath
+        raise ValueError, "Cannot find directory %s." % progpath
     exe = os.path.abspath("%s/muscle" % progpath) # the executable
     if not os.path.isfile(exe):
         raise# IOError, "Cannot find executable at %s." % exe

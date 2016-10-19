@@ -229,8 +229,9 @@ parse= {
 classification = { 
         doc "Add amino acid data to variant calls based a reference sequence"
         output.dir = "Final_variants"
-            filter("AA"){
-                exec "python ${SCRIPTS}/AA_var.py  ${OR} $input.csv $output ${CALLING}"
+        def ref = "./parsed_fa/"+file(CONTROL_BAM).name.replace(".bam",".parsed.fasta")    
+	filter("AA"){
+                exec "python ${SCRIPTS}/AA_var.py  $ref $input.csv $output ${OPTIONS}"
                 }   
 }
 

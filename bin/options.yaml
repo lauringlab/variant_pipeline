@@ -13,14 +13,14 @@ disp: one.sided # Dispersion estimation to be used in deepSNV. options are c("tw
 
 # Options for filtering and classifyting variants
 
-open_reading : ./data/reference/wsn33.OR.fa # a file fasta file that contains the open reading frames of the the genome. Each open reading frame ID should contain the ID of the appropriate chromosome in the reference fasta file 
+open_reading : ../data/reference/wsn33.OR.fa # a file fasta file that contains the open reading frames of the the genome.The path is from inside output ddir Each open reading frame ID should contain the ID of the appropriate chromosome in the reference fasta file 
 classify_var : reference # Classify nonsynomyous and synomymous variants against the sample reference or the reference used to call variants options are  'sample' or 'reference'
 mapping : 30
 phred : 35
 p_cut : 0.01
 freq : 0.01
 pos : [62, 188]
-muscle_path : /sw/lsa/centos7/muscle/3.8.31/bin/muscle
+muscle_path : /sw/lsa/centos7/muscle/3.8.31/bin/
 run : Test # What run name should be added to the csv if not needed use 'None'
 infer : True # Boolean switch to infer minor variants at positions where the minor variant may be the plasmid\'s consensus' True or False
 meta : !!null ''   # None # If there is a meta data sheet for these sample you can place that here if not needed use !!null ''    to signify 'None'

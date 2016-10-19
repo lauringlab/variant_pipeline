@@ -9,7 +9,7 @@ import subprocess
 import numpy
 import copy
 import argparse
-
+import yaml
 from fasta_functions import *
 
 #    in_csv = ["~/Documents/Analysis/scratch/Filter_var/2377_1.removed.mapq.sum.filtered.csv"]
@@ -101,7 +101,7 @@ variants["Class"]= [list() for x in range(len(variants.index))]
 
 
 
-coding=ReadFASTA(args.OR[0])
+coding=ReadFASTA(args.OR)
 reference = ReadFASTA(args.Ref[0])
 
 for ref in reference:
@@ -119,7 +119,7 @@ for ref in reference:
             # Align
             fix_ref_coding=Align([fixed_ref,code],args.muscle_path)
             ref_coding=Align([ref,code],args.muscle_path)
-            ref_co ding_deep=copy.deepcopy(ref_coding)
+            ref_coding_deep=copy.deepcopy(ref_coding)
             # Trim to just coding sequence
             ref_trimmed=StripGapsToFirstSequence([ref_coding[1],ref_coding[0]])
             fixed_ref_trimmed = StripGapsToFirstSequence([fix_ref_coding[1],fix_ref_coding[0]])
@@ -129,8 +129,8 @@ for ref in reference:
                 raise ValueError, "Gaps were found in the open reading frame - check sequence for insertions" # think about writing in code to tranlate these if they are inframe
             if args.classification == 'control':
                 ref_trans=ref_trimmed.seq.translate() # This is reference that is used to call the reference AA
-            elif args.classificiation=='sample':
-                ref_trans = fixed_ref_trimmed.translate()
+            elif args.classification=='sample':
+                ref_trans = fixed_ref_trimmed.seq.translate()
             else:
                 raise "unknown classification reference - please use either 'sample' or 'control' only."
             # Set fixed mutations at the nucleotide level

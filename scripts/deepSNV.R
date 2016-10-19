@@ -78,7 +78,7 @@ print(deepsnv_sum)
 #print("made dataframe")
 if(dim(deepsnv_sum)[1]>0){ # if varaints were found
     deepsnv_sum$Id<-sample_name # set the sample name for csv
-    deepsnv_sum<-subset(deepsnv_sum,var!="-" & ref !="-") # removes the indels
+    deepsnv_sum<-subset(deepsnv_sum,!(var=="-" | ref =="-" && freq.var<0.5)) # removes the indels that are below the consensus level
     mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
 }else{
    deepsnv_sum<-data.frame("chr"=character(),

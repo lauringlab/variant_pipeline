@@ -226,20 +226,12 @@ parse= {
 
 
 
-add_amino_data = { 
+classification = { 
         doc "Add amino acid data to variant calls based a reference sequence"
-        output.dir = "${MAIN_DIR}/AA_var"
-        def csv = file(input.csv).name.replace("removed.mapq.sum.csv","")
-        def fa = file(input.fa).name.replace("removed.real.parsed.fa","")
-        if(csv==fa){
-                println "Found match : " + csv + " : csv and " + fa + " : fa"
-                filter("AA"){
-                        exec "python ${SCRIPTS}/AA_var.py $input.fa ${OR} $input.csv $output"
+        output.dir = "Final_variants"
+            filter("AA"){
+                exec "python ${SCRIPTS}/AA_var.py  ${OR} $input.csv $output ${CALLING}"
                 }   
-        } else {
-                println "csv : " + csv " doens't match fa : " + fa
-        }   
-
 }
 
 sift = {

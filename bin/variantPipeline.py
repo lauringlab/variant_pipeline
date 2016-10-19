@@ -46,6 +46,7 @@ print "Processing fastqs from " + input_dir
 print "Results will be saved to " + output_dir
 print "Using " + ref +" for a reference and \n" + control + " as the control sample"
 
+os.chdir(bin_dir+"/..")
 git_command="git rev-list HEAD |head -n 1"
 print "using version : "
 s.call(git_command,shell=True)

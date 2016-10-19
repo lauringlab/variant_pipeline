@@ -248,7 +248,6 @@ sift = {
 combine = {
 	doc "combines the coverage, reads and variant calls into one file that can easily be imported into R for analysis"
 
-	exec "python ${SCRIPTS}/combine.py ./Variants reads.csv all.reads.csv "
-	exec "python ${SCRIPTS}/combine.py ./Variants sum.csv all.sum.csv"
-	exec "python ${SCRIPTS}/combine.py ./deepSNV cov.csv all.coverage.csv"
+	exec "python ${SCRIPTS}/combine.py ./Final_variants AA.csv ../all.variants.csv"
+	exec "python ${SCRIPTS}/combine.py ./deepSNV cov.csv ../all.coverage.csv"
 }

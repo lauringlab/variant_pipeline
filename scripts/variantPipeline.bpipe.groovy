@@ -25,6 +25,6 @@ run  {
     "%.sam" * [ picard_sortsam + picard_removedups  ] + get_control +
     "%.bam" * [deepsnv + "%.fasta" * [parse] + "%.csv"*[mapq_conditional]] +
     "%.sum.csv"* [sift]+
-     "%.csv" * [classification] + combine+
+     "%.csv" * [classification] + combine + quality_report +
      done
 }

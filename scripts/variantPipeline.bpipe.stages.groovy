@@ -82,31 +82,32 @@ bowtie2 = {
     doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
     output.dir = "03_align"
     if(input.input.size == 2){
- 	def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
+ 	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
+	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
 	//println "expected outout " + sam_out
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
+            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ${sam_out} 2> ${log_file}"
         }
     }
     if(input.input.size == 4){
-        def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
-        println "expected outout " + sam_out
-        produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
+        def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
+        def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+	produce(sam_out) {
+            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ${sam_out} 2> ${log_file}"
         }
     }
     if(input.input.size == 6){
-        def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
-        println "expected outout " + sam_out
-        produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
+ 	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
+	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+	produce(sam_out) {
+            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ${sam_out} 2> ${log_file}"
         }
     }
     if(input.input.size == 8){
-       def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
-        println "expected outout " + sam_out
-        produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
+ 	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
+	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+	produce(sam_out) {
+            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S 2> ${log_file}"
         }
     }
 }
@@ -251,3 +252,10 @@ combine = {
 	exec "python ${SCRIPTS}/combine.py ./Final_variants AA.csv ../all.variants.csv"
 	exec "python ${SCRIPTS}/combine.py ./deepSNV cov.csv ../all.coverage.csv"
 }
+
+quality_report = {
+	doc "runs MultiQC to create a quality report for the run"
+	exec "multiqc ./"
+}
+
+

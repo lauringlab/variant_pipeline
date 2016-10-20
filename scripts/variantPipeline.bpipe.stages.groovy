@@ -75,7 +75,7 @@ pydmx = {
 //    doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
 //    output.dir = "03_align"
 //    produce ("03_align/*.sam") {
-//        exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.fastq")[0] + '.sam'
+//        exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
 //    }
 //}
 bowtie2 = {
@@ -85,28 +85,28 @@ bowtie2 = {
  	def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
 	//println "expected outout " + sam_out
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
+            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
         }
     }
     if(input.input.size == 4){
         def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
         println "expected outout " + sam_out
         produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
+            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
         }
     }
     if(input.input.size == 6){
         def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
         println "expected outout " + sam_out
         produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
+            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
         }
     }
     if(input.input.size == 8){
        def sam_out=file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
         println "expected outout " + sam_out
         produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + '.sam'
+            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
         }
     }
 }

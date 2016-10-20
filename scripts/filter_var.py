@@ -102,7 +102,10 @@ out = filter(data,args)
 if out.shape[0]>0:
     out_id=out["Id"].apply(lambda x: pd.Series(x.split('_')))
     out=out.assign(LAURING_ID = out_id[0])
-    out=out.assign(dup=out_id[1])
+    if len(out)=2:
+        out=out.assign(dup=out_id[1])
+    else:
+        out=out.assign(dup=None)
 
     if args.infer == True:
         print "Infering reciprocal variants"

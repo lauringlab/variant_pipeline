@@ -96,11 +96,11 @@ def filter(x,args):
 # read in the csv and apply the subsetting function
 print args.pos
 data=pd.DataFrame.from_csv(args.variants[0],index_col=False)
-
+data.Id.apply(str)
 out = filter(data,args)
 
 if out.shape[0]>0:
-    out_id=out["Id"].apply(lambda x: pd.Series(x.split('_')))
+    out_id=out["Id"].apply(lambda x: pd.Series(str(x).split('_')))
     out=out.assign(LAURING_ID = out_id[0])
     if len(out)==2:
         out=out.assign(dup=out_id[1])
@@ -121,6 +121,7 @@ if out.shape[0]>0:
         print "Merging with meta data"
         #print out
         meta=pd.DataFrame.from_csv(args.meta,index_col=False)
+        meta.LAURING_ID.apply(str)
         out=out.merge(meta,how="left",on="LAURING_ID")
 
 else:

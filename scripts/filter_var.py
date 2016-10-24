@@ -71,7 +71,7 @@ def infer(x):
 
 
 def infer_all(data,low,high):
-    data=data.assign(id_pos = data['chr']+ data['pos'].map(str)+"-"+data["Id"])
+    data=data.assign(id_pos = data['chr']+ data['pos'].map(str)+"-"+data["Id"].map(str))
     total_freq=data.groupby("id_pos")['freq.var'].apply(np.sum)
     total_freq=total_freq.to_frame("total_freq")
     total_freq.loc[total_freq.index,"id_pos"]=total_freq.index

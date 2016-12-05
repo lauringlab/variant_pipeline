@@ -69,21 +69,14 @@ def infer(x):
     x["mutation"].update(x["chr"] +"_"+ x["ref"] +x["pos"].map(str)+x["var"])
     return(x)    
 
-def exp_total(data):
-    n_test = np.sum([data['n.tst.bw'],data['n.tst.fw']])
-    cov_test = np.sum([data['cov.tst.bw'],data['cov.tst.fw']])
-    n_control = np.sum([data['n.ctl.bw'],data['n.ctl.fw']])
-    cov_control = np.sum([data['cov.ctl.bw'],data['cov.ctl.fw']])
-    freq_test = n_test/float(cov_test)
-    freq_control = n_control/float(cov_control)
-    total_freq  = freq_test+freq_control
-    return(total_freq)
 
 def infer_all(data,low,high):
     data=data.assign(id_pos = data['chr']+ data['pos'].map(str)+"-"+data["Id"])
-    total_freq=data.groupby("id_pos").apply(exp_total)
+    data=data.assign(exp_freq = (data['n.tst.bw']+data['n.tst.fw'])/(data['cov.tst.bw']+data['cov.tst.fw'])) # This is the expected frequency if there was nothing in the control
+    total_freq=data.groupby("id_pos")['exp_freq'].apply(np.sum)
     total_freq=total_freq.to_frame("total_freq")
     total_freq.loc[total_freq.index,"id_pos"]=total_freq.index
+    #print total_freq
     data=data.merge(total_freq,how='left',on='id_pos')
     #print(data.columns)
   

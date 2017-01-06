@@ -97,7 +97,7 @@ def filter(x,args):
 
 # read in the csv and apply the subsetting function
 print args.pos
-data=pd.DataFrame.from_csv(args.variants[0],index_col=False)
+data=pd.DataFrame.from_csv(args.variants[0],index_col=None)
 data.Id.apply(str)
 out = filter(data,args)
 
@@ -122,7 +122,7 @@ if out.shape[0]>0:
         # split the duplicate labels if present here and then add meta data.
         print "Merging with meta data"
         #print out
-        meta=pd.DataFrame.from_csv(args.meta,index_col=False)
+        meta=pd.DataFrame.from_csv(args.meta,index_col=None)
         meta.LAURING_ID.apply(str)
         out=out.merge(meta,how="left",on="LAURING_ID")
 

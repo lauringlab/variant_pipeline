@@ -74,7 +74,7 @@ control_fa<-consensusSequence(control(deepsnv.result,total=T),vector=F,haploid=T
 
 #print("making summary dataframe")
 deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=method)
-print(deepsnv_sum)
+#print(deepsnv_sum)
 #print("made dataframe")
 if(dim(deepsnv_sum)[1]>0){ # if varaints were found
     deepsnv_sum$Id<-sample_name # set the sample name for csv

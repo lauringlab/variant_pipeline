@@ -25,6 +25,9 @@ def get_reference(row,bam):
     pos=int(row["pos"])
     py_pos=pos-1 # pythonify the position
     ref=row["ref"]
+    var=row["var"]
+    deepsnv_n_fw=row["n.tst.fw"]
+    deepsnv_n_bw=row["n.tst.bw"]
     fw=0
     bw=0
     cov_fw=0
@@ -36,18 +39,18 @@ def get_reference(row,bam):
                     if pileupread.alignment.is_reverse:
                         called_base=pileupread.alignment.query_sequence[pileupread.query_position] # what is the called base at the position
                         called_phred=pileupread.alignment.query_qualities[pileupread.query_position] # what is the phred of that base
-                        if called_phred>=30: # change this if you change the phred cut off in deepSNV. deepSNV only looks a phred>30. and we only want those calles that match the variant.
-                            cov_bw=cov_bw+1
-                            if called_base==ref:
-                                bw=bw+1
+                        if called_phred>30 and called_base in ['A','T','C','G']: # change this if you change the phred cut off in deepSNV. deepSNV only looks a phred>30. and we only want those calles that match the variant.
+                            cov_bw +=1
+                            if called_base==var:
+                                bw +=1
                     if not pileupread.alignment.is_reverse:
                         called_base=pileupread.alignment.query_sequence[pileupread.query_position] # what is the called base at the position
                         called_phred=pileupread.alignment.query_qualities[pileupread.query_position] # what is the phred of that base
-                        if called_phred>=30: # change this if you change the phred cut off in deepSNV. deepSNV only looks a phred>30. and we only want those calles that match the variant.
-                            cov_fw=cov_fw+1
-                            if called_base==ref:
-                                fw=fw+1
-    print(fw)
+                        if called_phred>30: # change this if you change the phred cut off in deepSNV. deepSNV only looks a phred>30. and we only want those calles that match the variant.
+                            cov_fw +=1
+                            if called_base==var:
+                                fw +=1
+    print str(bw == deepsnv_n_bw) + ":" + str(fw==deepsnv_n_fw)
 
 for index, row in variants.iterrows():
     get_reference(row,bam)                                                    

@@ -216,6 +216,29 @@ mapq_conditional = {
 }
 
 
+reference_base_and_quality = {
+        doc "runs a python script that for each variant called checks the number of reference bases (skipped by deepSNV) and then calculates the average mapped quality, phred and read position of all variants"
+        output.dir="Variants"
+        //I've been having some trouble getting the right inputs and outputs to line up. The best way to do this might be to make a map that explicitly describes how the sample pair up. bUt that might take a little too long to figure out how to do now.
+        def csv = file(input.csv).name.replace(".csv","")
+        def bam = file(input.bam).name.replace(".bam","")
+        def control = file(CONTROL_BAM).name.replace(".bam","")
+	if (csv!=control){
+		if ( csv == bam) {
+                	println "Found match: " + csv + ".csv and " +bam+".bam"
+                	transform("ref.sum.csv"){
+                        	exec " python ${SCRIPTS}/reciprocal_variants.py $input.bam $input.csv $output.csv"
+        			}
+        	} else {
+                	println "csv: " + csv + " doesn't match bam: "+bam
+        	}
+          }
+}
+
+
+
+
+
 parse= {
 	doc "Take the concatenated consensus fasta file from deepSNV and deconcatenate it using the segmented positions in from the coverage file"
 	output.dir = "parsed_fa"

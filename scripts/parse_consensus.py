@@ -1,5 +1,3 @@
-#!/Users/jt/.virtualenvs/sci-py2.7/bin/python
-
 from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio.Alphabet import IUPAC
@@ -72,7 +70,7 @@ def main():
         i=i+1
     #print samp_fasta
 
-    print "writing output to %s"  % args.out_fa
+    print("writing output to %s"  % args.out_fa)
     SeqIO.write(samp_fasta, args.out_fa[0], "fasta")
 
 

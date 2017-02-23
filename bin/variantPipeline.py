@@ -42,13 +42,13 @@ bpipe_command=lib_dir+'/bpipe-0.9.8.7/bin/bpipe' # The path to the bpipe command
 test=args.test
 #bam=args.bam
 
-print "Processing fastqs from " + input_dir
-print "Results will be saved to " + output_dir
-print "Using " + ref +" for a reference and \n" + control + " as the control sample"
+print("Processing fastqs from " + input_dir)
+print("Results will be saved to " + output_dir)
+print("Using " + ref +" for a reference and \n" + control + " as the control sample")
 
 os.chdir(bin_dir+"/..")
 git_command="git rev-list HEAD |head -n 1"
-print "using version : "
+print("using version : ")
 s.call(git_command,shell=True)
 
 ## If the output dir does not exist make it 
@@ -89,7 +89,7 @@ if test==False:
 	command= bpipe_command + " run -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
 else:
 	command=bpipe_command + " test " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
-print "submitting command: \n"+command
+print("submitting command: \n"+command)
 
 
 

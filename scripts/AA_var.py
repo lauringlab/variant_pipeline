@@ -126,13 +126,13 @@ for ref in reference:
             # Translate to amino acid sequence
             # remove any gaps in ref seq 
             if fixed_ref_trimmed.seq.count("-")>0:
-                raise ValueError, "Gaps were found in the open reading frame - check sequence for insertions" # think about writing in code to tranlate these if they are inframe
+                raise ValueError("Gaps were found in the open reading frame - check sequence for insertions") # think about writing in code to tranlate these if they are inframe
             if args.classification == 'control':
                 ref_trans=ref_trimmed.seq.translate() # This is reference that is used to call the reference AA
             elif args.classification=='sample':
                 ref_trans = fixed_ref_trimmed.seq.translate()
             else:
-                raise "unknown classification reference - please use either 'sample' or 'control' only."
+                raise ValueError("unknown classification reference - please use either 'sample' or 'control' only.")
             # Set fixed mutations at the nucleotide level
             # Get coding pos for appropriate variants
             # Note GetCorrespondingResidue and the AA_pos are in base 1 not the usual base 0 python -  I want to fix this at some point

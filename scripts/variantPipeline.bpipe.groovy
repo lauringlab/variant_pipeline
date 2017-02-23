@@ -23,7 +23,7 @@ run  {
 
 // Sort, remove duplicates, call variants, and set coverage
     "%.sam" * [ picard_sortsam + picard_removedups  ] + get_control +
-    "%.bam" * [deepsnv + "%.fasta" * [parse] + "%.csv"*[mapq_conditional]] +
+    "%.bam" * [deepsnv + "%.fasta" * [parse] + "%.csv"*[reference_base_and_quality]] +
     "%.sum.csv"* [sift]+
      "%.csv" * [classification] + combine + quality_report +
      done

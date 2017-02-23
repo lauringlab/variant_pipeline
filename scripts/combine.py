@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # adapted from  http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-directory-in-python/24652788#24652788
 
 # Usage input the bash style reg ex using (not including the *)  and this will combine all files together only including the header from the first one

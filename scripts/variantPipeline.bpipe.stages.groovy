@@ -236,9 +236,6 @@ reference_base_and_quality = {
 }
 
 
-
-
-
 parse= {
 	doc "Take the concatenated consensus fasta file from deepSNV and deconcatenate it using the segmented positions in from the coverage file"
 	output.dir = "parsed_fa"

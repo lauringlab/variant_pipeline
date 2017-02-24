@@ -1,5 +1,3 @@
-#!/Users/jt/.virtualenvs/sci-py2.7/bin/python
-
 import os
 import os.path
 import argparse

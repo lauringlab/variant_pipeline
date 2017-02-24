@@ -1,5 +1,3 @@
-#!/Users/jt/.virtualenvs/sci-py2.7/bin/python
-
 from Bio.Seq import Seq
 from Bio import SeqIO
 import argparse
@@ -7,7 +5,7 @@ import glob
 import pandas as pd
 import os
 
-parser = argparse.ArgumentParser(description='This script is designed to concatenate the designated segment from a director of sample fasta files')
+parser = argparse.ArgumentParser(description='This script is designed to concatenate the designated segment from a directory of sample fasta files')
 
 
 parser.add_argument('dir', metavar='dir', nargs='+',
@@ -23,8 +21,6 @@ parser.add_argument('out_fa', metavar='out_fa', nargs='+',
 
 
 args = parser.parse_args()
-
-
 
 
 def ReadFASTA(fastafile):

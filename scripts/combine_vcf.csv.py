@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # adapted from  http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-directory-in-python/24652788#24652788
 
 # Usage input the bash style reg ex using *s and this will combine all files together only including the header from the first one
@@ -23,7 +21,7 @@ with open(csv_files[0],"r") as first_file:
     for line in first_file:
         fout.write(line)
 
-# now the rest:    
+# now the rest:
 for num in range(1,len(csv_files)):
     print("working with " + csv_files[num])
     with open(csv_files[num],"r") as next_file:

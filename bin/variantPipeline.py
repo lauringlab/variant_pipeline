@@ -18,7 +18,7 @@ with open(args.options[0], 'r') as stream:
     try:
         options=yaml.safe_load(stream)
     except yaml.YAMLError as exc:
-        raise "YAML error"
+        raise("YAML error")
 
 
 ## Give the input arguments better names ##
@@ -48,9 +48,7 @@ print("Using " + ref +" for a reference and \n" + control + " as the control sam
 
 os.chdir(bin_dir+"/..")
 git_command="git rev-list HEAD |head -n 1"
-print("using version : ")
-s.call(git_command,shell=True)
-
+version=s.check_output(git_command,shell=True)
 ## If the output dir does not exist make it 
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
@@ -76,6 +74,7 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
     config.write('INPUT_DIR='+ '\"'+input_dir+ '\"'+'\n') # copy the input dir to the config file to help find the control when running in bam
     config.write('OR='+ '\"'+open_reading+ '\"'+'\n') # copy the open reading frame file
     config.write('OPTIONS=' + '\"' + options_file + '\"\n') # Copy the options file 
+    config.write('This pipeline was run on with commit : '+ version.decode() +'\n')
 #throttled to 3 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 

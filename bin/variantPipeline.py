@@ -63,6 +63,7 @@ shutil.copy(script_dir+'/variantPipeline.bpipe.groovy',output_dir)
 
 # add variables to the bpipe config file to pass them to the pipeline
 with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
+    config.write('//This pipeline was run on with commit : '+ version.decode() +'\n')
     config.write('REFERENCE='+'\"'+ ref+ '\"'+'\n') # The name of the reference files for bowtie alignment wit
     config.write('REFERENCE_FA='+ '\"'+ref+ '.fa' '\"'+'\n') # The reference file fasta to be used in the deepSNV step relative to segment and locations to call variants
     config.write('SCRIPTS='+ '\"'+script_dir+ '\"'+'\n') # The scripts dir 
@@ -74,7 +75,7 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
     config.write('INPUT_DIR='+ '\"'+input_dir+ '\"'+'\n') # copy the input dir to the config file to help find the control when running in bam
     config.write('OR='+ '\"'+open_reading+ '\"'+'\n') # copy the open reading frame file
     config.write('OPTIONS=' + '\"' + options_file + '\"\n') # Copy the options file 
-    config.write('This pipeline was run on with commit : '+ version.decode() +'\n')
+    
 #throttled to 3 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 

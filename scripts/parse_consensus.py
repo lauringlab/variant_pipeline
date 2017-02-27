@@ -54,7 +54,7 @@ def main():
         ref_seqname.append(seq.id)
         samp_seqname.append(seq.id)
         ref_length.append(len(seq))
-    #print ref_length	
+    #print(ref_length)
     j=0
     start=[]
     stop=[]
@@ -62,13 +62,13 @@ def main():
         start.append(sum(ref_length[0:j]))
         stop.append(start[j]+ref_length[j])
         j=j+1
-    print start
-    print stop
+    #print(start)
+    #print(stop)
     i=0
     for seq in samp_fasta:
         seq.seq=Seq(sample[start[i]:stop[i]])
         i=i+1
-    #print samp_fasta
+    #print(samp_fasta)
 
     print("writing output to %s"  % args.out_fa)
     SeqIO.write(samp_fasta, args.out_fa[0], "fasta")

@@ -46,7 +46,7 @@ def filter(x,mq,phred,freq,stringent_freq,pval,pos):
 
 # read in the csv and apply the subsetting function
 #print pos
-data=pd.DataFrame.from_csv(variants,index_col=False)
+data=pd.DataFrame.from_csv(variants,index_col=None)
 data.Id.apply(str)
 out = filter(data,mq,phred,freq,stringent_freq,pval,pos)
 

@@ -51,10 +51,17 @@ def update_base(read,df,n_counts):
     return df
 
 def finalize(df):
-    df["MapQ"]=np.mean(df.mapq)
-    df["Phred"]=np.mean(df.phred)
-    df["Read_pos"]=np.mean(df.read_pos)
+    if len(df["mapq"])==0:
+        df["MapQ"]="NA"
+        df["Phred"]="NA"
+        df["Read_pos"]="NA"
+    else:
+        df["MapQ"]=np.mean(df.mapq)
+        df["Phred"]=np.mean(df.phred)
+        df["Read_pos"]=np.mean(df.read_pos)
+
     df=df.drop(["mapq","phred","read_pos"])
+    
     return df
 
 
@@ -65,7 +72,7 @@ with open(args.options[0], 'r') as stream:
     try:
         options=yaml.safe_load(stream)
     except yaml.YAMLError as exc:
-        raise "YAML error"
+        raise("YAML error")
 
 
 bam= pysam.AlignmentFile(args.bam[0], "rb") 
@@ -100,7 +107,9 @@ inferred_qual=pd.DataFrame()
 for index, row in variants.iterrows():
     meta_bases=get_reference(row,bam)                                                    
     inferred_qual=inferred_qual.append(meta_bases[0])
-    inferred_qual=inferred_qual.append(meta_bases[1])
+    ref=meta_bases[1]
+    if ref["freq.var"]>0: # only add the reference base if there is something to add
+        inferred_qual=inferred_qual.append(meta_bases[1])
 
 inferred_qual_nodup=inferred_qual.drop_duplicates() # If there are 2 variants at any position we will grab the reference data twice. This removes those duplicate rows.
 

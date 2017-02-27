@@ -29,7 +29,6 @@ freq = options['freq']
 pos = options['pos']
 pval = options['p_cut']
 run= options['run']
-meta = options['meta']
 stringent_freq = options['stringent_freq']
 out_csv= opts.out_csv[0]
 
@@ -52,25 +51,9 @@ data.Id.apply(str)
 out = filter(data,mq,phred,freq,stringent_freq,pval,pos)
 
 if out.shape[0]>0: # if there are some variants left
-    out_id=out["Id"].apply(lambda x: pd.Series(str(x).split('_')))
-    out=out.assign(LAURING_ID = out_id[0])
-    if len(out)==2:
-        out=out.assign(dup=out_id[1])
-    else:
-        out=out.assign(dup=None)
     if run != None:
         print("Adding run label")
         out.loc[:,'run']=run
-
-
-    if meta !=None:
-        # split the duplicate labels if present here and then add meta data.
-        print("Merging with meta data")
-        #print out
-        meta=pd.DataFrame.from_csv(meta,index_col=None)
-        meta.LAURING_ID.apply(str)
-        out=out.merge(meta,how="left",on="LAURING_ID")
-
 else:
     print("There were no variants left - There may have been none to begin with")
     

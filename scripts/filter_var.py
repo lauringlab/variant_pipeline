@@ -22,7 +22,7 @@ with open(opts.options[0], 'r') as stream:
         raise "YAML error"
 
 
-variants = [opts.variants[0]]
+variants = opts.variants[0]
 phred = options["phred"]
 mq = options["mapping"]
 freq = options['freq']
@@ -31,7 +31,7 @@ pval = options['p_cut']
 run= options['run']
 meta = options['meta']
 stringent_freq = options['stringent_freq']
-out_csv= [opts.out_csv[0]]
+out_csv= opts.out_csv[0]
 
 
 
@@ -47,7 +47,7 @@ def filter(x,mq,phred,freq,stringent_freq,pval,pos):
 
 # read in the csv and apply the subsetting function
 #print pos
-data=pd.DataFrame.from_csv(variants[0],index_col=False)
+data=pd.DataFrame.from_csv(variants,index_col=False)
 data.Id.apply(str)
 out = filter(data,mq,phred,freq,stringent_freq,pval,pos)
 
@@ -74,8 +74,8 @@ if out.shape[0]>0: # if there are some variants left
 else:
     print("There were no variants left - There may have been none to begin with")
     
-print("Saving output as " + out_csv[0])
-out.to_csv(out_csv[0])
+print("Saving output as " + out_csv)
+out.to_csv(out_csv)
 
 
 

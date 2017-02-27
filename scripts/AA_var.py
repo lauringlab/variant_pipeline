@@ -12,9 +12,6 @@ import argparse
 import yaml
 from fasta_functions import *
 
-#    in_csv = ["~/Documents/Analysis/scratch/Filter_var/2377_1.removed.mapq.sum.filtered.csv"]
-#    OR = ["/Users/jt/Documents/Analysis/scratch/polio_multiple_OR.fa"]
-#    Ref = ["/Users/jt/Documents/Analysis/scratch/polio_multiple.fa"]
 parser = argparse.ArgumentParser(description='This script takes a consensus fasta, a fasta file of open reading frames (whose names include the segment names in the consensus fasta), and a csv of variant calls as outputed from deepSNV. It then identifies mutations as nonsynonymous or synonymous. It currently requires that the open reading frame and the reference sequence have the same number of amino acids. Any difference will through an error.')
 
 parser.add_argument('Ref', metavar='Ref', nargs='+',
@@ -34,18 +31,17 @@ with open(opts.options[0], 'r') as stream:
     try:
         options=yaml.safe_load(stream)
     except yaml.YAMLError as exc:
-        raise "YAML error"
+        raise("YAML error")
 
 
-class test_args:
-    Ref = [opts.Ref[0]]
-    in_csv= [opts.in_csv[0]]
-    out_csv= [opts.out_csv[0]]
-    muscle_path = options["muscle_path"]
-    OR = options["open_reading"]
-    classification = options["classification"]
+
+Ref = opts.Ref[0]
+in_csv= opts.in_csv[0]
+out_csv= opts.out_csv[0]
+muscle_path = options["muscle_path"]
+OR = options["open_reading"]
+classification = options["classification"]
     
-args = test_args()
     
 def no_nones(x):
     return [y for y in x if y is not None]
@@ -72,12 +68,7 @@ def trim_noncoding(series):
     
 
 
-#class test_args:
-#    in_csv = ["~/Documents/Analysis/scratch/Filter_var/2377_1.removed.mapq.sum.filtered.csv"]
-#    OR = ["/Users/jt/Documents/Analysis/scratch/polio_multiple_OR.fa"]
-#    Ref = ["/Users/jt/Documents/Analysis/scratch/polio_multiple.fa"]
-#args=test_args()
-variants=pd.read_csv(args.in_csv[0],index_col=0)
+variants=pd.read_csv(in_csv,index_col=0)
 
 # setting up empty lists - OR - Open reading frame
 ###################################################################
@@ -101,8 +92,8 @@ variants["Class"]= [list() for x in range(len(variants.index))]
 
 
 
-coding=ReadFASTA(args.OR)
-reference = ReadFASTA(args.Ref[0])
+coding=ReadFASTA(OR)
+reference = ReadFASTA(Ref)
 
 for ref in reference:
 
@@ -111,14 +102,14 @@ for ref in reference:
         seg = ref.id
         OR= code.id
         if seg in OR:
-            print "Working with variants on %s" % seg
+            print("Working with variants on %s" % seg)
             seg_var = variants.index[variants["chr"]==seg]
             fixed=variants.loc[(variants["freq.var"]>0.5) & (variants["chr"]==seg)] # anything above 50% will be in the consensus or "fixed"
             # Mutate the consensus variants to make the plasmid consensus into the sample consensus.
             fixed_ref=mutate(ref,fixed)
             # Align
-            fix_ref_coding=Align([fixed_ref,code],args.muscle_path)
-            ref_coding=Align([ref,code],args.muscle_path)
+            fix_ref_coding=Align([fixed_ref,code],muscle_path)
+            ref_coding=Align([ref,code],muscle_path)
             ref_coding_deep=copy.deepcopy(ref_coding)
             # Trim to just coding sequence
             ref_trimmed=StripGapsToFirstSequence([ref_coding[1],ref_coding[0]])
@@ -127,9 +118,9 @@ for ref in reference:
             # remove any gaps in ref seq 
             if fixed_ref_trimmed.seq.count("-")>0:
                 raise ValueError("Gaps were found in the open reading frame - check sequence for insertions") # think about writing in code to tranlate these if they are inframe
-            if args.classification == 'control':
+            if classification == 'control':
                 ref_trans=ref_trimmed.seq.translate() # This is reference that is used to call the reference AA
-            elif args.classification=='sample':
+            elif classification=='sample':
                 ref_trans = fixed_ref_trimmed.seq.translate()
             else:
                 raise ValueError("unknown classification reference - please use either 'sample' or 'control' only.")
@@ -153,7 +144,7 @@ for ref in reference:
 variants=variants.apply(trim_noncoding,axis=1)
 
 
-variants.to_csv(args.out_csv[0])
+variants.to_csv(out_csv)
 
     
     

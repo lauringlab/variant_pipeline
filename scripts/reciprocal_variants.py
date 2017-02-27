@@ -4,6 +4,7 @@ import pandas as pd
 import pysam
 import copy
 import numpy as np
+import yaml 
 
 
 parser = argparse.ArgumentParser(description='This script is designed to read in a csv of putative variant calls from deepSNV and query the bam file for the number of reads matching the reference base at that position.',usage ="python reciprocal_variants.py sample.bam sample.csv")
@@ -14,6 +15,9 @@ parser.add_argument('csv', metavar='csv', nargs='+',
                     help='The deepSNV csv file')
 parser.add_argument('out_csv', metavar='out_csv', nargs='+',
                     help='The csv file that will contain the output')
+parser.add_argument('options', metavar='options', nargs='+',
+                    help='A YAML options file mimicing the one found in the bin directions')
+
 
 def var_setup(row):
     df=copy.deepcopy(row)
@@ -55,6 +59,15 @@ def finalize(df):
 
 
 args=parser.parse_args()    
+
+
+with open(args.options[0], 'r') as stream:
+    try:
+        options=yaml.safe_load(stream)
+    except yaml.YAMLError as exc:
+        raise "YAML error"
+
+
 bam= pysam.AlignmentFile(args.bam[0], "rb") 
 variants=pd.read_csv(args.csv[0],index_col=False)
 out_csv=args.out_csv[0]
@@ -90,8 +103,12 @@ for index, row in variants.iterrows():
     inferred_qual=inferred_qual.append(meta_bases[1])
 
 inferred_qual_nodup=inferred_qual.drop_duplicates() # If there are 2 variants at any position we will grab the reference data twice. This removes those duplicate rows.
-inferred_qual_nodup.to_csv(out_csv)
 
-# remove duplicate rows if applicable
+if not options["infer"]: # infer is a boolean - False if we don't want to infer the variants.
+    no_infer=inferred_qual_nodup.loc[ (inferred_qual_nodup['ref']!=inferred_qual_nodup['var'])]
+    no_infer.to_csv(out_csv)
+else:
+    inferred_qual_nodup.to_csv(out_csv)
 
-# write output to csv
+
+

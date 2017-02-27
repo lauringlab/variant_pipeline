@@ -227,7 +227,7 @@ reference_base_and_quality = {
 		if ( csv == bam) {
                 	println "Found match: " + csv + ".csv and " +bam+".bam"
                 	transform("ref.sum.csv"){
-                        	exec " python ${SCRIPTS}/reciprocal_variants.py $input.bam $input.csv $output.csv"
+                        	exec " python ${SCRIPTS}/reciprocal_variants.py $input.bam $input.csv $output.csv ${OPTIONS}"
         			}
         	} else {
                 	println "csv: " + csv + " doesn't match bam: "+bam

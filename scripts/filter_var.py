@@ -22,36 +22,34 @@ with open(opts.options[0], 'r') as stream:
         raise "YAML error"
 
 
-class test_args:
-    variants = [opts.variants[0]]
-    phred = options["phred"]
-    mq = options["mapping"]
-    freq = options['freq']
-    pos = options['pos']
-    pval = options['p_cut']
-    run= options['run']
-    meta = options['meta']
-    stringent_freq = options['stringent_freq']
-    out_csv= [opts.out_csv[0]]
-    
-args = test_args()
+variants = [opts.variants[0]]
+phred = options["phred"]
+mq = options["mapping"]
+freq = options['freq']
+pos = options['pos']
+pval = options['p_cut']
+run= options['run']
+meta = options['meta']
+stringent_freq = options['stringent_freq']
+out_csv= [opts.out_csv[0]]
 
 
-def filter(x,args):
-    stringent_variants = x.loc[ (x['ref']!=x['var']) & (x['MapQ']>args.mq) & (x['Phred']>args.phred) & (x['freq.var']>args.freq) & (x['freq.var']<args.stringent_freq) & (x['p.val']<args.pval ) & (x['Read_pos']>args.pos[0]) & (x['Read_pos']<args.pos[1])]
-    not_stringent = x.loc[(x['freq.var']>args.stringent_freq)]
-    stringent_ref  = x.loc[ (x['ref']==x['var']) & (x['MapQ']>args.mq) & (x['Phred']>args.phred) & (x['freq.var']>args.freq) & (x['freq.var']<args.stringent_freq) & (x['Read_pos']>args.pos[0]) & (x['Read_pos']<args.pos[1])] # same as above but no p.val
+
+def filter(x,mq,phred,freq,stringent_freq,pval,pos):
+    stringent_variants = x.loc[ (x['ref']!=x['var']) & (x['MapQ']>mq) & (x['Phred']>phred) & (x['freq.var']>freq) & (x['freq.var']<stringent_freq) & (x['p.val']<pval ) & (x['Read_pos']>pos[0]) & (x['Read_pos']<pos[1])]
+    not_stringent = x.loc[(x['freq.var']>stringent_freq)]
+    stringent_ref  = x.loc[ (x['ref']==x['var']) & (x['MapQ']>mq) & (x['Phred']>phred) & (x['freq.var']>freq) & (x['freq.var']<stringent_freq) & (x['Read_pos']>pos[0]) & (x['Read_pos']<pos[1])] # same as above but no p.val
     out = stringent_variants.append(not_stringent,ignore_index=True)
     out=out.append(stringent_ref,ignore_index=True)
     out=out.drop_duplicates()
     return(out)
-#print args.mq
+#print mq
 
 # read in the csv and apply the subsetting function
-#print args.pos
-data=pd.DataFrame.from_csv(args.variants[0],index_col=False)
+#print pos
+data=pd.DataFrame.from_csv(variants[0],index_col=False)
 data.Id.apply(str)
-out = filter(data,args)
+out = filter(data,mq,phred,freq,stringent_freq,pval,pos)
 
 if out.shape[0]>0: # if there are some variants left
     out_id=out["Id"].apply(lambda x: pd.Series(str(x).split('_')))
@@ -60,24 +58,24 @@ if out.shape[0]>0: # if there are some variants left
         out=out.assign(dup=out_id[1])
     else:
         out=out.assign(dup=None)
-    if args.run != None:
+    if run != None:
         print("Adding run label")
-        out.loc[:,'run']=args.run
+        out.loc[:,'run']=run
 
 
-    if args.meta !=None:
+    if meta !=None:
         # split the duplicate labels if present here and then add meta data.
         print("Merging with meta data")
         #print out
-        meta=pd.DataFrame.from_csv(args.meta,index_col=None)
+        meta=pd.DataFrame.from_csv(meta,index_col=None)
         meta.LAURING_ID.apply(str)
         out=out.merge(meta,how="left",on="LAURING_ID")
 
 else:
     print("There were no variants left - There may have been none to begin with")
     
-print("Saving output as " + args.out_csv[0])
-out.to_csv(args.out_csv[0])
+print("Saving output as " + out_csv[0])
+out.to_csv(out_csv[0])
 
 
 

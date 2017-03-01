@@ -41,7 +41,10 @@ out_csv= opts.out_csv[0]
 muscle_path = options["muscle_path"]
 OR = options["open_reading"]
 classification = options["classification"]
-    
+
+
+def findOccurences_base1(s, ch):
+    return [i+1 for i, letter in enumerate(s) if letter == ch]
     
 def no_nones(x):
     return [y for y in x if y is not None]
@@ -111,6 +114,7 @@ for ref in reference:
             fix_ref_coding=Align([fixed_ref,code],muscle_path)
             ref_coding=Align([ref,code],muscle_path)
             ref_coding_deep=copy.deepcopy(ref_coding)
+
             # Trim to just coding sequence
             ref_trimmed=StripGapsToFirstSequence([ref_coding[1],ref_coding[0]])
             fixed_ref_trimmed = StripGapsToFirstSequence([fix_ref_coding[1],fix_ref_coding[0]])
@@ -118,6 +122,7 @@ for ref in reference:
             # remove any gaps in ref seq 
             if fixed_ref_trimmed.seq.count("-")>0:
                 raise ValueError("Gaps were found in the open reading frame - check sequence for insertions") # think about writing in code to tranlate these if they are inframe
+            non_coding_bases=findOccurences_base1(ref_coding[1],'-')
             if classification == 'control':
                 ref_trans=ref_trimmed.seq.translate() # This is reference that is used to call the reference AA
             elif classification=='sample':
@@ -128,18 +133,19 @@ for ref in reference:
             # Get coding pos for appropriate variants
             # Note GetCorrespondingResidue and the AA_pos are in base 1 not the usual base 0 python -  I want to fix this at some point
             for i in seg_var:
-                variants.loc[i,"coding_pos"].append(GetCorrespondingResidue(ref_coding_deep,variants.loc[i,"pos"]))
-            # Get AA_pos for appropirate variants
-                variants.loc[i,"AA_pos"].append( catch(lambda : (variants.loc[i,"coding_pos"][-1]-1)//3+1 )) # the [-1] is to get the most recently added one
-            # Get reference AA ""
-                variants.loc[i,"Ref_AA"].append(catch(lambda : ref_trans[int(variants.loc[i,"AA_pos"][-1])-1])) # the second minus 1 is to convert to python numbering
-            
-            # Cycle through each variants
-                mutation = var_aa(fixed_ref_trimmed,variants,i)
-                variants.loc[i,"Var_AA"].append(mutation["AA"])
-                variants.loc[i,"Class"].append(mutation["Class"])
-            # Add open reading frame
-                variants.loc[i,"OR"].append(OR)
+                if not variants.loc[i,"pos"] in non_coding_bases and   variants.loc[i,"pos"] < max(non_coding_bases): # sometimes there is an insertions in the noncoding regions - it happened once.
+                    variants.loc[i,"coding_pos"].append(GetCorrespondingResidue(ref_coding_deep,variants.loc[i,"pos"]))
+                # Get AA_pos for appropirate variants
+                    variants.loc[i,"AA_pos"].append( catch(lambda : (variants.loc[i,"coding_pos"][-1]-1)//3+1 )) # the [-1] is to get the most recently added one
+                # Get reference AA ""
+                    variants.loc[i,"Ref_AA"].append(catch(lambda : ref_trans[int(variants.loc[i,"AA_pos"][-1])-1])) # the second minus 1 is to convert to python numbering
+                
+                # Cycle through each variants
+                    mutation = var_aa(fixed_ref_trimmed,variants,i)
+                    variants.loc[i,"Var_AA"].append(mutation["AA"])
+                    variants.loc[i,"Class"].append(mutation["Class"])
+                # Add open reading frame
+                    variants.loc[i,"OR"].append(OR)
 
 variants=variants.apply(trim_noncoding,axis=1)
 

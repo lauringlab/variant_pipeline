@@ -33,7 +33,7 @@ p_cut=options["p"]
 method=options["method"]
 ## options for processing variants ###
 open_reading=os.path.abspath(options["open_reading"])
-
+stringent_freq = options["stringent_freq"]
 
 bin_dir=os.path.dirname(os.path.realpath(__file__)) # The path to this file so we can find the scripts and lib
 script_dir=os.path.abspath(bin_dir+'/..'+'/scripts/')# The path to the scripts dir relative to this location
@@ -75,7 +75,7 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
     config.write('INPUT_DIR='+ '\"'+input_dir+ '\"'+'\n') # copy the input dir to the config file to help find the control when running in bam
     config.write('OR='+ '\"'+open_reading+ '\"'+'\n') # copy the open reading frame file
     config.write('OPTIONS=' + '\"' + options_file + '\"\n') # Copy the options file 
-    
+    config.write('STRINGENT_FREQ=' + '\"' + stringent_freq + '\"\n') # The frequency below which deepSNV and stringent thresholds are needed
 #throttled to 3 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 

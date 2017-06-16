@@ -5,8 +5,8 @@ suppressMessages(library(tools))
 set.seed(42)
 
 args <- commandArgs(TRUE)
-if (length(args) != 9) {
-    stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)} {p.val.cut} {c(fisher,average,max)}  {c(two.sided,one.sided,bin)} output.csv output.fa",sep=""), call.=FALSE)
+if (length(args) != 10) {
+    stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)} {p.val.cut} {c(fisher,average,max)}  {c(two.sided,one.sided,bin)} {stringent_freq} output.csv output.fa",sep=""), call.=FALSE)
  }
 
 #print(args)
@@ -18,8 +18,9 @@ method<-args[4]
 p.cut<-args[5] # the p.value cut off for samples to be included in downstream analysis.
 p.com.meth<-args[6] # combine method for strands
 disp<-args[7]
-csv<-args[8]
-fa<-args[9]
+stringent_freq<-args[8]
+csv<-args[9]
+fa<-args[10]
 
 test_file_prefix = basename(file_path_sans_ext(test.bam))
 control_file_prefix = basename(file_path_sans_ext(control.bam))
@@ -64,6 +65,7 @@ deepsnv.result<-estimateDispersion(deepsnv.result) # one sided is the default
 }else{
 deepsnv.result<-deepsnv.result
 }
+
 consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 control_fa<-consensusSequence(control(deepsnv.result,total=T),vector=F,haploid=T)
 #cat(paste("saving to [",output_file_name,".vcf].\n", sep=""))
@@ -74,11 +76,13 @@ control_fa<-consensusSequence(control(deepsnv.result,total=T),vector=F,haploid=T
 
 #print("making summary dataframe")
 deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=method)
+# filter to stringent freq
+deepsnv_sum<-subset(deepsnv_sum,freq.var<0.5)
 #print(deepsnv_sum)
 #print("made dataframe")
 if(dim(deepsnv_sum)[1]>0){ # if varaints were found
     deepsnv_sum$Id<-sample_name # set the sample name for csv
-    deepsnv_sum<-subset(deepsnv_sum,!(var=="-" | ref =="-" && freq.var<0.5)) # removes the indels that are below the consensus level
+    deepsnv_sum<-subset(deepsnv_sum,!(var=="-" | ref =="-")) # removes the indels that are below the consensus level
     mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
 }else{
    deepsnv_sum<-data.frame("chr"=character(),

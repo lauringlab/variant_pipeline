@@ -1,6 +1,12 @@
 # Rscript --vanilla --slave ../../lauring-variant-pipeline/bin/deepSNV.r ../../lauring-variant-pipeline/lib/ ../04-mark_duplicates/001-0_2a.marked.bam ../04-mark_duplicates/011-PR8control_a.marked.bam ../flu_regions.csv
 #
-suppressMessages(library(tools))
+suppressMessages(library("tools"))
+suppressMessages(library("plyr"))
+suppressMessages(library("deepSNV"))
+suppressMessages(library("reshape2"))
+suppressMessages(library("magrittr"))
+suppressMessages(library("tidyverse"))
+
 #set seed to make distribiutions determinsitic
 set.seed(42)
 
@@ -8,6 +14,39 @@ args <- commandArgs(TRUE)
 if (length(args) != 10) {
     stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)} {p.val.cut} {c(fisher,average,max)}  {c(two.sided,one.sided,bin)} {stringent_freq} output.csv output.fa",sep=""), call.=FALSE)
  }
+
+################# functions ###########
+get_counts <- function(x,deepx){
+  pos<-x$pos
+  mat_pos<-x$row
+  test(deepx)->counts
+  base = x$var
+  n.tst.fw = counts[mat_pos,base]
+  n.tst.bw = counts[mat_pos,tolower(base)]
+  cov.tst.fw = sum(counts[mat_pos,c(1:5)])
+  cov.tst.bw = sum(counts[mat_pos,c(6:10)])
+  
+  # now for the control
+  control(deepx)->counts.con
+  n.ctrl.fw = counts.con[mat_pos,base]
+  n.ctrl.bw = counts.con[mat_pos,tolower(base)]
+  cov.ctrl.fw = sum(counts.con[mat_pos,c(1:5)])
+  cov.ctrl.bw = sum(counts.con[mat_pos,c(6:10)])
+  
+  out = data.frame(chr = x$chr,
+                   pos = x$pos,
+                   var = base,
+                   n.tst.fw = n.tst.fw,
+                   n.tst.bw = n.tst.bw,
+                   cov.tst.fw = cov.tst.fw,
+                   cov.tst.bw = cov.tst.bw,
+                   n.ctrl.fw = n.ctrl.fw,
+                   n.ctrl.bw = n.ctrl.bw,
+                   cov.ctrl.fw = cov.ctrl.fw,
+                   cov.ctrl.bw = cov.ctrl.bw)
+  
+}
+
 
 #print(args)
 #library.location <- args[1]
@@ -32,22 +71,8 @@ output_file_control=paste0("deepSNV/",control_file_prefix)
 print(paste0("test is :",sample_name ))
 
 print(paste0("control is:",control_name))
-#if(test_file_prefix==control_file_prefix){
-#	print("we don't need to run the control!")
-#	stop()
-#}
 
-#print(test_file_prefix)
-#print(control_file_prefix)
-#cat(paste("loading libraries from",library.location,"\n", sep=""))
 
-#library("tools")
-#suppressPackageStartupMessages(library("deepSNV", lib.loc=library.location))
-#suppressPackageStartupMessages(library("plyr", lib.loc=library.location))
-#suppressPackageStartupMessages(library("reshape2", lib.loc=library.location))
-suppressMessages(library("plyr"))
-suppressMessages(library("deepSNV"))
-suppressMessages(library("reshape2"))
 
 cat(paste("loading regions from [", reference.fasta, "]...\n", sep=""))
 segments <- fasta.info(reference.fasta)
@@ -66,20 +91,42 @@ deepsnv.result<-estimateDispersion(deepsnv.result) # one sided is the default
 deepsnv.result<-deepsnv.result
 }
 
-consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
-control_fa<-consensusSequence(control(deepsnv.result,total=T),vector=F,haploid=T)
-#cat(paste("saving to [",output_file_name,".vcf].\n", sep=""))
-#flu_result.vcf <- summary(deepsnv.result, value='VCF')
-#writeVcf(flu_result.vcf, paste(output_file_name,".vcf", sep=""))
 
-#head(deepsnv.result)
-
-#print("making summary dataframe")
 deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=method)
 # filter to stringent freq
-deepsnv_sum<-subset(deepsnv_sum,freq.var<0.5)
-#print(deepsnv_sum)
-#print("made dataframe")
+deepsnv_sum<-subset(deepsnv_sum,freq.var<stringent_freq)
+
+## Add bases above stringent freq
+RF(test(deepsnv.result),total=T)->frequencies # Get the frequencies of all the bases at each prosition
+cbind(coordinates(deepsnv.result),frequencies)->frequencies.df
+
+names(frequencies.df)[names(frequencies.df)=="-"]<-"indel" # for ease of handling below
+frequencies.df$row<-1:nrow(frequencies.df)
+frequencies.df %>% gather(var,freq.var,A:indel)->frequencies.df # long form
+subset(frequencies.df,freq.var>=stringent_freq)->less_stringent
+
+less_stringent %>% adply(1,get_counts,deepsnv.result) -> less_stringent.format # formatted like deepsnv df
+
+## Now we get the reference base from the control matrix ######
+RF(control(deepsnv.result),total=T)->con.freq
+cbind(coordinates(deepsnv.result),con.freq)->df.con
+
+names(df.con)[ncol(df.con)]<-"indel"
+df.con %>% gather(ref,freq.var,A:indel)->con.freqs
+subset(con.freqs,freq.var>0.5,select=c(chr,pos,ref))->con.major
+
+less_stringent.final<-join(less_stringent.format,con.major)
+for(c in names(deepsnv_sum)){
+  if(c %in% names(less_stringent.final)==F){
+    less_stringent.final[,c]=NA
+  }
+}
+
+less_stringent.final<-subset(less_stringent.final,select=-c(row))
+deepsnv_sum<-rbind(deepsnv_sum,deepsnv_sum)
+deepsnv_sum<-deepsnv_sum[order(deepsnv_sum$chr,deepsnv_sum$pos),]
+
+
 if(dim(deepsnv_sum)[1]>0){ # if varaints were found
     deepsnv_sum$Id<-sample_name # set the sample name for csv
     deepsnv_sum<-subset(deepsnv_sum,!(var=="-" | ref =="-")) # removes the indels that are below the consensus level
@@ -105,6 +152,9 @@ if(dim(deepsnv_sum)[1]>0){ # if varaints were found
 			   "mutation"=character() ) # adding the column names even though no variants were found
 } 
 
+##### consensus sequences
+consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
+control_fa<-consensusSequence(control(deepsnv.result,total=T),vector=F,haploid=T)
 
 
 

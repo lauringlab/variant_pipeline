@@ -16,10 +16,9 @@ if (length(args) != 10) {
  }
 
 ################# functions ###########
-get_counts <- function(x,deepx){
+get_counts <- function(x,counts,counts.con){
   pos<-x$pos
   mat_pos<-x$row
-  test(deepx)->counts
   base = x$var
   n.tst.fw = counts[mat_pos,base]
   n.tst.bw = counts[mat_pos,tolower(base)]
@@ -27,7 +26,6 @@ get_counts <- function(x,deepx){
   cov.tst.bw = sum(counts[mat_pos,c(6:10)])
   
   # now for the control
-  control(deepx)->counts.con
   n.ctrl.fw = counts.con[mat_pos,base]
   n.ctrl.bw = counts.con[mat_pos,tolower(base)]
   cov.ctrl.fw = sum(counts.con[mat_pos,c(1:5)])
@@ -96,16 +94,22 @@ deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=m
 # filter to stringent freq
 deepsnv_sum<-subset(deepsnv_sum,freq.var<stringent_freq)
 
+print(deepsnv_sum)
+    
 ## Add bases above stringent freq
 RF(test(deepsnv.result),total=T)->frequencies # Get the frequencies of all the bases at each prosition
 cbind(coordinates(deepsnv.result),frequencies)->frequencies.df
 
 names(frequencies.df)[names(frequencies.df)=="-"]<-"indel" # for ease of handling below
 frequencies.df$row<-1:nrow(frequencies.df)
-frequencies.df %>% gather(var,freq.var,A:indel)->frequencies.df # long form
-subset(frequencies.df,freq.var>=stringent_freq)->less_stringent
 
-less_stringent %>% adply(1,get_counts,deepsnv.result) -> less_stringent.format # formatted like deepsnv df
+frequencies.df %>% gather(var,freq.var,A:indel)->frequencies.df # long form
+subset(frequencies.df,freq.var>=stringent_freq & var!="indel")->less_stringent
+
+test_counts<-test(deepsnv.result)
+ctrl_counts<-control(deepsnv.result)
+
+less_stringent %>% adply(1,get_counts,test_counts,ctrl_counts) -> less_stringent.format # formatted like deepsnv df
 
 ## Now we get the reference base from the control matrix ######
 RF(control(deepsnv.result),total=T)->con.freq
@@ -123,7 +127,7 @@ for(c in names(deepsnv_sum)){
 }
 
 less_stringent.final<-subset(less_stringent.final,select=-c(row))
-deepsnv_sum<-rbind(deepsnv_sum,deepsnv_sum)
+deepsnv_sum<-rbind(deepsnv_sum,less_stringent.final)
 deepsnv_sum<-deepsnv_sum[order(deepsnv_sum$chr,deepsnv_sum$pos),]
 
 
@@ -194,7 +198,7 @@ ddply(cov.con.df,~concat.pos,summarize, coverage=coverage,concat.pos=concat.pos,
 
 cov.con.df$Id<-control_name # set the sample name for csv
 
-#print(head(deepsnv_sum))
+print(head(deepsnv_sum))
 cat(paste("saving summary to [",csv,"].\n", sep=""))
 write.csv(deepsnv_sum, csv, row.names=FALSE)
 

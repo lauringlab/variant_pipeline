@@ -24,10 +24,10 @@ reference.fasta <- args[1]
 test.bam <- args[2]
 control.bam <- args[3]
 method<-args[4]
-p.cut<-args[5] # the p.value cut off for samples to be included in downstream analysis.
+p.cut<-as.numeric(args[5]) # the p.value cut off for samples to be included in downstream analysis.
 p.com.meth<-args[6] # combine method for strands
 disp<-args[7]
-stringent_freq<-args[8]
+stringent_freq<-as.numeric(args[8])
 csv<-args[9]
 fa<-args[10]
 
@@ -80,13 +80,16 @@ set_cord<-function(deepsnv.result,freqs){ # This funciton takes in a deepsnv res
   positions<-data.frame(chr=character(),
                       pos = integer())
   cors<-coordinates(deepsnv.result)
-  for(i in 1:(length(names(cors))/2)){ # the names of the cor are "chr.i" and "pos.i" for each segment tested. This takes them in order and puts them in columns chr and pos
-    seg = paste('chr',i,sep=".")
-    pos_col = paste('pos',i,sep=".")
-    seg.df<-data.frame(chr=cors[,seg],pos = cors[,pos_col])
-    positions<-rbind(positions,seg.df)
-  }
-  cbind(positions,freqs)->frequencies.df
+  #print(head(cors))
+  #print(tail(cors))
+  #for(i in 1:(length(names(cors))/2)){ # the names of the cor are "chr.i" and "pos.i" for each segment tested. This takes them in order and puts them in columns chr and pos
+  #  seg = paste('chr',i,sep=".")
+  #  pos_col = paste('pos',i,sep=".")
+  #  seg.df<-data.frame(chr=cors[,seg],pos = cors[,pos_col])
+  #  positions<-rbind(positions,seg.df)
+  #}
+  #cbind(positions,freqs)->frequencies.df
+   cbind(cors,freqs)->frequencies.df
 }
 
 
@@ -117,7 +120,7 @@ deepsnv.result<-deepsnv.result
 }
 
 # Get summary data  - this sig.level is just for this stage to limit the size of the output - we will filter more stringently later in sift stage.
-deepsnv_sum<-summary(deepsnv.result,sig.level=as.numeric(p.cut), adjust.method=method)
+deepsnv_sum<-summary(deepsnv.result,sig.level=p.cut, adjust.method=method)
 # filter to stringent freq
 deepsnv_sum<-subset(deepsnv_sum,freq.var<stringent_freq)
 

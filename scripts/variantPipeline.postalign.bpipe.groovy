@@ -13,7 +13,8 @@ done = {
 
 run  {
     get_control.post_align +
-    "%.bam" * [deepsnv + "%.csv"*[mapq_conditional]] +
-    combine +
-     done
+      "%.bam" * [deepsnv + "%.fasta" * [parse] + "%.csv"*[reference_base_and_quality]] +
+"%.sum.csv"* [sift]+
+"%.csv" * [classification] + combine + quality_report +
+	done
 }

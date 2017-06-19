@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser(description='This is a wrapper to set up and ru
 parser.add_argument('options', metavar='options', nargs='+',
                     help='A YAML options file mimicing the one found in the bin directions')
 parser.add_argument('-t',action='store_true',dest='test',default=False,help='Boolean switch to run program in test mode. Everything will be set up but bpipe will run in test mode')
+parser.add_argument('-bam',action='store_true',dest = 'bam',default=False, help = 'Boolean switch to run program after aligments have been made.This assumes the bam files will be in the 04_removed_duplicate directory in the output directory')
 
 args=parser.parse_args()
 
@@ -40,7 +41,7 @@ script_dir=os.path.abspath(bin_dir+'/..'+'/scripts/')# The path to the scripts d
 lib_dir=os.path.abspath(bin_dir+'/..'+'/lib/') # The path to the lib dir relative to this location
 bpipe_command=lib_dir+'/bpipe-0.9.8.7/bin/bpipe' # The path to the bpipe command relative the lib dir.
 test=args.test
-#bam=args.bam
+bam=args.bam
 
 print("Processing fastqs from " + input_dir)
 print("Results will be saved to " + output_dir)
@@ -56,10 +57,11 @@ os.chdir(output_dir)
 
 # Copy the stages script and the pipeline to the output dir
 shutil.copy(script_dir+'/variantPipeline.bpipe.stages.groovy',output_dir)
-# if bam==True: # copy the pipeline that starts post alignment if the bam flag is set.
-#     shutil.copy(script_dir+'/variantPipeline.postalign.bpipe.groovy',output_dir)
-# else: # otherwise just keep keepin on
-shutil.copy(script_dir+'/variantPipeline.bpipe.groovy',output_dir)
+if bam==True: # copy the pipeline that starts post alignment if the bam flag is set.
+    shutil.copy(script_dir+'/variantPipeline.postalign.bpipe.groovy',output_dir)
+    input_dir = output_dir+'/04_removed_duplicates' # Make the input dir the bam file location
+else: # otherwise just keep keepin on
+    shutil.copy(script_dir+'/variantPipeline.bpipe.groovy',output_dir)
 
 # add variables to the bpipe config file to pass them to the pipeline
 with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
@@ -75,19 +77,19 @@ with open(output_dir+'/variantPipeline.bpipe.config.groovy','w') as config:
     config.write('INPUT_DIR='+ '\"'+input_dir+ '\"'+'\n') # copy the input dir to the config file to help find the control when running in bam
     config.write('OR='+ '\"'+open_reading+ '\"'+'\n') # copy the open reading frame file
     config.write('OPTIONS=' + '\"' + options_file + '\"\n') # Copy the options file 
-    config.write('STRINGENT_FREQ=' + '\"' + stringent_freq + '\"\n') # The frequency below which deepSNV and stringent thresholds are needed
+    config.write('STRINGENT_FREQ=' + '\"' + str(stringent_freq) + '\"\n') # The frequency below which deepSNV and stringent thresholds are needed
 #throttled to 3 processors to be a good neighbor.
 #note that running unthrottled can result in errors when bpipe overallocates threads/memory
 
-# if bam==True: #If bam is set only look for the bam files
-#     if test==False:
-#         command= bpipe_command + " run -r " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir + "/*.bam"
-#     else:
-#         command=bpipe_command + " test " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir +"/*.bam"
-# else: # Otherwise start with the fastqs
-if test==False:
-	command= bpipe_command + " run -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
-else:
+if bam==True: #If bam is set only look for the bam files
+     if test==False:
+         command= bpipe_command + " run -r " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir + "/*.bam"
+     else:
+         command=bpipe_command + " test " + output_dir +  "/variantPipeline.postalign.bpipe.groovy " + input_dir +"/*.bam"
+else: # Otherwise start with the fastqs
+    if test==False:
+        command= bpipe_command + " run -r " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir + "/*.fastq"
+    else:
 	command=bpipe_command + " test " + output_dir +  "/variantPipeline.bpipe.groovy " + input_dir +"/*.fastq"
 print("submitting command: \n"+command)
 

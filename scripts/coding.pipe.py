@@ -8,15 +8,16 @@ import sys
 
 
 parser = argparse.ArgumentParser(description='This is a wrapper to set up and run the bpipe pipeline that processes the deepSNV fasta files')
-
+parser.add_argument(action='store',dest='muscle',nargs='+',help='The path to the muscle exicutable')
 parser.add_argument(action='store',dest='input_dir',nargs='+',help='Directory containing the input fasta')
 #parser.add_argument(action='store',dest='coding',nargs='+',help='The name of the reference fasta file for aligning the sequences')
 parser.add_argument(action='store',dest='ref',nargs='+',help='The name of the reference fasta file that is a template for the parsing')
-parser.add_argument('-t',action='store_true',dest='test',default=False,help='Boolean switch to run program in test mode. Everything will be set up but bpipe will run in test mode')
 
+parser.add_argument('-t',action='store_true',dest='test',default=False,help='Boolean switch to run program in test mode. Everything will be set up but bpipe will run in test mode')
 args=parser.parse_args()
 
 ## Give the input arguments better names ##
+muscle = os.path.abspath(args.muscle[0])
 input_dir=os.path.abspath(args.input_dir[0])
 main_data_dir=input_dir+"/.."
 ref=os.path.abspath(args.ref[0])
@@ -31,6 +32,7 @@ print "Processing fastas from " + input_dir
 
 # add variables to the bpipe config file to pass them to the pipeline
 with open('./fasta.config.groovy','w') as config:
+    config.write('MUSCLE='+'\"'+ muscle+ '\"'+'\n') # The name of the reference for deconcatination
     config.write('REFERENCE_FA='+'\"'+ ref+ '\"'+'\n') # The name of the reference for deconcatination
 #    config.write('CODING_FA='+'\"'+ coding+ '\"'+'\n') # The name of the reference csv for deconcatination
     config.write('SCRIPTS='+ '\"'+script_dir+ '\"'+'\n') # The scripts dir
@@ -40,9 +42,9 @@ with open('./fasta.config.groovy','w') as config:
 
 
 if test==False:
-    command= bpipe_command + " run -n 4 -r " + script_dir+ "/consensus.pipe.groovy " + input_dir + "/*.fa"
+    command= bpipe_command + " run -n 4 -r " + script_dir+ "/coding.pipe.groovy " + input_dir + "/*.fasta"
 else:
-    command = bpipe_command + " test -n 4 " + script_dir +  "/consensus.pipe.groovy " + input_dir +"/*.fa"
+    command = bpipe_command + " test -n 4 " + script_dir +  "/coding.pipe.groovy " + input_dir +"/*.fasta"
 print("submitting command: \n"+command)
 s.call(command,shell=True) # rub bpipe command
 

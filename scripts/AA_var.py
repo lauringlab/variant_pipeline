@@ -72,7 +72,7 @@ def trim_noncoding(series):
 
 
 variants=pd.read_csv(in_csv,index_col=0)
-
+variants.replace("indel","-",inplace = True)
 # setting up empty lists - OR - Open reading frame
 ###################################################################
 #

@@ -138,8 +138,9 @@ names(frequencies.df)[names(frequencies.df)=="-"]<-"indel" # for ease of handlin
 frequencies.df$row<-1:nrow(frequencies.df) # this row will be used to find the proper position in the count matrices ect. We haven't subsetted the frequencies.df so there is a row for each position querried.
 
 frequencies.df %>% gather(var,freq.var,A:indel)->frequencies.df # long form
-subset(frequencies.df,freq.var>=stringent_freq & var!="indel")->less_stringent # subset to only those that qualify for nonstringency
+subset(frequencies.df,freq.var>=stringent_freq )-> less_stringent#& var!="indel")->less_stringent # subset to only those that qualify for nonstringency
 
+less_stringent$var[less_stringent$var=="indel"]<- "-" # correct name
 # Get the counts for the test and control samples - for all positions
 test_counts<-test(deepsnv.result)
 ctrl_counts<-control(deepsnv.result)
@@ -167,7 +168,7 @@ deepsnv_sum<-rbind(deepsnv_sum,less_stringent.final) # combine stringent and non
 deepsnv_sum<-deepsnv_sum[order(deepsnv_sum$chr,deepsnv_sum$pos),] # order the result
 
 deepsnv_sum$Id<-sample_name # set the sample name for csv
-deepsnv_sum<-subset(deepsnv_sum,!(var=="-" | ref =="-")) # removes the indels that are below the consensus level
+#deepsnv_sum<-subset(deepsnv_sum,!(var=="-" | ref =="-")) # removes the indels that are below the consensus level
 mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
 
 
@@ -183,7 +184,7 @@ control_fa<-consensusSequence(control(deepsnv.result,total=T),vector=F,haploid=T
 ############################### Coverage ######################################
 ###############################################################################
 
-cov<-rowSums(test(deepsnv.result,total=T)[,1:4]) # no deletions sum of all bases calls at each position (row)
+cov<-rowSums(test(deepsnv.result,total=T)[,1:5]) # set to 4 for no deletions sum of all bases calls at each position (row)
 
 # make coverage data.frame
 cov.df=data.frame(coverage=cov,concat.pos=1:length(cov))
@@ -197,7 +198,7 @@ cov.df$Id<-sample_name # set the sample name for csv
 
 ### Control coverage
 
-cov.con<-rowSums(control(deepsnv.result,total=T)[,1:4]) # no deletions
+cov.con<-rowSums(control(deepsnv.result,total=T)[,1:5]) # set to 4 for no deletions
 
 # make coverage data.frame
 

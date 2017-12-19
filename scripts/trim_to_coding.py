@@ -27,12 +27,12 @@ parser.add_argument('ref_fa', metavar='ref', nargs='+',
 parser.add_argument('-out_fa',action='store',dest='out_fa',default=None,
                     help='optional output the trimmed fasta file')
 
-parser.add_argument('-csv',action='store',dest='csv',default=None,
-                    help='optional output - a csv file recording the number of bp trimmed off the 5\' and 3\' ends')
+parser.add_argument('-tsv',action='store',dest='tsv',default=None,
+                    help='optional output - a tsv file recording the number of bp trimmed off the 5\' and 3\' ends')
 
 args = parser.parse_args()
 
-csv=args.csv
+tsv=args.tsv
 
 def Align(headers_seqs, progpath, musclegapopen=None):
     """Performs a multiple sequence alignment of two or more sequences.
@@ -245,15 +245,15 @@ def main(): # The positions will be given as base 0 and adjusted to match the co
 
 
 
-    if(csv==None):
+    if(tsv==None):
         print "writing output to %s"  % args.out_fa
         SeqIO.write(trimmed, args.out_fa, "fasta")
     else:
-        print "writing csv file to %s" % csv
-        with open(csv,'w') as out_file:
-           out_file.write("chr,off.5,off.3\n")
+        print "writing tsv file to %s" % tsv
+        with open(tsv,'w') as out_file:
+           out_file.write("chr\tcoding\n")
            for i in range(0,len(off_5)) :
-               out_file.write(str(segs[i])+","+str(off_5[i])+","+str(off_3[i])+'\n')
+               out_file.write(str(segs[i])+"\t[["+str(off_5[i]+1)+","+str(off_3[i]-1)+']]\n')
 
 
 main()

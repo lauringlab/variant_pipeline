@@ -47,7 +47,8 @@ print(paste0("control is:",control_name))
 ################################ Functions ####################################
 ###############################################################################
 
-get_counts <- function(x,counts,counts.con){ # This function takes in a data frame of frequencies, and test and control count matrixes. It uses the row column in the data frame to add base counts for each entry 
+get_counts <- function(x,counts,counts.con){ 
+  # This function takes in a data frame of frequencies, and test and control count matrixes. It uses the row column in the data frame to add base counts for each entry 
   pos<-x$pos
   mat_pos<-x$row
   base = x$var

@@ -1,3 +1,9 @@
 *.fastq*
 .bpipe/*
 commandlog.txt
+
+scripts/s1_ref
+
+scripts/\.Rhistory
+
+*.pyc

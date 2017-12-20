@@ -1,5 +1,6 @@
 
 # Pipeline Tutorial
+_Note: Some aspects of this tutorial are specific to lab needs please feel free to skip ahead as needed._
 In this example we will run a small data set through using a command line approach. We are working with one MFE sample and a wsn33 plasmid control. For computational speed, these fastq files have been reduced by 75%. This approach can be run on flux as is, or run through a pbs for larger data sets. The last section provides instructions for working with real data.
 
 For consistency all of the commands can be run from the variant_pipeline/tutorial directory. If you are running this from a different directory (for example, when you are working with your real data on scratch in section 4), make sure the paths to your files are correct. You may need to edit them in the commands provided.
@@ -17,7 +18,7 @@ For consistency all of the commands can be run from the variant_pipeline/tutoria
 ## Before you begin
 You will need:
 - Access to the lab's allocation on flux. Adam will need to email the administrator at hpc.
-- An MToken for two factor authentication. See [MSIS](http://www.mais.umich.edu/mtoken/mtoken_distribution.html).
+- Some form of two factor identification.
 - Know basic unix commands. See tutorials and lists on Mbox/Lauring Lab/Command Line Tools.
 - Know the basics of flux organization and access. See Ten easy steps in MBox/Lauring Lab/Command Line Tools.
 
@@ -29,12 +30,12 @@ You will need:
 Log onto the flux platform  by typing the following in a terminal window.
 
 ```
-ssh your_username@flux-login.engin.umich.edu
+ssh your_username@flux-login.arc-ts.umich.edu
 ```
 
- You will be prompted for your MToken. No characters will appear as you type. If you make a mistake, you will be locked out until you bring cookies to lab. Just kidding, but you do have to wait until your MToken refreshes to a new number.
+ You will then  asked for your level one. No characters appear as you type.
 
- You will then be asked for your level one. Again no characters appear as you type.
+ You will then be prompted for your prefered method of two level identification.
 
  Once on flux you will automatically begin in your home directory (~/ which is a shortcut for /home/username/ ). If you want to check your location, simply type the unix command "pwd" and you should see /home/your_username. We have limited space in these directories (80gb) so we will typically work from scratch directories which provide more memory for active work. However, scratch should not be used for longterm storage. Therefore, we will add the variant pipeline to our home directory so it is easily accessible from anywhere.
 
@@ -73,13 +74,8 @@ Although the pipeline is fully functional, we may make slight modifications in t
 git pull
 ```
 
-This should be executed from somewhere in  the variant_pipeline directory and  will "pull" the most update version from github.  If you have modified any of the files (and this is unlikely) you will be asked to commit those changes before you can execute "git pull". Without getting too much into git.
+This should be executed from somewhere in  the variant_pipeline directory and  will "pull" the most update version from github.  
 
-```
-git commit -am "committing before a pull"
-```
-
-will commit your changes and label them "committing before a pull". You can now pull.
 
 Now the code for the variant pipeline is installed in your home directory in a sub-directory called variant_pipeline. We are ready to begin the tutorial. Let's go there now, by moving to a subdirectoy within the variant_pipeline directory.
 
@@ -130,9 +126,9 @@ Ok, now that everything is set up, let's get down to business.
 <a name="fastq-setup"/>
 ## 1) Fastq setup
 
-The first step is to name the fastq file properly. They arrive from the sequencing core with names that Bpipe can't make sense of. Bpipe requires the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2, indicating forward or reverse reads.
+The first step is to name the fastq file in the manner the pipeline expects. They arrive from the sequencing core with names that Bpipe can't make sense of. Bpipe requires the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2, indicating forward or reverse reads. _Note: I don't think illumina limits fastq files anymore and so the # notation may be a bit out-dated._
 
-Don't fret, you don't have to rename your samples by hand. To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script, we will test it to make sure we are naming things as we expect. Note that the script will copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
+To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script, we will test it to make sure we are naming things as we expect. Note that the script will copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
  		 
  ```		
  python ../scripts/change_names_miseq.py -h		 
@@ -170,7 +166,7 @@ python ../bin/variantPipeline.py -h
 We need to provide the directory containing the fastq files, the directory where we want the output to go (it will be made if it doesn't exist), our reference for bowtie (provided by the tutorial, see README on how to make one for your sample set), and the name of our control sample. To make sure everything is in working order we can run the pipeline in test mode by activating the -t option.
 
 ```
-python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -a 0.01 -m fisher -d one.sided -t
+python ../bin/variantPipeline.py ./options.yaml
 ```
 
 It seems like everything is in order so we'll let it rip. This took about 5 min on my old macbook pro. On the flux it won't take long at all.

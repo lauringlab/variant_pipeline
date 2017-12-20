@@ -111,14 +111,12 @@ Next, we will need to load the needed programs using
 
 
 ```
-module add med
-module add fastqc
-module add java
-module add bowtie2
-module add samtools
-module add python
-module add R/3.1.1
-module add pysam/0.8.2.1
+module load muscle
+module load bowtie2
+module load samtools
+module load python-anaconda2/201704
+module load fastqc
+module load R/3.3.3
 ```
 
 Ok, now that everything is set up, let's get down to business.
@@ -172,11 +170,6 @@ python ../bin/variantPipeline.py ./options.yaml
 It seems like everything is in order so we'll let it rip. This took about 5 min on my old macbook pro. On the flux it won't take long at all.
 
 _If you expect a high level of pcr errors then use a two sided distribution. Set the -d option to two.sided_
-
-```
-python ../bin/variantPipeline.py -i data/fastq/ -o worked_data -r data/reference/wsn33_wt_plasmid -p Plasmid_control -a 0.01 -m fisher -d one.sided 
-```
-
 
 __If you are running on the flux__ Then instead of running the above command from the command line we would usually run this command in a pbs script. This is because running memory intensive commands on the login node slows everyone down.  A pbs script tells flux to set aside a separate node just for our work. An example of a pbs script can be found in bin/variant_pipeline.pbs.  For larger sample sets you'll need to adjust the memory and walltime limits___can you provide suggested times and memory for a hiseq run or a miseq run?___.  We can use a total of 2 processors and 48 gb of mem.  A detailed description of pbs scripts can be found [here](http://arc-ts.umich.edu/software/torque/).
 The script can be edited using the easy text editor, nano.
@@ -242,13 +235,7 @@ Additionally Bpipe keeps a log of all the commands it runs in 'commandlog.txt'. 
 <a name="analysis"/>
 ## 3) Analysis
 
-
-
-The pipeline does not carry out any secondary analysis. It only provides putative variants and information regarding how trustworthy those calls are.  It is up to you to sort through the putative variants (found in mapq/all.sum.csv) using Excel (booo!! :-1:) or R (Hooray!! :bowtie:).  Currently we are setting a p.value cut off of 0.01 (p.val < 0.01) and for most applications a frequency cut off of 0.5% (freq.var>0.5%).  Additionally we require variants to be uniformly distributed across the reads on which they are found.  We achieve this by requiring the average read position to be in the middle 50% of the read length. (Read\_pos>50 & Read\_pos<200, for a Miseq run with 2X250 reads).  
-
-To analyze the data transfer the mapq/all.mapq.* and 05_Coverage/all.cov.csv to your own machine using your favorite file transfer software. Cyberduck and Filezilla are good places to start.
-
-An example of how to subset the data and plot coverage can be found in the results directory of the tutorial. You can look at this by opening it from the box sync folder.
+The pipeline provides all bases above the stringent cut off for each position. In almost all cases these will match the reference base in the plasmid control. For variants below the stringency cut off are filtered by the criteria in the options file.
 
 <a name="working-with-real-data"/>
 ## 4) Working with real data

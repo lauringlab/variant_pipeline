@@ -7,3 +7,9 @@ scripts/s1_ref
 scripts/\.Rhistory
 
 *.pyc
+
+*.groovy
+
+tutorial/yaml_testing/
+
+tutorial/data/fastq/renaming_log\.txt

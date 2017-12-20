@@ -1,7 +1,7 @@
 # Lauring Variant Pipeline
 
 Nominates candidate variants by comparing the sequences in a test sample to those found in a plasmid control.
-The Pipeline runs as one phase which takes in fastq files and outputs putative variants.  It is then up to the user to filter the putative variants based on the characteristics provided (p value, frequency, and read distribution are the most useful at this point)
+The Pipeline runs as one phase which takes in fastq files and outputs putative variants as well as all base call above a set frequency.  It is then up to the user to filter the putative variants based on the characteristics provided.
 
 ## Directory list
 * bin
@@ -23,7 +23,7 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 ## bin/variantPipeline.py
  This script is a thin python wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory and stored in the output directory as a log of what was run.
 
-
+##UPDATE THESE HERE ##
 
 Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name} -a {p.val cutoff} -m {fisher,max,average} -d {one.sided,two.sided}
 

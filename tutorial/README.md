@@ -55,19 +55,20 @@ where username is your github username.
 The next step is to set up remotes. These allow your local version on flux to communicate with github. This repository will have two remotes 'origin' is your own version on github, and 'upstream' which will be the lab's master version. Origin was set up when you forked the repository. To set up 'upstream' use the following command.
 
  ```
+cd variant_pipeline
 git remote add upstream https://github.com/lauringlab/variant_pipeline.git
  ```
 
 Now it is possible to keep your version up to date with the master copy by using 
 
  ```
-git pull upstream
+git pull upstream master
  ```
 
 Now the code for the variant pipeline is installed in your home directory in a sub-directory called variant_pipeline. We are ready to begin the tutorial. Let's go there now, by moving to a subdirectoy within the variant_pipeline directory.
 
 ```
-cd variant_pipeline/tutorial
+cd tutorial
 ```
 
 The variant pipeline is essentially R, bowtie2, samtools, python, and picard wrapped in a bpipe pipeline. Picard and bpipe come prepacked in the libs directory so there is no need to install those. Samtools and bowtie2 are already on flux. So all we need to do is install the deepSNV package per the instructions in the README doc.
@@ -86,8 +87,14 @@ biocLite("deepSNV")
 ```
 while still in R.  It should take a while to install and you will be prompted to install in your private packages. Please respond y when prompted. You may also be prompted to update all/some/none of the packages. Respond a when prompted.
 
-use 
+you will also need to install the following R packages
 
+```
+install.packages("plyr")
+install.packages("reshape2")
+install.packages("magrittr")
+install.packages("tidyverse")
+```
 ```
 q()
 ```

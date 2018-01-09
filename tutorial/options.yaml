@@ -22,8 +22,8 @@ freq : 0.01 # The frequency cut off for the final analysis
 pos : [50, 200] # The average position in the read cut off in the final analysis
 stringent_freq : 0.5 # If you are above this frequency then we cool 
 muscle_path : /sw/lsa/centos7/muscle/3.8.31/bin/ # The path to the muscle exicutable on flux it is /sw/lsa/centos7/muscle/3.8.31/bin/
-#run : Test # What run name should be added to the csv if not needed use  !!null ''    to signify 'None'
+run : Test # What run name should be added to the csv if not needed use  !!null ''    to signify 'None'
 meta : !!null ''   # If there is a meta data sheet for these sample you can place that here if not needed use !!null ''    to signify 'None'
 classification: control # sample or control - should nonsynonymous and syn. mutations be called relative to the control or the sample consensus?
-#infer : True # Boolean switch to infer minor variants at positions where the minor variant may be the plasmid\'s consensus' True or False
+infer : True # Boolean switch to infer minor variants at positions where the minor variant may be the plasmid\'s consensus' True or False
 

@@ -27,6 +27,8 @@ You will need:
 <a name="getting-started"/>
 ## 0) Getting started
 
+First things first we need to get a version of this repository onto the high computing cluster so that you can use it. This can be done a number of ways. Here we will outline how to first fork your own version of this repository. This will be useful as you may wish to contribute to the project in the future. We will be following to do this please log into the flux following the steps below. Then you can fork and clone the repository using the tutorial found [here](http://blog.swilliams.me/words/2015/06/30/basic-github-workflow-for-collaboration/)
+
 Log onto the flux platform  by typing the following in a terminal window.
 
 ```
@@ -39,43 +41,28 @@ ssh your_username@flux-login.arc-ts.umich.edu
 
  Once on flux you will automatically begin in your home directory (~/ which is a shortcut for /home/username/ ). If you want to check your location, simply type the unix command "pwd" and you should see /home/your_username. We have limited space in these directories (80gb) so we will typically work from scratch directories which provide more memory for active work. However, scratch should not be used for longterm storage. Therefore, we will add the variant pipeline to our home directory so it is easily accessible from anywhere.
 
- You are reading this tutorial so you must be on github. Our first task will be to clone the github repository (the latest version of the variant caller in all its glory) to you home directory on flux.
+Now we will follow the [collaboration tutorial] (http://blog.swilliams.me/words/2015/06/30/basic-github-workflow-for-collaboration/) Our first task will be to fork the lab's repository to our own account. To do this log simply click the fork icon at the top right of this page. 
+
+Next we will clone your version of the repository onto the flux
  
  On flux type
  
  ```
- git clone https://username:password@github.com/lauringlab/variant_pipeline.git
+git clone https://github.com/username/variant_pipeline.git 
  ```
-where username:password are your github username and password.
- 
- Now we will make sure all scripts are exicutable.  
+where username is your github username. 
 
- ```
- ls -l
- ```
-
-The output should look somthing like this
-
-```
-drwx------ 9 mccrone microbio     4096 Jul 27 13:44 variant_pipeline
-```
-
-The first characters mean this is directory (d) and the owner (mccrone) has read (r), write (w), and execute (x) permissions. If you don't have an x in these first 4 letters you can add it with
+The next step is to set up remotes. These allow your local version on flux to communicate with github. This repository will have two remotes 'origin' is your own version on github, and 'upstream' which will be the lab's master version. Origin was set up when you forked the repository. To set up 'upstream' use the following command.
 
  ```
- chmod -R +x variant_pipeline
+git remote add upstream https://github.com/lauringlab/variant_pipeline.git
  ```
 
-(The -R is a recursive option) You need to do this to be able to run the scripts that come with the pipeline.
+Now it is possible to keep your version up to date with the master copy by using 
 
-Although the pipeline is fully functional, we may make slight modifications in the future. To ensure you are working with the most up to date version you can use 
-
-```
-git pull
-```
-
-This should be executed from somewhere in  the variant_pipeline directory and  will "pull" the most update version from github.  
-
+ ```
+git pull upstream
+ ```
 
 Now the code for the variant pipeline is installed in your home directory in a sub-directory called variant_pipeline. We are ready to begin the tutorial. Let's go there now, by moving to a subdirectoy within the variant_pipeline directory.
 
@@ -87,8 +74,7 @@ The variant pipeline is essentially R, bowtie2, samtools, python, and picard wra
 
 To see if you already have deepSNV you can run
 ```
-module load med
-module load R/3.1.1
+module load R/3.4.1
 R
 library("deepSNV")
 ```
@@ -116,7 +102,7 @@ module load bowtie2
 module load samtools
 module load python-anaconda2/201704
 module load fastqc
-module load R/3.3.3
+module load R/3.4.1
 ```
 
 Ok, now that everything is set up, let's get down to business.
@@ -124,7 +110,7 @@ Ok, now that everything is set up, let's get down to business.
 <a name="fastq-setup"/>
 ## 1) Fastq setup
 
-The first step is to name the fastq file in the manner the pipeline expects. They arrive from the sequencing core with names that Bpipe can't make sense of. Bpipe requires the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2, indicating forward or reverse reads. _Note: I don't think illumina limits fastq files anymore and so the # notation may be a bit out-dated._
+The first step is to name the fastq file in the manner the pipeline expects. They arrive from the sequencing core with names that our pipleine can't make sense of. We require the fastq file to be named in the following format *sample_name.read_direction.#.fastq*, where # is the number of fastq file for the given sample and read direction (usually 1 for miseq) and read_direction is a 1 or 2, indicating forward or reverse reads. _Note: I don't think illumina limits fastq files anymore and so the # notation may be a bit out-dated. Also we should think about updating the pipeline so this is no longer a requirement_
 
 To do this we'll use the change_names_miseq.py script (when working with hiseq runs naming is slightly different so we'll use the change_names_hiseq.py script). Before running the script, we will test it to make sure we are naming things as we expect. Note that the script will copy the original files to a new file. This leaves the original unchanged. Additionally, the script will not copy anything unless you run it with the -run flag.  Omitting this flag runs the program in test mode. It will print what it proposes to do and make a mock log. This ensures you don't do anything hastily. For more information about the script simply type
  		 
@@ -133,7 +119,7 @@ To do this we'll use the change_names_miseq.py script (when working with hiseq r
  ```
 
  		 
-*Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made. __Also, fastq files are gzipped when we get them from the sequencing core (they end in .gz). This script will detect files that end in ".fastq" and ".fastq.gz".  It will copy the unzipped and gzipped files from the -s directory (data/fastq_original/)  to  -f (data/fastq/) and then it will unzip all zipped files in -f so that we can use them in analysis.  This may take some time for large files__*
+*Note: if the final directory ("data/fastq" in this case) doesn't exist it will be made. __Also, fastq files are gzipped when we get them from the sequencing core (they end in .gz). This script will detect files that end in ".fastq" and ".fastq.gz".  It will copy the unzipped and gzipped files from the -s directory (data/fastq_original/)  to  -f (data/fastq/), but it will not unzip them. To do that use the gunzipp command.  This may take some time for large files__*
 
 Let's run the test.
 
@@ -147,15 +133,17 @@ python ../scripts/change_names_miseq.py -s data/fastq_original/ -f data/fastq/ -
 ```
 *Note: a log of the name changes was made in fastq/renaming_log.txt for posterity*
 
-
-
+unzip the files if needed.
+```
+gunzip -v data/fastq/*gz
+```
 Now that we have our samples prepped we can run the pipeline.
 
 
 <a name="running-the-pipeline"/>
 ## 2) Running the pipeline
 
-The pipeline is run by in [bpipe](https://code.google.com/p/bpipe/wiki/Overview) using a python wrapper.  To see our options type.
+The pipeline is run by in [bpipe](https://code.google.com/p/bpipe/wiki/Overview) using a python wrapper. The wrapper converts an yaml options file into the format needed by the pipeline stages. It also copies the stages.groovy and pipeline.groovy scripts from the scripts directory in variant_pipeline to the working directory and then runs the pipeline. To see our options type.
 
 ```
 python ../bin/variantPipeline.py -h
@@ -171,7 +159,7 @@ It seems like everything is in order so we'll let it rip. This took about 5 min 
 
 _If you expect a high level of pcr errors then use a two sided distribution. Set the -d option to two.sided_
 
-__If you are running on the flux__ Then instead of running the above command from the command line we would usually run this command in a pbs script. This is because running memory intensive commands on the login node slows everyone down.  A pbs script tells flux to set aside a separate node just for our work. An example of a pbs script can be found in bin/variant_pipeline.pbs.  For larger sample sets you'll need to adjust the memory and walltime limits___can you provide suggested times and memory for a hiseq run or a miseq run?___.  We can use a total of 2 processors and 48 gb of mem.  A detailed description of pbs scripts can be found [here](http://arc-ts.umich.edu/software/torque/).
+__If you are running on the flux__ Then instead of running the above command from the command line we would usually run this command in a pbs script. This is because running memory intensive commands on the login node slows everyone down.  A pbs script tells flux to set aside a separate node just for our work. An example of a pbs script can be found in bin/variant_pipeline.pbs.  For larger sample sets you'll need to adjust the memory and walltime limits___can you provide suggested times and memory for a hiseq run or a miseq run?___. A detailed description of pbs scripts can be found [here](http://arc-ts.umich.edu/software/torque/).
 The script can be edited using the easy text editor, nano.
 
 Let's run the same pipeline using a pbs script.
@@ -240,7 +228,7 @@ The pipeline provides all bases above the stringent cut off for each position. I
 <a name="working-with-real-data"/>
 ## 4) Working with real data
 
-So you just got some Illumina data back! Bully for you! Now to analyze it. Using either cyberduck, or better still, [globus](http://arc.umich.edu/flux-and-other-hpc-resources/flux/using-flux/transferring-files-with-globus-gridftp/) transfer your run data to the appropriate directory on NAS (which is backed up regularly by the University and also backed up to a lab external hard drive). DO NOT delete your data from the portable hard drive unless you check with Adam first. NEVER edit these primary sequence files. The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. (See the flux directory sctructure below). It is a good idea to rename your directory prior to transfer so that it does not have spaces. Stay tuned for a uniform nomenclature for our lab.
+So you just got some Illumina data back! Now to analyze it. Using either cyberduck, or better still, [globus](http://arc.umich.edu/flux-and-other-hpc-resources/flux/using-flux/transferring-files-with-globus-gridftp/) transfer your run data to the appropriate directory on NAS (which is backed up regularly by the University and also backed up to a lab external hard drive). DO NOT delete your data from the portable hard drive unless you check with Adam first. NEVER edit these primary sequence files. The path to our NAS is "/nfs/med-alauring" and there are directories for raw data that are organized by year. (See the flux directory sctructure below). It is a good idea to rename your directory prior to transfer so that it does not have spaces. Stay tuned for a uniform nomenclature for our lab.
 
 ### Flux directory structure
 
@@ -302,8 +290,10 @@ cp ~/variant_pipeline/bin/variant_pipeline.pbs ./experiment_name.pbs
 You can use the command "nano experiment_name.pbs" to open the text editor and edit the pbs script. Make sure you edit the path to the variantPipeline.py script by directing it to your home directory (~/). The last line should read
 
 ```
- python ~/variant_pipeline/bin/variantPipeline.py -i data/fastq/ -o worked_data/ -r path/to/reference/name -p your_plasmid_control -d one.sided or two.sided 
+ python ~/variant_pipeline/bin/variantPipeline.py ./scripts/options.yaml 
 ```
+We will also need to make an options file. To start you can copy the turtorial options file into your scripts directory and edit it as above.
+
 
 Then just submit using qsub as before and sit back while the computer does the rest. :smiley:
 

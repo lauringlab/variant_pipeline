@@ -51,6 +51,25 @@ samtools_mapq_filter ={
 	}
 }
 
+// Cutadapt will remove adapters trim to end bases below Q 25 and 
+// remove any remaining reads that are less than 20 bases long.
+// NEBNEXT ADAPTOR AGATCGGAAGAGCACACGTCTGAACTCCAGTC 
+cutadapt = {
+	doc " Cutadapt will remove adapters trim to end bases below Q 25 and  remove any remaining reads that are less than 20 bases long"
+	output.dir = "02_cutadapt"
+	log_file = './02_cutadapt/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+	filter("trimmed"){
+		exec """
+		cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTC -A AGATCGGAAGAGCACACGTCTGAACTCCAGTC  
+		-q 25 -m 20 
+    		-o $ouput1 -p $output2 
+    		$input1.fastq $input2.fastq 
+    		> ${log_file}
+		"""
+	}
+
+}
+
 // pydmx generates a directory of demultiplexed fastqs named using the specified barcode file
 //     it requires python2.7
 // input: two *.fastq files and a bars.csv file

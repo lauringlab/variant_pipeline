@@ -17,7 +17,7 @@ run  {
 
 // QC on reads
     "%.*.fastq" * [ fastqc ] + // + needs if statements to handle multiple fastq.  More than 2
-
+    "%.*.fastq" * [cutadapt] +
 // Align each pair of input files separately in parallel
     "%.*.fastq" * [ bowtie2 ] +
 

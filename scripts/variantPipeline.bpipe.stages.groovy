@@ -105,28 +105,28 @@ bowtie2 = {
 	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
 	//println "expected outout " + sam_out
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ${sam_out} 2> ${log_file}"
+            exec "bowtie2 --seed 42 --sensitive-local -x ${REFERENCE} -1 $input1 -2 $input2 -S ${sam_out} 2> ${log_file}"
         }
     }
     if(input.input.size == 4){
         def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
         def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ${sam_out} 2> ${log_file}"
+            exec "bowtie2 --seed 42 --sensitive-local -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ${sam_out} 2> ${log_file}"
         }
     }
     if(input.input.size == 6){
  	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
 	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ${sam_out} 2> ${log_file}"
+            exec "bowtie2 --seed 42 --sensitive-local -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ${sam_out} 2> ${log_file}"
         }
     }
     if(input.input.size == 8){
  	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
 	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S 2> ${log_file}"
+            exec "bowtie2 --seed 42 --sensitive-local -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S 2> ${log_file}"
         }
     }
 }

@@ -57,16 +57,18 @@ samtools_mapq_filter ={
 cutadapt = {
 	doc " Cutadapt will remove adapters trim to end bases below Q 25 and  remove any remaining reads that are less than 20 bases long"
 	output.dir = "02_cutadapt"
-	log_file = './02_cutadapt/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+	def out_1 = './02_cutadapt/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.1.1.trimmed.fastq'
+	def out_2 = './02_cutadapt/'+file(input2).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.2.1.trimmed.fastq'
+	def log_file = './02_cutadapt/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
 	filter("trimmed"){
 		exec """
-		cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTC -A AGATCGGAAGAGCACACGTCTGAACTCCAGTC  
-		-q 25 -m 20 
-    		-o $ouput1 -p $output2 
+		cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTC -A AGATCGGAAGAGCACACGTCTGAACTCCAGTC -q 25 -m 20 
+    		-o ${out_1} -p ${out_2} 
     		$input1.fastq $input2.fastq 
     		> ${log_file}
 		"""
 	}
+	forward out_1, out_2
 
 }
 
@@ -101,8 +103,8 @@ bowtie2 = {
     doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
     output.dir = "03_align"
     if(input.input.size == 2){
- 	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
-	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+ 	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.trimmed.fastq")[0]+ '.sam'
+	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.trimmed.fastq")[0]+ '.log'
 	//println "expected outout " + sam_out
 	produce(sam_out) {
             exec "bowtie2 --seed 42 --sensitive-local -x ${REFERENCE} -1 $input1 -2 $input2 -S ${sam_out} 2> ${log_file}"

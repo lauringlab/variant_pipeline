@@ -19,7 +19,7 @@ run  {
     "%.*.fastq" * [ fastqc ] + // + needs if statements to handle multiple fastq.  More than 2
     "%.*.fastq" * [cutadapt] +
 // Align each pair of input files separately in parallel
-    "%.*.fastq" * [ bowtie2 ] +
+    "%.*.trimmed.fastq" * [ bowtie2 ] +
 
 // Sort, remove duplicates, call variants, and set coverage
     "%.sam" * [ picard_sortsam + picard_removedups  ] + get_control +

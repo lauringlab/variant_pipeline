@@ -1,4 +1,6 @@
 import unittest
+import pysam
+import copy
 
 from scripts.seq_classes import locus, segment
 
@@ -17,13 +19,27 @@ class test_loci(unittest.TestCase):
         """
         pass
     def test_adding_bases(self):
+        """
+        Test that we can add bases and count correctly
+        """
         self.assertEqual(self.l.counts,self.solution)
         
     def test_consensus(self):
+        """
+        Test that consensus works with precent cutoff
+        """
         self.assertEqual(self.l.consensus(0.5),"A")
     
     def test_consensus_N(self):
-        self.assertEqual(self.l.consensus(1),"N")
+        """
+        Test that consensus works when precent cutoff is not met
+        """
+        self.assertEqual(self.l.consensus(1.0),"N")
+    def test_consensus_common(self):
+        """
+        Test that consensus works when no cutoff is given
+        """
+        self.assertEqual(self.l.consensus(),"A")
 
 class test_segment(unittest.TestCase):
     
@@ -71,7 +87,5 @@ class test_segment(unittest.TestCase):
         self.assertEqual(self.PB1.calc_coverage(),[len(self.pileup),len(self.pileup)])
     
 
-                
-            
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,5 @@
 from __future__ import division
-
+import pysam
 class locus(object):
     """ A base which has the following characteristics 
         Atrributes :
@@ -14,11 +14,13 @@ class locus(object):
         methods : 
             update : update counts
             calc_freqs :  calculate the frequency of each base
-            consensus : caculate the consensus sequence as this position
+            consensus : caculate the consensus sequence as this position 
     """
     def __init__(self,chr,pos):
-        """return a base object with chr and pos and starting counts of 0
-        Posisition is base 1 like most biologists are use to."""
+        """
+        return a base object with chr and pos and starting counts of 0
+        Posisition is base 1 like most biologists are use to.
+        """
         self.chr = chr
         self.pos = pos
         self.counts = {'A':0,'T':0,'C':0,'G':0,'-':0}
@@ -30,14 +32,24 @@ class locus(object):
     def calc_freqs(self):
         for base in self.counts.keys():
             self.freqs[base] = self.counts[base]/self.coverage
-    def consensus(self,cutoff):
+    def consensus(self,cutoff=None):
         self.calc_freqs()
-        consensus = {k:v for (k,v) in self.freqs.items() if v > cutoff}
-        if len(consensus)==1:
-            return list(consensus.keys())[0]
+        v=list(self.freqs.values())
+        k=list(self.freqs.keys())
+        # check for cutoff method
+        if cutoff ==None:
+            # Return the most common base
+            return k[v.index(max(v))]
         else:
-            return "N"
-        
+            # return the base that is above the cutoff
+            if type(cutoff)!=float or (cutoff>1 or cutoff<0.5):
+                raise ValueError('cutoff must be a float in [0.5,1.0] or nothing')
+            indexes = [index for index, value in enumerate(v) if value > cutoff]
+            if len(indexes)==1:
+                consensus = k[indexes[0]]
+            else:
+                consensus = "N"
+            return consensus
 
 class segment(object):
     """ A sequence like object made up of base objects
@@ -56,8 +68,11 @@ class segment(object):
             raise ValueError('Only class locus can be appended to a segment object')
         if loci.chr!=self.chr:
             raise ValueError('The loci chr does not match the segement chr')
-        if loci.pos!=(len(self.seq)+1):
-            raise ValueError('The position of the loci does not match current segment length')
+        
+
+        if len(self.seq)>0 and loci.pos!=max([x.pos for x in self.seq]):
+            raise ValueError('The position of the loci does not \
+            match current segment length')
         self.seq.append(loci)
     def consensus(self,cutoff):
         seg_consensus = ""
@@ -72,4 +87,28 @@ class segment(object):
         for loci in self.seq:
             cov.append(loci.coverage)
         return cov
-     
+
+def tally(bamfile,chr,start,stop,max_depth = 1000,phred = 30):
+    """
+        This function takes in a pysam alignment file and tallies base calls 
+        across a defined region. Bases must pass a phred score cutoff.
+    """
+    seg = segment(chr)
+    for pos in range(start,stop):
+        pileup = bamfile.pileup(chr,pos,pos+1,
+        stepper='all',truncate=True,max_depth = 1000)
+        l = locus(chr,pos=pos+1) # loci positions are base 1
+        for pileupColumn in pileup:
+            for pileupRead in pileupColumn.pileups:
+            # what is the called base at the position
+                if pileupRead.query_position==pos:
+                    called_base= \
+                    pileupRead.alignment.query_sequence[pileupRead.query_position] 
+                    called_phred= \
+                    pileupRead.alignment.query_qualities[pileupRead.query_position]
+                    if called_phred>=phred: 
+                        l.update(called_base)
+        
+        seg.append_loci(l)
+    return seg
+    

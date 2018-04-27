@@ -11,6 +11,7 @@ class locus(object):
             G : the number of Gs
             - : the number of of deletions    
             }
+            add consensus.
         methods : 
             update : update counts
             calc_freqs :  calculate the frequency of each base
@@ -70,11 +71,10 @@ class segment(object):
             raise ValueError('The loci chr does not match the segement chr')
         
 
-        if len(self.seq)>0 and loci.pos!=max([x.pos for x in self.seq]):
-            raise ValueError('The position of the loci does not \
-            match current segment length')
+        if len(self.seq)>0 and loci.pos!=max([x.pos for x in self.seq])+1:
+            raise ValueError('The position of the loci does not match current segment length')
         self.seq.append(loci)
-    def consensus(self,cutoff):
+    def consensus(self,cutoff=None):
         seg_consensus = ""
         for loci in self.seq:
             seg_consensus=seg_consensus+loci.consensus(cutoff)
@@ -88,24 +88,26 @@ class segment(object):
             cov.append(loci.coverage)
         return cov
 
-def tally(bamfile,chr,start,stop,max_depth = 1000,phred = 30):
+# reference object
+
+def tally(bamfile,chr,start,stop,maxDepth = 1000,phred = 30):
     """
         This function takes in a pysam alignment file and tallies base calls 
         across a defined region. Bases must pass a phred score cutoff.
     """
     seg = segment(chr)
-    for pos in range(start,stop):
-        pileup = bamfile.pileup(chr,pos,pos+1,
-        stepper='all',truncate=True,max_depth = 1000)
-        l = locus(chr,pos=pos+1) # loci positions are base 1
-        for pileupColumn in pileup:
-            for pileupRead in pileupColumn.pileups:
-            # what is the called base at the position
-                if pileupRead.query_position==pos:
-                    called_base= \
-                    pileupRead.alignment.query_sequence[pileupRead.query_position] 
-                    called_phred= \
-                    pileupRead.alignment.query_qualities[pileupRead.query_position]
+    pileup = bamfile.pileup(chr,start,stop,stepper='all',truncate=True,max_depth = maxDepth)
+#        pileup = bamfile.pileup(chr,pos,pos+1,stepper='all',truncate=True,max_depth = maxDepth)
+    for pileupColumn in pileup:
+        l = locus(chr,pos=pileupColumn.pos+1) # loci positions are base 1
+        for pileupRead in pileupColumn.pileups:
+            if not pileupRead.is_del:
+                if pileupRead.is_refskip:
+                    l.update("-")
+                else:
+                    # query_alignment_* removes solf clipped bases
+                    called_base= pileupRead.alignment.query_alignment_sequence[pileupRead.query_position] 
+                    called_phred= pileupRead.alignment.query_alignment_qualities[pileupRead.query_position]
                     if called_phred>=phred: 
                         l.update(called_base)
         

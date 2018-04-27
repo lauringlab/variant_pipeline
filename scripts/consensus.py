@@ -61,24 +61,6 @@ def main():
 
 if __name__ == '__main__':
    main()
-#con = PB1.consensus(0.5)
-#freqs=[]
-#pos = []
-#for loci in PB1.seq:
-#    for k,v in loci.freqs.items():
-#        if v >0 and k!=loci.consensus():
-#            freqs.append(v)
-#            pos.append(loci.pos)
 
-
-
-#import matplotlib.pyplot as plt
-#plt.plot(PB1.calc_coverage())
-#plt.semilogy(pos,freqs)
-
-#cdf
-#freqs = np.sort(freqs)
-#cdf = np.array(range(len(freqs)))/float(len(freqs))
-#plt.semilogx(freqs,cdf)
 
 

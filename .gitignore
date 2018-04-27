@@ -1,9 +1,9 @@
 *.fastq*
 .bpipe/*
 commandlog.txt
-
+test/data/
 scripts/s1_ref
-
+tutorial/data/*
 scripts/\.Rhistory
 
 *.pyc
@@ -11,5 +11,6 @@ scripts/\.Rhistory
 *.groovy
 
 tutorial/yaml_testing/
-
+*.bpipe*
 tutorial/data/fastq/renaming_log\.txt
+tutorial/new_look/

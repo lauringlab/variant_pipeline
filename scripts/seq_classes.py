@@ -103,11 +103,19 @@ def tally(bamfile,chr,start,stop,maxDepth = 1000,phred = 30):
                 if pileupRead.is_refskip:
                     l.update("-")
                 else:
-                    # query_alignment_* removes solf clipped bases
-                    called_base= pileupRead.alignment.query_alignment_sequence[pileupRead.query_position] 
-                    called_phred= pileupRead.alignment.query_alignment_qualities[pileupRead.query_position]
-                    if called_phred>=phred: 
-                        l.update(called_base)
+				# query_alignment_* removes solf clipped bases, this confirms we don't look at positions beyond this clipping
+
+                    if pileupRead.query_position >= pileupRead.alignment.query_alignment_start and pileupRead.query_position < pileupRead.alignment.query_alignment_end:
+                    	try:
+                    	    called_base= pileupRead.alignment.query_alignment_sequence[pileupRead.query_position-pileupRead.alignment.query_alignment_start] 
+                    	    called_phred= pileupRead.alignment.query_alignment_qualities[pileupRead.query_position-pileupRead.alignment.query_alignment_start]
+                        except IndexError:
+                            print " chr : %s [%d - %d] query_pos : %d pos: %d" %(chr,pileupRead.alignment.query_alignment_start,pileupRead.alignment.query_alignment_end,pileupRead.query_position,pileupColumn.pos)
+                            print pileupRead.alignment.query_sequence
+                            print "-"*pileupRead.alignment.query_alignment_start + pileupRead.alignment.query_alignment_sequence
+                            print pileupRead.alignment.is_reverse
+                        if called_phred>=phred: 
+                            l.update(called_base)
         
         seg.append_loci(l)
     return seg

@@ -66,7 +66,6 @@ class test_segment(unittest.TestCase):
     def test_append_wrong_pos(self):
         self.assertRaises(ValueError,lambda : self.PB1.append_loci(locus(chr="HA",pos=2)))
    
-        
     def test_append(self):
         self.PB1.append_loci(self.l)
         self.assertEqual(self.PB1.seq[0],self.l)
@@ -77,13 +76,16 @@ class test_segment(unittest.TestCase):
         
     def test_consensus(self):
         self.PB1.append_loci(self.l)
-        self.l.pos=2
-        self.PB1.append_loci(self.l)
+        self.l2 = copy.deepcopy(self.l)
+        self.l2.pos = 2
+        self.PB1.append_loci(self.l2)
         self.assertEqual(self.PB1.consensus(0.5),"AA")
+        
     def test_coverage(self):
         self.PB1.append_loci(self.l)
-        self.l.pos=2
-        self.PB1.append_loci(self.l)
+        self.l2 = copy.deepcopy(self.l)
+        self.l2.pos = 2
+        self.PB1.append_loci(self.l2)
         self.assertEqual(self.PB1.calc_coverage(),[len(self.pileup),len(self.pileup)])
     
 

@@ -69,8 +69,6 @@ class segment(object):
             raise ValueError('Only class locus can be appended to a segment object')
         if loci.chr!=self.chr:
             raise ValueError('The loci chr does not match the segement chr')
-        
-
         if len(self.seq)>0 and loci.pos!=max([x.pos for x in self.seq])+1:
             raise ValueError('The position of the loci does not match current segment length')
         self.seq.append(loci)

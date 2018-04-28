@@ -295,5 +295,7 @@ position_stats = {
     doc "gets position stats"
     output.dir = "position-stats"
     def out = "./position-stats/"+file(input.bam).name.replace(".bam","")
-    exec "python ${SCRIPTS}/position_data.py ${REFERENCE_FA} $input.bam $out --maxDepth 10000 -c -f -cdf"
+        transform("json"){
+        exec "python ${SCRIPTS}/position_data.py ${REFERENCE_FA} $input.bam  $out $output.json --maxDepth 100000 -c -f -cdf"
+    }
 }

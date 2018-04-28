@@ -9,7 +9,7 @@ class test_loci(unittest.TestCase):
         
         self.solution = {"A":11,"T":4,"G":1,"C":1,"-":1}
         self.pileup = "AAAAATTAATTAAA-AGC"
-        self.l = locus(chr="HA",pos =1)
+        self.l = locus(chr="HA",pos =0)
         for b in self.pileup:
             self.l.update(b)
     
@@ -28,18 +28,18 @@ class test_loci(unittest.TestCase):
         """
         Test that consensus works with precent cutoff
         """
-        self.assertEqual(self.l.consensus(0.5),"A")
+        self.assertEqual(self.l.calc_consensus(0.5),"A")
     
     def test_consensus_N(self):
         """
         Test that consensus works when precent cutoff is not met
         """
-        self.assertEqual(self.l.consensus(1.0),"N")
+        self.assertEqual(self.l.calc_consensus(1.0),"N")
     def test_consensus_common(self):
         """
         Test that consensus works when no cutoff is given
         """
-        self.assertEqual(self.l.consensus(),"A")
+        self.assertEqual(self.l.consensus,"A")
 
 class test_segment(unittest.TestCase):
     
@@ -47,7 +47,7 @@ class test_segment(unittest.TestCase):
         
         self.PB1 = segment("PB1")
         self.pileup = "AAAAATTAATTAAA-AGC"
-        self.l = locus(chr="PB1",pos =1)
+        self.l = locus(chr="PB1",pos =0)
         for b in self.pileup:
             self.l.update(b)
 
@@ -61,10 +61,10 @@ class test_segment(unittest.TestCase):
         self.assertRaises(ValueError,lambda : self.PB1.append_loci("A"))
     
     def test_append_wrong_seg(self):
-        self.assertRaises(ValueError,lambda : self.PB1.append_loci(locus(chr="HA",pos=1)))
+        self.assertRaises(ValueError,lambda : self.PB1.append_loci(locus(chr="HA",pos=0)))
     
     def test_append_wrong_pos(self):
-        self.assertRaises(ValueError,lambda : self.PB1.append_loci(locus(chr="HA",pos=2)))
+        self.assertRaises(ValueError,lambda : self.PB1.append_loci(locus(chr="HA",pos=1)))
    
     def test_append(self):
         self.PB1.append_loci(self.l)
@@ -72,19 +72,19 @@ class test_segment(unittest.TestCase):
     
     def test_loci_return(self):
         self.PB1.append_loci(self.l)
-        self.assertEqual(self.PB1.locus(1),self.l)
+        self.assertEqual(self.PB1.locus(0),self.l)
         
     def test_consensus(self):
         self.PB1.append_loci(self.l)
         self.l2 = copy.deepcopy(self.l)
-        self.l2.pos = 2
+        self.l2.pos = 1
         self.PB1.append_loci(self.l2)
         self.assertEqual(self.PB1.consensus(0.5),"AA")
         
     def test_coverage(self):
         self.PB1.append_loci(self.l)
         self.l2 = copy.deepcopy(self.l)
-        self.l2.pos = 2
+        self.l2.pos = 1
         self.PB1.append_loci(self.l2)
         self.assertEqual(self.PB1.calc_coverage(),[len(self.pileup),len(self.pileup)])
     

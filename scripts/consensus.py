@@ -14,8 +14,8 @@ def main():
     and identifies the consensus file sequence of the sample.',
     usage ="python consensus.py reference.fa sample.bam sample.fa -maxDepth 1000")
     
-    parser.add_argument('reference_fa', metavar='reference_fa', nargs='+',
-                        help='The reference fasta to which the sample was aligned. This is used for setting the regions')
+    parser.add_argument('bed', metavar='bed', nargs='+',
+                        help='a bed file with regions to compare. base 0 left inclusive right exclusive')
     parser.add_argument('bam', metavar='bam', nargs='+',
                         help='The bam file of the sample')
     parser.add_argument('sample_fa', metavar='sample_fa', nargs='+',
@@ -37,15 +37,18 @@ def main():
     # get bam file
     bam = pysam.AlignmentFile(args.bam[0],"rb")
     # set up reference dictions with key for each segment and value of [0,length]
+    
     ref_genome={}
-    for record in SeqIO.parse(args.reference_fa[0],"fasta"):
-        ref_genome.update({record.id: [0,len(record.seq)]})
+    with open(args.bed[0],"r") as regions:
+        for record in regions:
+            record = record.split("\t")
+        ref_genome.update({record[0]: [record[1],record[2]]})
     
     # tally up base counts for each segement
     sample_genome={}
     for seg in ref_genome:
         sample_genome.update({seg: tally(bamfile=bam,chr=seg,\
-        start = 0,stop = ref_genome[seg][1],maxDepth=maxDepth) })
+        start = ref_genome[seg][0],stop = ref_genome[seg][1],maxDepth=maxDepth) })
     
     # get consensus for each segment and save as seq in list
     consensus=[]

@@ -4,7 +4,7 @@ class locus(object):
     """ A base which has the following characteristics 
         Atrributes :
             Chr : chromosome
-            pos : position on chromosome
+            pos : position on chromosome base 0
             counts : a dictionary of { A : the number of As
             T : the number of Ts
             C : the number of Cs
@@ -12,6 +12,7 @@ class locus(object):
             - : the number of of deletions    
             }
             add consensus.
+            add concat_pos
         methods : 
             update : update counts
             calc_freqs :  calculate the frequency of each base
@@ -27,13 +28,17 @@ class locus(object):
         self.counts = {'A':0,'T':0,'C':0,'G':0,'-':0}
         self.freqs = {'A':0,'T':0,'C':0,'G':0,'-':0}
         self.coverage = 0
+        self.concat_pos = None
+        self.consensus = ''
     def update(self,base):
         self.coverage = self.coverage+1
         self.counts[base] = self.counts[base]+1
+        self.calc_freqs()
+        self.consensus = self.calc_consensus()
     def calc_freqs(self):
         for base in self.counts.keys():
             self.freqs[base] = self.counts[base]/self.coverage
-    def consensus(self,cutoff=None):
+    def calc_consensus(self,cutoff=None):
         self.calc_freqs()
         v=list(self.freqs.values())
         k=list(self.freqs.keys())
@@ -75,7 +80,7 @@ class segment(object):
     def consensus(self,cutoff=None):
         seg_consensus = ""
         for loci in self.seq:
-            seg_consensus=seg_consensus+loci.consensus(cutoff)
+            seg_consensus=seg_consensus+loci.calc_consensus(cutoff)
         return seg_consensus
     def locus(self,pos):
         loci = [x for x in self.seq if x.pos==pos]
@@ -97,7 +102,7 @@ def tally(bamfile,chr,start,stop,maxDepth = 1000,phred = 30):
     pileup = bamfile.pileup(chr,start,stop,stepper='all',truncate=True,max_depth = maxDepth)
 #        pileup = bamfile.pileup(chr,pos,pos+1,stepper='all',truncate=True,max_depth = maxDepth)
     for pileupColumn in pileup:
-        l = locus(chr,pos=pileupColumn.pos+1) # loci positions are base 1
+        l = locus(chr,pos=pileupColumn.pos) # loci positions are base 0
         for pileupRead in pileupColumn.pileups:
             if not pileupRead.is_del:
                 if pileupRead.is_refskip:

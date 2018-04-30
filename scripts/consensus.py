@@ -42,7 +42,7 @@ def main():
     with open(args.bed[0],"r") as regions:
         for record in regions:
             record = record.split("\t")
-        ref_genome.update({record[0]: [record[1],record[2]]})
+            ref_genome.update({record[0]: [int(record[1]),int(record[2])]})
     
     # tally up base counts for each segement
     sample_genome={}

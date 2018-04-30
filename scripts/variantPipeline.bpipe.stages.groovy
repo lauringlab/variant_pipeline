@@ -287,7 +287,7 @@ consensus = {
 	doc "finds the consensus of each sample"
 	output.dir = "consensus"
 	transform("fasta"){
-		exec " python ${SCRIPTS}/consensus.py ${REFERENCE_FA} $input.bam $output.fasta --maxDepth ${MAXDEPTHCON}"
+		exec " python ${SCRIPTS}/consensus.py ${BEDFILE} $input.bam $output.fasta --maxDepth ${MAXDEPTHCON}"
 		}
 	forward input.bam
 	}

@@ -50,7 +50,7 @@ output_dir=os.path.abspath(args.output_dir[0])
 
 
 # options that need absolute paths
-path_options = ["REFERENCE","REFERENCE_FA","OPEN_READING"]
+path_options = ["REFERENCE","REFERENCE_FA","OPEN_READING","BEDFILE"]
 
 # 
 #     

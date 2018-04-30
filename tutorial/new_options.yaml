@@ -10,5 +10,6 @@ REFERENCE: ./data/reference/wsn33_wt_plasmid # 'The name of the reference files 
 
 # Options for python analysis
 REFERENCE_FA: ./data/reference/wsn33_wt_plasmid.fa
-MAXDEPTH: 1000 
-
+MAXDEPTHCON: 1000 
+MAXDEPTH:100000
+BEDFILE: ./wsn33.OR.bed

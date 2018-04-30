@@ -287,7 +287,7 @@ consensus = {
 	doc "finds the consensus of each sample"
 	output.dir = "consensus"
 	transform("fasta"){
-		exec " python ${SCRIPTS}/consensus.py ${REFERENCE_FA} $input.bam $output.fasta --maxDepth ${MAXDEPTH}"
+		exec " python ${SCRIPTS}/consensus.py ${REFERENCE_FA} $input.bam $output.fasta --maxDepth ${MAXDEPTHCON}"
 		}
 	forward input.bam
 	}
@@ -296,6 +296,6 @@ position_stats = {
     output.dir = "position-stats"
     def out = "./position-stats/"+file(input.bam).name.replace(".bam","")
         transform("json"){
-        exec "python ${SCRIPTS}/position_data.py ${REFERENCE_FA} $input.bam  $out $output.json --maxDepth 100000 -c -f -cdf"
+        exec "python ${SCRIPTS}/position_data.py  ${BEDFILE} $input.bam  $output.json --maxDepth ${MAXDEPTH} -mqc"
     }
 }

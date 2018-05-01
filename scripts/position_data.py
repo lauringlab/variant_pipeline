@@ -88,12 +88,10 @@ def main():
         concat_cov=[] 
         concat_pos = [] 
         i = 1 
-        for loci in sample_genome[seg].seq 
-            cov = sample_genome[seg].calc_coverage() 
-            for loci in cov: 
-                concat_cov.append(loci.coverage) 
-                concat_pos.append(loci.concat_pos) 
-                i+=1 
+        for loci in sample_genome[seg].seq:
+            concat_cov.append(loci.coverage) 
+            concat_pos.append(loci.concat_pos) 
+            i+=1 
         with open(basename+"_mqc.cov.csv","w") as covfile: 
             i = 0 
             while i<len(concat_cov): 

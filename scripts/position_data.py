@@ -92,7 +92,7 @@ def main():
             cov = sample_genome[seg].calc_coverage() 
             for loci in cov: 
                 concat_cov.append(loci) 
-                concat_pos.append(i) 
+                concat_pos.append(loci.concat_pos) 
                 i+=1 
         with open(basename+"_mqc.cov.csv","w") as covfile: 
             i = 0 

@@ -1,0 +1,40 @@
+# Other MultiQC config stuff here
+custom_data:
+    coverage_files:
+        file_format: 'csv'
+        section_name: 'Coverage'
+        description: 'This is the coverage of each sample. The genome has been concatenated and positions reflect those specified in the bed file.'
+        plot_type: 'linegraph'
+        pconfig:
+            id: 'coverage_lineplot'
+            title: 'Coverage'
+            ylab: 'Coverage'
+            xlab: 'Genome Position'
+
+    frequency_files:
+        file_format: 'csv'
+        section_name: 'Variant Frequencies'
+        description: 'The frequency of all nonconsesus bases with frequencies above 0. Genome position is relative to the regions specified in the bed file.'
+        plot_type: 'linegraph'
+        pconfig:
+            id: 'frequency_lineplot'
+            title: 'Variant Frequencies'
+            ylab: 'Log(10) Frequency'
+            xlab: 'Genome Position'
+
+    cdf_files:
+        file_format: 'csv'
+        section_name: 'Freqeuncy CDF'
+        description: 'The cdf plot of  all nonconsesus bases with frequencies above 0. Each segment is plotted separately.'
+        plot_type: 'linegraph'
+        pconfig:
+            id: 'coverage_lineplot'
+            title: 'Coverage'
+            ylab: 'Coverage'
+sp:
+    coverage_files:
+        fn: '*_mqc.cov.csv'
+    frequency_files:
+        fn: '*_mqc.frequencies.csv'
+    cdf_files:
+        fn: '*_mqc.cdf.csv'

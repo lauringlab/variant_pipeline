@@ -63,10 +63,11 @@ def main():
     
     i=0 # this is to make sure we handel the lase one correctly
     total = 0
+
     for seg in ref_genome:
         total = total + ref_genome[seg][1]-ref_genome[seg][0]
     with open(args.output[0],'w') as out:
-        out.write("[")
+        out.write("{\n\"loci\":[")
         for seg in sample_genome:
             for pos in sample_genome[seg].seq:
                 # set concatpos
@@ -74,7 +75,7 @@ def main():
                 if i <(total-1):
                     out.write(json.dumps(vars(pos),sort_keys=True, indent=4)+",")
                 else:
-                    out.write(json.dumps(vars(pos),sort_keys=True, indent=4)+"]")
+                    out.write(json.dumps(vars(pos),sort_keys=True, indent=4)+"]}")
                 i+=1
 
 

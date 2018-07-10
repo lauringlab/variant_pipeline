@@ -13,13 +13,16 @@ import json
 def main():
     parser = argparse.ArgumentParser(description='This scipts takes a bam file \
     and identifies sequence accuracy metric.',
-    usage ="python consensus.py reference.fa sample.bam -maxDepth 1000")
+    usage ="python position_data.py sample.bed reference.fa sample.bam  sample.json -maxDepth 1000 -mqc")
     
     parser.add_argument('bed', metavar='bed', nargs='+',
                         help='a bed file with regions to compare')
+    parser.add_argument('reference.fa', metavar='ref',narg='+',
+                            help = 'The sample consensus file which will be used to call nonsynonymous and synonymous mutations')
+
     parser.add_argument('bam', metavar='bam', nargs='+',
                         help='The bam file of the sample')
-
+                        
     parser.add_argument('output', metavar='output', nargs='+',
                         help='The json file to hold the segmens')
                                             

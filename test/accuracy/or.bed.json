@@ -1,0 +1,135 @@
+{
+	"genome": [
+		{
+			"seg": "PB2",
+			"size": 3000,
+			"ORF": [
+				{
+					"name": "PB2",
+					"regions": [
+						{
+							"start": 27,
+							"stop": 2307
+						}
+					]
+				}
+			]
+		},
+		{
+			"seg": "PB1",
+			"ORF": [
+				{
+					"name": "PB1",
+					"regions": [
+						{
+							"start": 25,
+							"stop": 2298
+						}
+					]
+				}
+			]
+		},
+		{
+			"seg": "PA",
+			"ORF": [
+				{
+					"name": "PA",
+					"regions": [
+						{
+							"start": 25,
+							"stop": 2175
+						}
+					]
+				}
+			]
+		},
+		{
+			"seg": "HA",
+			"ORF": [
+				{
+					"name": "HA",
+					"regions": [
+						{
+							"start": 33,
+							"stop": 1730
+						}
+					]
+				}
+			]
+		},
+		{
+			"seg": "NP",
+			"ORF": [
+				{
+					"name": "NP",
+					"regions": [
+						{
+							"start": 46,
+							"stop": 1542
+						}
+					]
+				}
+			]
+		},
+		{
+			"seg": "NA",
+			"ORF": [
+				{
+					"name": "NA",
+					"regions": [
+						{
+							"start": 20,
+							"stop": 1381
+						}
+					]
+				}
+			]
+		},
+		{
+			"seg": "M",
+			"ORF": [
+				{
+					"name": "M1",
+					"regions": [
+						{
+							"start": 2,
+							"stop": 2
+						}
+					]
+				},
+				{
+					"name": "M2",
+					"regions": [
+						{
+							"start": 2,
+							"stop": 2
+						}
+					]
+				}
+			]
+		},
+		{
+			"seg": "NS",
+			"ORF": [
+				{
+					"name": "NS1",
+					"regions": [
+						{
+							"start": 2,
+							"stop": 2
+						}
+					]
+				},
+				{
+					"name": "NS2",
+					"regions": [
+						{
+							"start": 2,
+							"stop": 2
+						}
+					]
+				}
+			]
+		}
+	]
+}

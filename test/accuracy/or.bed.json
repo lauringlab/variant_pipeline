@@ -2,7 +2,7 @@
 	"genome": [
 		{
 			"seg": "PB2",
-			"size": 3000,
+			"size": 2343,
 			"ORF": [
 				{
 					"name": "PB2",
@@ -17,13 +17,23 @@
 		},
 		{
 			"seg": "PB1",
+			"size": 2341,
 			"ORF": [
 				{
 					"name": "PB1",
 					"regions": [
 						{
-							"start": 25,
+							"start": 24,
 							"stop": 2298
+						}
+					]
+				},
+				{
+					"name": "PB1-F2",
+					"regions": [
+						{
+							"start": 118,
+							"stop": 391
 						}
 					]
 				}
@@ -31,12 +41,13 @@
 		},
 		{
 			"seg": "PA",
+			"size": 2233,
 			"ORF": [
 				{
 					"name": "PA",
 					"regions": [
 						{
-							"start": 25,
+							"start": 24,
 							"stop": 2175
 						}
 					]
@@ -45,12 +56,13 @@
 		},
 		{
 			"seg": "HA",
+			"size": 1775,
 			"ORF": [
 				{
 					"name": "HA",
 					"regions": [
 						{
-							"start": 33,
+							"start": 32,
 							"stop": 1730
 						}
 					]
@@ -59,12 +71,13 @@
 		},
 		{
 			"seg": "NP",
+			"size": 1565,
 			"ORF": [
 				{
 					"name": "NP",
 					"regions": [
 						{
-							"start": 46,
+							"start": 45,
 							"stop": 1542
 						}
 					]
@@ -73,12 +86,13 @@
 		},
 		{
 			"seg": "NA",
+			"size": 1409,
 			"ORF": [
 				{
 					"name": "NA",
 					"regions": [
 						{
-							"start": 20,
+							"start": 19,
 							"stop": 1381
 						}
 					]
@@ -87,13 +101,14 @@
 		},
 		{
 			"seg": "M",
+			"size": 1027,
 			"ORF": [
 				{
 					"name": "M1",
 					"regions": [
 						{
-							"start": 2,
-							"stop": 2
+							"start": 25,
+							"stop": 784
 						}
 					]
 				},
@@ -101,8 +116,12 @@
 					"name": "M2",
 					"regions": [
 						{
-							"start": 2,
-							"stop": 2
+							"start": 25,
+							"stop": 51
+						},
+						{
+							"start": 739,
+							"stop": 1007
 						}
 					]
 				}
@@ -110,13 +129,14 @@
 		},
 		{
 			"seg": "NS",
+			"size": 891,
 			"ORF": [
 				{
 					"name": "NS1",
 					"regions": [
 						{
-							"start": 2,
-							"stop": 2
+							"start": 26,
+							"stop": 719
 						}
 					]
 				},
@@ -124,8 +144,12 @@
 					"name": "NS2",
 					"regions": [
 						{
-							"start": 2,
-							"stop": 2
+							"start": 26,
+							"stop": 53
+						},
+						{
+							"start": 525,
+							"stop": 864
 						}
 					]
 				}

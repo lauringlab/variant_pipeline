@@ -1,12 +1,14 @@
 from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio.Alphabet import IUPAC
+from Bio.SeqRecord import SeqRecord
 import argparse
 import glob
 import os
 import tempfile
 import subprocess
 import sys
+from datetime import datetime
 
 
 """ This script takes in 2 fasta files and trimms the sequences in 1 to that of the reference.
@@ -237,7 +239,9 @@ def main(): # The positions will be given as base 0 and adjusted to match the co
     for i in range(0,len(align_samp)):
         print "Trimming %s" % align_samp[i].id
         trimmed_out=trim([align_ref[i].seq,align_samp[i].seq])
-        trimmed.append(trimmed_out[0])
+        record = SeqRecord(trimmed_out[0],id = align_samp[i].id, description = "made on %s" % str(datetime.now()))
+        trimmed.append(record)
+        # make seqRecord object here.
         segs.append(align_samp[i].id)
         regions.append(trimmed_out[1])
 

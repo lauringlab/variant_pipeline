@@ -1,5 +1,75 @@
 from __future__ import division
 import pysam
+from scripts.trim_to_coding import trim_to_regions
+
+
+
+
+class mutationalClass(object):
+    """
+    Data concerning the type of a mutation
+    sequence - a seqrecord of the segment
+    codingRegion -  a dictionary of the open reading frame positions - must be a valid open reading frame of the form
+                {
+					"name": "PB2",
+					"regions": [
+						{
+							"start": 27,
+							"stop": 2307
+						}
+					]
+				}
+    
+    nucleotide - nucleotide
+    nucleotide position - The position in the segment alignment this will mostlikely be more than the position in the ORF.
+
+    def __intit__(self,sequence,codingRegion,var,nucleotidePosition):
+        # take in the segment consensus sequence 
+        # trim to the coding sequence
+        # convert nucletodi potion to position in coding regions
+        # get AA postion and position in codon
+        # get consensus AA
+        # get variant AA
+        # classify variant
+        self.orfName = codingRegion["Name"]
+        self.codingSequence = ""
+        for seg in codingRegion:
+            self.codingSequence=self.codingSequence+sequence[seg["start"]:seg["stop"]]
+        self.codonPositions = None
+        self.aminoAcidPosition=None
+        self.consensusAA = ""
+        self.varAA = ""
+    """
+
+
+class allele(object):
+    """
+    The allele present at a loci and their accompanying data
+    """
+    def __init__(self,nucleotide):
+        self.nucleotide=nucleotide
+        self.counts = 0
+        self.freq = 0
+        self.mutationalClass =[] 
+
+    def classify(self,sequence,codingRegion,pos):
+        # Get the coding sequence
+        codingSequence=""
+        for seg in codingRegion:
+            codingSequence=codingSequence+sequence[seg["start"]:seg["stop"]]
+        # Get the new position in the coding sequence
+        i = 0
+        for seg in codingRegion:
+            if pos > seg["start"] and pos<seg["stop"]:
+                break
+            else:
+                i+=1
+        
+        posInSeg = pos-codingRegion[i]["start"]
+
+        
+
+
 class locus(object):
     """ A base which has the following characteristics 
         Atrributes :
@@ -18,18 +88,20 @@ class locus(object):
             calc_freqs :  calculate the frequency of each base
             consensus : caculate the consensus sequence as this position 
     """
-    def __init__(self,chr,pos):
+    def __init__(self,pos):
         """
         return a base object with chr and pos and starting counts of 0
-        Posisition is base 1 like most biologists are use to.
+        Posisition is base 0 because this is python and I want to keep everything 
+        easy to remember. If it came from python it is base 0.
         """
-        self.chr = chr
+       # self.chr = chr
         self.pos = pos
         self.counts = {'A':0,'T':0,'C':0,'G':0,'-':0}
         self.freqs = {'A':0,'T':0,'C':0,'G':0,'-':0}
         self.coverage = 0
         self.concat_pos = None
         self.consensus = ''
+
     def update(self,base):
         self.coverage = self.coverage+1
         self.counts[base] = self.counts[base]+1

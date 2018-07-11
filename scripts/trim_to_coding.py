@@ -124,7 +124,6 @@ def Align(headers_seqs, progpath, musclegapopen=None):
 
 
 
-#def trim(aligned_headers_seqs):
 def get_regions(ref_seq):
 
     """
@@ -154,7 +153,13 @@ def get_regions(ref_seq):
             gene.append(region)
     return gene
 
-def trim(aligned_header_seqs):
+def trim_to_regions(sequence,regions):
+    trimmed_sequence = ""
+    for segment in regions:
+        trimmed_sequence=trimmed_sequence+sequence[segment[0]:segment[1]]
+    return(trimmed_sequence)
+
+def trim_sequences(aligned_header_seqs):
     """
     The first sequence in this alignment is taken to correspond to the reference sequence.
     The returned variable is a list similar to aligned_headers_seqs, but with
@@ -173,10 +178,8 @@ def trim(aligned_header_seqs):
 
 
     samp_seq=aligned_header_seqs[1]
-    sample_sequence = ""
-    for segment in regions:
-        sample_sequence=sample_sequence+samp_seq[segment[0]:segment[1]]
-
+   
+    sample_sequence = trim_to_regions(samp_seq,regions)
     return([sample_sequence,regions]) 
 
 
@@ -238,7 +241,7 @@ def main(): # The positions will be given as base 0 and adjusted to match the co
     regions = []
     for i in range(0,len(align_samp)):
         print "Trimming %s" % align_samp[i].id
-        trimmed_out=trim([align_ref[i].seq,align_samp[i].seq])
+        trimmed_out=trim_sequences([align_ref[i].seq,align_samp[i].seq])
         record = SeqRecord(trimmed_out[0],id = align_samp[i].id, description = "made on %s" % str(datetime.now()))
         trimmed.append(record)
         # make seqRecord object here.

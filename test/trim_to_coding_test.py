@@ -9,31 +9,31 @@ class test_loci(unittest.TestCase):
     def test_trimming_ends(self):
         solution = ["AAAAA",[[2,7]]]
         seqs = ["--AAAAA--","TTAAAAATT"]#TTAATTAAA-AGC"
-        output = trim(seqs)
+        output = trim_sequences(seqs)
         self.assertEqual(output,solution)
     
     def test_trimming_middles(self):
         solution = ["AAAAAAA",[[2,5],[6,8],[9,11]]]
         seqs = ["--AAA-AA-AA-","TTAAATAATAAT"]#TTAATTAAA-AGC"
-        output = trim(seqs)
+        output = trim_sequences(seqs)
         self.assertEqual(output,solution)
 
     def test_trimming_middles_noend(self):
         solution = ["AAAAAAA",[[2,5],[6,8],[9,11]]]
         seqs = ["--AAA-AA-AA","TTAAATAATAA"]#TTAATTAAA-AGC"
-        output = trim(seqs)
+        output = trim_sequences(seqs)
         self.assertEqual(output,solution)
 
     def test_no_gap(self):
         solution = ["AAAA",[[0,4]]]
         seqs = ["AAAA","AAAA"]#TTAATTAAA-AGC"
-        output = trim(seqs)
+        output = trim_sequences(seqs)
         self.assertEqual(output,solution) 
 
     def test_no_gap_at_end(self):
         solution = ["AAAA",[[0,3],[4,5]]]
         seqs = ["AAA-A","AAATA"]#TTAATTAAA-AGC"
-        output = trim(seqs)
+        output = trim_sequences(seqs)
         self.assertEqual(output,solution)
 
 

@@ -11,7 +11,7 @@ class test_loci(unittest.TestCase):
         l = locus(chr="HA",pos =1)
         for b in pileup:
             l.update(b)
-        self.asserEqual(l.counts,solution)
+        self.assertEqual(l.counts,solution)
 
 if __name__ == '__main__':
     unittest.main()

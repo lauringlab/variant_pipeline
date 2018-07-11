@@ -6,6 +6,7 @@ import glob
 import os
 import tempfile
 import subprocess
+import sys
 
 
 """ This script takes in 2 fasta files and trimms the sequences in 1 to that of the reference.
@@ -120,60 +121,61 @@ def Align(headers_seqs, progpath, musclegapopen=None):
     return aligned_headers_seqs # return the aligned sequences
 
 
-def trim(aligned_headers_seqs):
-    """trimms excess 5' and 3' regions from sample seq.
 
+#def trim(aligned_headers_seqs):
+def get_regions(ref_seq):
 
-    The first sequence in this alignment is taken to correspond to the reference sequence.
-        The returned variable is a list similar to aligned_headers_seqs, but with
-        all positions corresponding to gaps in this reference sequence stripped away.
-        All gaps ('-') characters are removed from this reference sequence.  In addition,
-        in all other aligned sequences in 'aligned_headers_seqs', every character at
-        the same position as a gap in the reference sequence is removed.  Therefore,
-        at the end of this procedure, all of the alignments have the same length
-        as the reference sequence with its gaps stripped away.  The headers are
-        unchanged.  The order of sequences in this stripped alignment is also
-        unchanged.
-
-        I have test the results and the output is correct
     """
-    if not (isinstance(aligned_headers_seqs, list) and len(aligned_headers_seqs) >= 2):
+    ref_seq is a string containing gaps '-'
+    This function returns a list of lists (legnth two)
+    with the start and stop (python) of the non gapped regions.
+    """
+    gap=True
+    gene = []
+    region = []
+    for i in range(0,len(ref_seq)):
+        if ref_seq[i]!='-' and gap==True:
+            region.append(i)
+            if i ==len(ref_seq)-1: # There is a trailing base at the end
+                region.append(i+1)
+                gene.append(region)
+            gap=False
+
+        elif ref_seq[i]=='-' and gap ==False:
+            region.append(i)
+            gene.append(region)
+            region=[]
+            gap=True 
+            #print "setting gap to true"   
+        elif ref_seq[i]!='-' and gap==False and i ==len(ref_seq)-1: # The last character is not a gap and should be included in this frame
+            region.append(i+1)
+            gene.append(region)
+    return gene
+
+def trim(aligned_header_seqs):
+    """
+    The first sequence in this alignment is taken to correspond to the reference sequence.
+    The returned variable is a list similar to aligned_headers_seqs, but with
+    all positions corresponding to gaps in this reference sequence stripped away.
+    In the sample sequence, every character at
+    the same position as a gap in the reference sequence is removed. The headers are
+    unchanged.  The order of sequences in this stripped alignment is also
+    unchanged.
+    """
+    
+    if not (isinstance(aligned_header_seqs, list) and len(aligned_header_seqs) >= 2):
         raise ValueError, "Input does not specify at least two aligned sequences."
-    ref_seq = aligned_headers_seqs[0].seq# str yields the sequence
-    #print(ref_seq)
-    # Getting the positions to strip from the start
-    go=True
-    i=0
-    start_excess=0
-    while (go==True):
-        if (ref_seq[i]=='-'):
-            start_excess=i # strip 0 to i
-        else:
-            go=False
-        i=i+1
-    # Getting the posisiton to remove from the end
-    start_excess=start_excess+1 # slicing is inclusive on this end
-    end=True
-    i=len(ref_seq)-1
-    end_excess=i
-    print(i)
-    while (end==True):
-        if (ref_seq[i]=='-'):
-            end_excess=i # strip 0 to i
-        else:
-            end=False
-        i=i-1
+    ref_seq = aligned_header_seqs[0]# str yields the sequence the reference here is shorter so we count the '-' in this sequence.
 
-    print "%s bases taken off the 5' end" % str(start_excess)
-    print "%s bases taken off the 3' end " % str(len(ref_seq)-1-end_excess)
+    regions= get_regions(ref_seq)
 
 
+    samp_seq=aligned_header_seqs[1]
+    sample_sequence = ""
+    for segment in regions:
+        sample_sequence=sample_sequence+samp_seq[segment[0]:segment[1]]
 
-    samp_seq=aligned_headers_seqs[1]
-    samp_seq.seq=samp_seq.seq[start_excess:end_excess]
-
-    return([samp_seq,start_excess,end_excess+1]) # In a 1 base system (like R) The start will be the last base to not be exclued on the 5' and end is the last base off the end to be included.
-
+    return([sample_sequence,regions]) 
 
 
 def ReadFASTA(fastafile):
@@ -231,19 +233,13 @@ def main(): # The positions will be given as base 0 and adjusted to match the co
     print("Trimming...\n")
     trimmed=[]
     segs=[]
-    off_5=[]
-    off_3=[]
+    regions = []
     for i in range(0,len(align_samp)):
         print "Trimming %s" % align_samp[i].id
-        trimmed_out=trim([align_ref[i],align_samp[i]])
+        trimmed_out=trim([align_ref[i].seq,align_samp[i].seq])
         trimmed.append(trimmed_out[0])
         segs.append(align_samp[i].id)
-        off_5.append(trimmed_out[1])
-        off_3.append(trimmed_out[2])
-
-
-
-
+        regions.append(trimmed_out[1])
 
     if(tsv==None):
         print "writing output to %s"  % args.out_fa
@@ -252,8 +248,9 @@ def main(): # The positions will be given as base 0 and adjusted to match the co
         print "writing tsv file to %s" % tsv
         with open(tsv,'w') as out_file:
            out_file.write("chr\tcoding\n")
-           for i in range(0,len(off_5)) :
-               out_file.write(str(segs[i])+"\t[["+str(off_5[i]+1)+","+str(off_3[i]-1)+']]\n')
+           for i in range(0,len(regions)) :
+               out_file.write(str(segs[i])+"\t"+ str(regions[i])+ '\n')
 
 
-main()
+if __name__ == '__main__':
+   main()

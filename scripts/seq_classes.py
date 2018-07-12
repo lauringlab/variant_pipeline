@@ -34,6 +34,113 @@ def checkORF(seq):
     else:
         return(True)
 
+def classify(sequence,codingRegion,pos,nucleotide):
+       
+        """
+        seqeunce is a seqRecord
+        codingRegion is a diction in the form 
+        {
+            "name": "NS1",
+            "regions": [
+                {
+                    "start": 26,
+                    "stop": 719
+                }
+            ]
+        }
+        The ouput is a dictionary added to the mutationalClass list
+        it is of the form 
+        {
+            ORF: The name of the ORF,
+            codonPos: the position in the codon either [0,1,2],
+            codingPos: the nucleotide position in the ORF
+            aminoAcidPos: The position of the amino acid in the polypetide,
+            consensusAA: The consensus amino acid,
+            varAA: The variant amino acid,
+            classification: Nonsynonymous,Synonymous,indel, stop,
+        }
+        """
+        # Get the coding sequence
+        # Get the new position in the coding sequence
+        i = 0
+        # Has to catch the case where it's outside these regions
+        outsideORF=True
+        for seg in codingRegion["regions"]:
+            if pos >= seg["start"] and pos<seg["stop"]:
+                outsideORF=False
+                break
+            else:
+                i+=1
+        if outsideORF:
+            return({
+                "ORF": codingRegion["name"],
+                "codonPos": None,
+                "codingPos": None,
+                "aminoAcidPos": None,
+                "consensusAA": None,
+                "varAA": None,
+                "classification": "Noncoding"
+
+            })
+        
+        codingSequence=""
+        for seg in codingRegion["regions"]:
+            codingSequence=codingSequence+sequence.seq[seg["start"]:seg["stop"]]
+        consensusSequence = Seq(codingSequence,generic_dna)
+        checkORF(consensusSequence)
+        
+        posInSeg = pos-codingRegion["regions"][i]["start"]
+        otherRegions = codingRegion["regions"][:i]
+        adjustment = 0
+        if len(otherRegions)>0:
+            for seg in otherRegions:
+                adjustment+=seg["stop"]-seg["start"]
+        
+        codingPos = posInSeg+adjustment
+        codonPos = codingPos % 3
+        aminoAcidPos = codingPos // 3 
+
+        consensusProtien = consensusSequence.translate()
+        consensusAA = consensusProtien[aminoAcidPos]
+
+        if nucleotide=="-":
+            return({
+                "ORF": codingRegion["name"],
+                "codonPos": codonPos,
+                "codingPos": codingPos,
+                "aminoAcidPos": aminoAcidPos,
+                "consensusAA": consensusAA,
+                "varAA": None,
+                "classification": "Indel"
+            })
+
+        mutantCodingSequence = codingSequence        
+        mutantCodingSequence = mutantCodingSequence[:codingPos]+ str(nucleotide) + mutantCodingSequence[codingPos+1:]
+        mutantSequence = Seq(mutantCodingSequence,generic_dna)
+        mutantProtein = mutantSequence.translate()
+
+        varAA = mutantProtein[aminoAcidPos]
+
+        if varAA==consensusAA:
+            classification = "Synonymous"
+        elif varAA=="*":
+            classification = "Stop"
+        elif consensusAA=="*" and varAA!=consensusAA:
+            classification= "Readthrough"
+        elif varAA!=consensusAA:
+            classification="Nonsynonymous"
+
+        return({
+                "ORF": codingRegion["name"],
+                "codonPos": codonPos,
+                "codingPos": codingPos,
+                "aminoAcidPos": aminoAcidPos,
+                "consensusAA": consensusAA,
+                "varAA": varAA,
+                "classification": classification
+                 })
+
+
 
 class mutationalClass(object):
     """
@@ -81,53 +188,12 @@ class allele(object):
         self.counts = 0
         self.freq = 0
         self.mutationalClass =[] 
+    def classifyVar(self,sequence,codingRegion,pos):
+        self.mutationalClass.append(classify(sequence,codingRegion,pos,self.nucleotide))
 
-    def classify(self,sequence,codingRegion,pos):
-       
-        """
-        seqeunce is a seqRecord
-        codingRegion is a diction in the form 
-        {
-            "name": "NS1",
-            "regions": [
-                {
-                    "start": 26,
-                    "stop": 719
-                }
-            ]
-        }
-        The ouput is a dictionary added to the mutationalClass list
-        it is of the form 
-        {
-            ORF: The name of the ORF,
-            codonPos: the position in the codon either [0,1,2],
-            aminoAcidPos: The position of the amino acid in the polypetide,
-            consensusAA: The consensus amino acid,
-            varAA: The variant amino acid,
-            class: Nonsynonymous,Synonymous,indel, stop,
-        }
-        """
-        # Get the coding sequence
-        codingSequence=""
-        for seg in codingRegion["regions"]:
-            codingSequence=codingSequence+sequence.seq[seg["start"]:seg["stop"]]
-        # Get the new position in the coding sequence
-        i = 0
-        # Has to catch the case where it's outside these regions
-        for seg in codingRegion:
-            if pos > seg["start"] and pos<seg["stop"]:
-                break
-            else:
-                i+=1
-        codingSequence = Seq(codingSequence,generic_dna)
-        checkORF(codingSequence)
-        posInSeg = pos-codingRegion[i]["start"]
-        otherRegions = codingRegion["regions"][:i]
-        adjustment = 0
-        if len(otherRegions)>0:
-            for seg in otherRegions:
-                adjustment+=seg["stop"]-seg["start"]
-        pos = posInSeg+adjustment
+    
+
+
 
 
 

@@ -1,8 +1,38 @@
 from __future__ import division
 import pysam
+from Bio.Seq import Seq
+from Bio import SeqIO
+from Bio.Alphabet import generic_dna
+from Bio.SeqRecord import SeqRecord
 from scripts.trim_to_coding import trim_to_regions
 
 
+def checkORF(seq):
+    """
+    This function varifies the input is an ORF by checking it has
+    i) a start codon
+    ii) is made of complete codons mod(lenth(seg),3)=0 taking gaps into account
+    iii) Has a stop codon at the end and not before.
+    """
+    protien = seq.translate()
+   # check for ATG at start
+    if seq.find('ATG') !=0:
+        if seq.find('ATG') ==-1:
+            raise ValueError("No start codon")
+        if seq.find('ATG')>0:
+            raise ValueError("start codon found at position "+ str(seq.find('ATG')))
+    
+    elif len(seq)% 3!=0:
+        raise ValueError("The sequence is not multiple of 3") 
+       
+    elif protien.find('*')  != len(protien)-1:
+        if protien.find('*') ==-1:
+            raise ValueError("No stop codon in ORF")
+        else:
+            raise ValueError("Internal stop codon found at position "+ str(protien.find('*')))
+    
+    else:
+        return(True)
 
 
 class mutationalClass(object):
@@ -53,19 +83,56 @@ class allele(object):
         self.mutationalClass =[] 
 
     def classify(self,sequence,codingRegion,pos):
+       
+        """
+        seqeunce is a seqRecord
+        codingRegion is a diction in the form 
+        {
+            "name": "NS1",
+            "regions": [
+                {
+                    "start": 26,
+                    "stop": 719
+                }
+            ]
+        }
+        The ouput is a dictionary added to the mutationalClass list
+        it is of the form 
+        {
+            ORF: The name of the ORF,
+            codonPos: the position in the codon either [0,1,2],
+            aminoAcidPos: The position of the amino acid in the polypetide,
+            consensusAA: The consensus amino acid,
+            varAA: The variant amino acid,
+            class: Nonsynonymous,Synonymous,indel, stop,
+        }
+        """
         # Get the coding sequence
         codingSequence=""
-        for seg in codingRegion:
-            codingSequence=codingSequence+sequence[seg["start"]:seg["stop"]]
+        for seg in codingRegion["regions"]:
+            codingSequence=codingSequence+sequence.seq[seg["start"]:seg["stop"]]
         # Get the new position in the coding sequence
         i = 0
+        # Has to catch the case where it's outside these regions
         for seg in codingRegion:
             if pos > seg["start"] and pos<seg["stop"]:
                 break
             else:
                 i+=1
-        
+        codingSequence = Seq(codingSequence,generic_dna)
+        checkORF(codingSequence)
         posInSeg = pos-codingRegion[i]["start"]
+        otherRegions = codingRegion["regions"][:i]
+        adjustment = 0
+        if len(otherRegions)>0:
+            for seg in otherRegions:
+                adjustment+=seg["stop"]-seg["start"]
+        pos = posInSeg+adjustment
+
+
+
+
+
 
         
 
@@ -88,13 +155,13 @@ class locus(object):
             calc_freqs :  calculate the frequency of each base
             consensus : caculate the consensus sequence as this position 
     """
-    def __init__(self,pos):
+    def __init__(self,chr,pos):
         """
         return a base object with chr and pos and starting counts of 0
         Posisition is base 0 because this is python and I want to keep everything 
         easy to remember. If it came from python it is base 0.
         """
-       # self.chr = chr
+        self.chr = chr
         self.pos = pos
         self.counts = {'A':0,'T':0,'C':0,'G':0,'-':0}
         self.freqs = {'A':0,'T':0,'C':0,'G':0,'-':0}

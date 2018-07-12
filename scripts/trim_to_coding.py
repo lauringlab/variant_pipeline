@@ -17,25 +17,6 @@ from datetime import datetime
 """
 
 
-parser = argparse.ArgumentParser(description='This script takes in a fasta test fasta file and trims it to match the regions found a reference fasta file.\n I am using it to trim whole genomes to just the coding regions, but I suppose it could have other uses. Currently it relies on MUSCLE. The segment names in the sample file must match those in the reference.')
-parser.add_argument('aligner_path', metavar='aligner_path', nargs='+',
-                    help='The path to the muscle executable - assuming the executable is name muscle')
-
-parser.add_argument('in_fa', metavar='in_fa', nargs='+',
-                    help='The input (sample) fa')
-
-parser.add_argument('ref_fa', metavar='ref', nargs='+',
-                    help='The reference fasta to which the sequences will be trimmed.')
-
-parser.add_argument('-out_fa',action='store',dest='out_fa',default=None,
-                    help='optional output the trimmed fasta file')
-
-parser.add_argument('-tsv',action='store',dest='tsv',default=None,
-                    help='optional output - a tsv file recording the number of bp trimmed off the 5\' and 3\' ends')
-
-args = parser.parse_args()
-
-tsv=args.tsv
 
 def Align(headers_seqs, progpath, musclegapopen=None):
     """Performs a multiple sequence alignment of two or more sequences.
@@ -203,6 +184,25 @@ def ReadFASTA(fastafile):
 def main(): # The positions will be given as base 0 and adjusted to match the convention (base 1) in the funciton
     """Main body of script."""
     print "\nBeginning execution trimming script."
+    parser = argparse.ArgumentParser(description='This script takes in a fasta test fasta file and trims it to match the regions found a reference fasta file.\n I am using it to trim whole genomes to just the coding regions, but I suppose it could have other uses. Currently it relies on MUSCLE. The segment names in the sample file must match those in the reference.')
+    parser.add_argument('aligner_path', metavar='aligner_path', nargs='+',
+                        help='The path to the muscle executable - assuming the executable is name muscle')
+
+    parser.add_argument('in_fa', metavar='in_fa', nargs='+',
+                        help='The input (sample) fa')
+
+    parser.add_argument('ref_fa', metavar='ref', nargs='+',
+                        help='The reference fasta to which the sequences will be trimmed.')
+
+    parser.add_argument('-out_fa',action='store',dest='out_fa',default=None,
+                        help='optional output the trimmed fasta file')
+
+    parser.add_argument('-tsv',action='store',dest='tsv',default=None,
+                        help='optional output - a tsv file recording the number of bp trimmed off the 5\' and 3\' ends')
+
+    args = parser.parse_args()
+
+    tsv=args.tsv
 
     # parse arguments
     args = parser.parse_args()

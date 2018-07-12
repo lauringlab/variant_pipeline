@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.trim_to_coding import get_regions, trim
+from scripts.trim_to_coding import get_regions, trim_sequences
 
 class test_loci(unittest.TestCase):
     def setUp(self):

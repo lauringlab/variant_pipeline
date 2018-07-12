@@ -2,14 +2,28 @@ import unittest
 import pysam
 import copy
 
-from scripts.seq_classes import locus, segment
+from scripts.seq_classes import locus, segment, allele
 
 class test_loci(unittest.TestCase):
     def setUp(self):
         
-        self.solution = {"A":11,"T":4,"G":1,"C":1,"-":1}
+        self.solution ={'A':allele("A"),
+                        'T':allele("T"),
+                        'C':allele("C"),
+                        'G':allele("G"),
+                        '-':allele("-")}
+        self.solution["A"].count = 11
+        self.solution["A"].freq = 11/18.0
+        self.solution["T"].count = 4
+        self.solution["T"].freq = 4/18.0
+        self.solution["C"].count = 1
+        self.solution["C"].freq = 1/18.0
+        self.solution["G"].count = 1
+        self.solution["G"].freq = 1/18.0
+        self.solution["-"].count = 1
+        self.solution["-"].freq = 1/18.0
         self.pileup = "AAAAATTAATTAAA-AGC"
-        self.l = locus(chr="HA",pos =0)
+        self.l = locus(pos =0)
         for b in self.pileup:
             self.l.update(b)
     
@@ -22,7 +36,14 @@ class test_loci(unittest.TestCase):
         """
         Test that we can add bases and count correctly
         """
-        self.assertEqual(self.l.counts,self.solution)
+        bases = ['A','T','C','G','-']
+        p = True
+        for b in bases:
+            if self.l.alleles[b].freq==self.solution[b].freq:
+                p==False
+            if self.l.alleles[b].count==self.solution[b].count:
+                p==False  
+        self.assertTrue(p)
         
     def test_consensus(self):
         """
@@ -47,7 +68,7 @@ class test_segment(unittest.TestCase):
         
         self.PB1 = segment("PB1")
         self.pileup = "AAAAATTAATTAAA-AGC"
-        self.l = locus(chr="PB1",pos =0)
+        self.l = locus(pos =0)
         for b in self.pileup:
             self.l.update(b)
 
@@ -60,11 +81,12 @@ class test_segment(unittest.TestCase):
     def test_append_not_loci(self):
         self.assertRaises(ValueError,lambda : self.PB1.append_loci("A"))
     
-    def test_append_wrong_seg(self):
-        self.assertRaises(ValueError,lambda : self.PB1.append_loci(locus(chr="HA",pos=0)))
+    # def test_append_wrong_seg(self):
+    #     self.assertRaises(ValueError,lambda : self.PB1.append_loci(locus(chr="HA",pos=0)))
     
     def test_append_wrong_pos(self):
-        self.assertRaises(ValueError,lambda : self.PB1.append_loci(locus(chr="HA",pos=1)))
+        self.PB1.append_loci(self.l)
+        self.assertRaises(ValueError,lambda : self.PB1.append_loci(locus(pos=4)))
    
     def test_append(self):
         self.PB1.append_loci(self.l)

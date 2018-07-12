@@ -12,11 +12,12 @@ import json
 
 def main():
     parser = argparse.ArgumentParser(description='This scipts takes a bam file \
-    and identifies sequence accuracy metric.',
+    and identifies variants and according to a consensus file.',
     usage ="python position_data.py sample.bed reference.fa sample.bam  sample.json -maxDepth 1000 -mqc")
     
-    parser.add_argument('bed', metavar='bed', nargs='+',
-                        help='a bed file with regions to compare')
+    parser.add_argument('bed.json', metavar='bed.json', nargs='+',
+                        help='a json bed like file with regions to compare')
+
     parser.add_argument('reference.fa', metavar='ref',narg='+',
                             help = 'The sample consensus file which will be used to call nonsynonymous and synonymous mutations')
 
@@ -24,10 +25,11 @@ def main():
                         help='The bam file of the sample')
                         
     parser.add_argument('output', metavar='output', nargs='+',
-                        help='The json file to hold the segmens')
+                        help='The json file to hold the output')
                                             
     parser.add_argument('--maxDepth', metavar='maxDepth', type=int,
                         help='the max depth to use for pileup default is 1000')
+    
     parser.add_argument('-mqc','--quality_metrics',action= 'store_true',dest = 'mqc',default = False)
 
 
@@ -39,36 +41,53 @@ def main():
 
     # get bam file
     bam = pysam.AlignmentFile(args.bam[0],"rb")
+    bam = pysam.AlignmentFile("./test/accuracy/data/5_5.removed.bam") ###%%%%
     # set up reference dictions with key for each segment and value of [0,length]
-    ref_genome={}
+    ref_genome_main={}
     # this is to maintain the order for concatenated pos
     chr_order  = []
     chr_length = []
     chr_starts = []
-    with open(args.bed[0],"r") as regions:
-        for record in regions:
-            record = record.split("\t")
-            ref_genome.update({record[0]: [int(record[1]),int(record[2])]})
-            chr_order.append(record[0])
-            chr_length.append(int(record[2])-int(record[1])) # I have to subtract the start as well
-            chr_starts.append(int(record[1]))
+
+    # This needs to be changed to account for the new bed file format 
+    # it should be from the  min of all start codons for each ORF to the max end 
+    
+    #with open(args.bed[0],"r") as regions: $$
+    with open("./test/accuracy/or.bed.json") as f:
+        regions=json.load(f)
+        for segment in regions["genome"]:
+            start = []
+            stop = []
+            chr_order.append(segment["seg"])
+            chr_length.append(segment["size"])
+            for orf in segment["ORF"]:
+                for reading in orf["regions"]:
+                    start.append(reading["start"])
+                    stop.append(reading["stop"])
+            ref_genome_main.update({segment["seg"]: [min(start),max(stop)]})
+            
     chr_cumsum = [0] + list(np.cumsum(chr_length))
 
     # tally up base counts for each segement
     sample_genome={}
-    for seg in ref_genome:
+    for seg in ref_genome_main:
         sample_genome.update({seg: tally(bamfile=bam,chr=seg,\
-        start = ref_genome[seg][0],stop = ref_genome[seg][1],maxDepth=maxDepth)})
+        start = ref_genome_main[seg][0],stop = ref_genome_main[seg][1],maxDepth=maxDepth)})
     #makes sure the frequencies are up to date
     # probably don't need it now
     for seg in sample_genome:       
         sample_genome[seg].consensus()
     
+
+# Here we will classify the variants 
+
+
+
     i=0 # this is to make sure we handel the lase one correctly
     total = 0
 
-    for seg in ref_genome:
-        total = total + ref_genome[seg][1]-ref_genome[seg][0]
+    for seg in ref_genome_main:
+        total = total + ref_genome_main[seg][1]-ref_genome_main[seg][0]
     with open(args.output[0],'w') as out:
         out.write("{\n\"loci\":[")
         for seg in sample_genome:

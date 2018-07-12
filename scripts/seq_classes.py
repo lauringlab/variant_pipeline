@@ -185,7 +185,7 @@ class allele(object):
     """
     def __init__(self,nucleotide):
         self.nucleotide=nucleotide
-        self.counts = 0
+        self.count = 0
         self.freq = 0
         self.mutationalClass =[] 
     def classifyVar(self,sequence,codingRegion,pos):
@@ -194,13 +194,7 @@ class allele(object):
     
 
 
-
-
-
-
-
-
-        
+    
 
 
 class locus(object):
@@ -221,7 +215,7 @@ class locus(object):
             calc_freqs :  calculate the frequency of each base
             consensus : caculate the consensus sequence as this position 
     """
-    def __init__(self,chr,pos):
+    def __init__(self,pos):
         """
         return a base object with chr and pos and starting counts of 0
         Posisition is base 0 because this is python and I want to keep everything 
@@ -229,24 +223,29 @@ class locus(object):
         """
         self.chr = chr
         self.pos = pos
-        self.counts = {'A':0,'T':0,'C':0,'G':0,'-':0}
-        self.freqs = {'A':0,'T':0,'C':0,'G':0,'-':0}
+        self.alleles = {'A':allele("A"),
+                        'T':allele("T"),
+                        'C':allele("C"),
+                        'G':allele("G"),
+                        '-':allele("-")}
         self.coverage = 0
         self.concat_pos = None
         self.consensus = ''
 
     def update(self,base):
         self.coverage = self.coverage+1
-        self.counts[base] = self.counts[base]+1
+
+        self.alleles[base].count += 1
         self.calc_freqs()
         self.consensus = self.calc_consensus()
     def calc_freqs(self):
-        for base in self.counts.keys():
-            self.freqs[base] = self.counts[base]/self.coverage
+        for base in self.alleles.keys():
+            self.alleles[base].freq = self.alleles[base].count/self.coverage
+            
     def calc_consensus(self,cutoff=None):
         self.calc_freqs()
-        v=list(self.freqs.values())
-        k=list(self.freqs.keys())
+        v=[y.freq for y  in self.alleles.values()] #values
+        k=list(self.alleles.keys()) # key
         # check for cutoff method
         if cutoff ==None:
             # Return the most common base
@@ -263,7 +262,7 @@ class locus(object):
             return consensus
 
 class segment(object):
-    """ A sequence like object made up of base objects
+    """ A sequence like object made up of locus objects
             Attriutes:
                 chr - the name of the chr
                 seq - a list of loci
@@ -277,8 +276,8 @@ class segment(object):
     def append_loci(self,loci):
         if type(loci) is not locus:
             raise ValueError('Only class locus can be appended to a segment object')
-        if loci.chr!=self.chr:
-            raise ValueError('The loci chr does not match the segement chr')
+        # if loci.chr!=self.chr:
+        #     raise ValueError('The loci chr does not match the segement chr')
         if len(self.seq)>0 and loci.pos!=max([x.pos for x in self.seq])+1:
             raise ValueError('The position of the loci does not match current segment length')
         self.seq.append(loci)
@@ -307,7 +306,7 @@ def tally(bamfile,chr,start,stop,maxDepth = 1000,phred = 30):
     pileup = bamfile.pileup(chr,start,stop,stepper='all',truncate=True,max_depth = maxDepth)
 #        pileup = bamfile.pileup(chr,pos,pos+1,stepper='all',truncate=True,max_depth = maxDepth)
     for pileupColumn in pileup:
-        l = locus(chr,pos=pileupColumn.pos) # loci positions are base 0
+        l = locus(pos=pileupColumn.pos) # loci positions are base 0
         for pileupRead in pileupColumn.pileups:
             if not pileupRead.is_del:
                 if pileupRead.is_refskip:

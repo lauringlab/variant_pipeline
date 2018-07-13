@@ -142,43 +142,6 @@ def classify(sequence,codingRegion,pos,nucleotide):
 
 
 
-class mutationalClass(object):
-    """
-    Data concerning the type of a mutation
-    sequence - a seqrecord of the segment
-    codingRegion -  a dictionary of the open reading frame positions - must be a valid open reading frame of the form
-                {
-					"name": "PB2",
-					"regions": [
-						{
-							"start": 27,
-							"stop": 2307
-						}
-					]
-				}
-    
-    nucleotide - nucleotide
-    nucleotide position - The position in the segment alignment this will mostlikely be more than the position in the ORF.
-
-    def __intit__(self,sequence,codingRegion,var,nucleotidePosition):
-        # take in the segment consensus sequence 
-        # trim to the coding sequence
-        # convert nucletodi potion to position in coding regions
-        # get AA postion and position in codon
-        # get consensus AA
-        # get variant AA
-        # classify variant
-        self.orfName = codingRegion["Name"]
-        self.codingSequence = ""
-        for seg in codingRegion:
-            self.codingSequence=self.codingSequence+sequence[seg["start"]:seg["stop"]]
-        self.codonPositions = None
-        self.aminoAcidPosition=None
-        self.consensusAA = ""
-        self.varAA = ""
-    """
-
-
 class allele(object):
     """
     The allele present at a loci and their accompanying data
@@ -190,6 +153,14 @@ class allele(object):
         self.mutationalClass =[] 
     def classifyVar(self,sequence,codingRegion,pos):
         self.mutationalClass.append(classify(sequence,codingRegion,pos,self.nucleotide))
+    def reprJSON(self): # https://stackoverflow.com/questions/5160077/encoding-nested-python-object-in-json
+        d = dict()
+        for a, v in self.__dict__.items():
+            if (hasattr(v, "reprJSON")):
+                d[a] = v.reprJSON()
+            else:
+                d[a] = v
+        return d
 
     
 
@@ -221,7 +192,6 @@ class locus(object):
         Posisition is base 0 because this is python and I want to keep everything 
         easy to remember. If it came from python it is base 0.
         """
-        self.chr = chr
         self.pos = pos
         self.alleles = {'A':allele("A"),
                         'T':allele("T"),
@@ -261,6 +231,20 @@ class locus(object):
                 consensus = "N"
             return consensus
 
+    def reprJSON(self): # https://stackoverflow.com/questions/5160077/encoding-nested-python-object-in-json
+        d = dict()
+        for a, v in self.__dict__.items():
+            if (hasattr(v, "reprJSON")):
+                d[a] = v.reprJSON()
+            elif a=="alleles":
+                d["alleles"]={}
+                print v
+                for nt, alle in v.items():
+                    d["alleles"].update({nt: alle.reprJSON()})
+            else:
+                d[a] = v
+        return d
+
 class segment(object):
     """ A sequence like object made up of locus objects
             Attriutes:
@@ -294,6 +278,19 @@ class segment(object):
         for loci in self.seq:
             cov.append(loci.coverage)
         return cov
+    
+    def reprJSON(self): # https://stackoverflow.com/questions/5160077/encoding-nested-python-object-in-json
+        d = dict()
+        for a, v in self.__dict__.items():
+            if hasattr(v, "reprJSON"):
+                d[a] = v.reprJSON()
+            elif a=="seq":
+                d["seq"]=[]
+                for l in v:
+                    d["seq"].append(l.reprJSON())
+            else:
+                d[a] = v
+        return d
 
 # reference object
 

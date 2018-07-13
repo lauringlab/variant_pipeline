@@ -5,7 +5,7 @@ import yaml
 from Bio import SeqIO 
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna
-from scripts.seq_classes import locus, segment, tally, allele $ %%
+from scripts.seq_classes import locus, segment, tally, allele # %%
 #from seq_classes import locus, segment, tally, allele
 import argparse
 import os

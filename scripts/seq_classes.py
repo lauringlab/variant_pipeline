@@ -85,9 +85,9 @@ def classify(sequence,codingRegion,pos,nucleotide):
         
         codingSequence=""
         for seg in codingRegion["regions"]:
-            codingSequence=codingSequence+sequence.seq[seg["start"]:seg["stop"]]
-        consensusSequence = Seq(codingSequence,generic_dna)
-        checkORF(consensusSequence)
+            codingSequence=codingSequence+sequence[seg["start"]:seg["stop"]]
+        #consensusSequence = Seq(codingSequence,generic_dna)
+        checkORF(codingSequence)
         
         posInSeg = pos-codingRegion["regions"][i]["start"]
         otherRegions = codingRegion["regions"][:i]
@@ -100,7 +100,7 @@ def classify(sequence,codingRegion,pos,nucleotide):
         codonPos = codingPos % 3
         aminoAcidPos = codingPos // 3 
 
-        consensusProtien = consensusSequence.translate()
+        consensusProtien = codingSequence.translate()
         consensusAA = consensusProtien[aminoAcidPos]
 
         if nucleotide=="-":
@@ -115,9 +115,9 @@ def classify(sequence,codingRegion,pos,nucleotide):
             })
 
         mutantCodingSequence = codingSequence        
-        mutantCodingSequence = mutantCodingSequence[:codingPos]+ str(nucleotide) + mutantCodingSequence[codingPos+1:]
-        mutantSequence = Seq(mutantCodingSequence,generic_dna)
-        mutantProtein = mutantSequence.translate()
+        mutantCodingSequence = mutantCodingSequence[:codingPos]+ str(nucleotide) + mutantCodingSequence[codingPos+1:] # this is still seq object
+        #mutantSequence = Seq(mutantCodingSequence,generic_dna)
+        mutantProtein = mutantCodingSequence.translate()
 
         varAA = mutantProtein[aminoAcidPos]
 
@@ -193,11 +193,12 @@ class locus(object):
         easy to remember. If it came from python it is base 0.
         """
         self.pos = pos
-        self.alleles = {'A':allele("A"),
-                        'T':allele("T"),
-                        'C':allele("C"),
-                        'G':allele("G"),
-                        '-':allele("-")}
+        # self.alleles = {'A':allele("A"),
+        #                 'T':allele("T"),
+        #                 'C':allele("C"),
+        #                 'G':allele("G"),
+        #                 '-':allele("-")}
+        self.alleles = {}
         self.coverage = 0
         self.concat_pos = None
         self.consensus = ''
@@ -205,7 +206,13 @@ class locus(object):
     def update(self,base):
         self.coverage = self.coverage+1
 
-        self.alleles[base].count += 1
+        if base in self.alleles.keys():
+            self.alleles[base].count+=1
+            
+        else:
+            self.alleles.update({base:allele(base)})
+            self.alleles[base].count+=1
+
         self.calc_freqs()
         self.consensus = self.calc_consensus()
     def calc_freqs(self):
@@ -238,7 +245,6 @@ class locus(object):
                 d[a] = v.reprJSON()
             elif a=="alleles":
                 d["alleles"]={}
-                print v
                 for nt, alle in v.items():
                     d["alleles"].update({nt: alle.reprJSON()})
             else:

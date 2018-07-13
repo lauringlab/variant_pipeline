@@ -45,7 +45,7 @@ class test_checkORF(unittest.TestCase):
           
 class test_classifier(unittest.TestCase):
     def setUp(self):
-        self.sequence = SeqRecord("---ATGGCGT--GCGATGA-----ATAA---",id = "testGene", description = "")  
+        self.sequence = Seq("---ATGGCGT--GCGATGA-----ATAA---")  
         self.primary = "MACDE*"
         self.codingRegion = [{
 					"name": "myFavoriteProtien",

@@ -85,11 +85,11 @@
 			]
 		},
 		{
-			"seg": "NA",
+			"seg": "NR",
 			"size": 1409,
 			"ORF": [
 				{
-					"name": "NA",
+					"name": "NR",
 					"regions": [
 						{
 							"start": 19,

@@ -5,7 +5,8 @@ import yaml
 from Bio import SeqIO 
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna
-from seq_classes import locus, segment, tally
+from scripts.seq_classes import locus, segment, tally, allele $ %%
+#from seq_classes import locus, segment, tally, allele
 import argparse
 import os
 import json
@@ -15,10 +16,10 @@ def main():
     and identifies variants and according to a consensus file.',
     usage ="python position_data.py sample.bed reference.fa sample.bam  sample.json -maxDepth 1000 -mqc")
     
-    parser.add_argument('bed.json', metavar='bed.json', nargs='+',
+    parser.add_argument('bed_json', metavar='bed_json', nargs='+',
                         help='a json bed like file with regions to compare')
 
-    parser.add_argument('reference.fa', metavar='ref',narg='+',
+    parser.add_argument('reference.fa', metavar='ref',nargs='+',
                             help = 'The sample consensus file which will be used to call nonsynonymous and synonymous mutations')
 
     parser.add_argument('bam', metavar='bam', nargs='+',
@@ -40,7 +41,7 @@ def main():
         maxDepth=args.maxDepth
 
     # get bam file
-    bam = pysam.AlignmentFile(args.bam[0],"rb")
+    #bam = pysam.AlignmentFile(args.bam[0],"rb")
     bam = pysam.AlignmentFile("./test/accuracy/data/5_5.removed.bam") ###%%%%
     # set up reference dictions with key for each segment and value of [0,length]
     ref_genome_main={}
@@ -52,8 +53,8 @@ def main():
     # This needs to be changed to account for the new bed file format 
     # it should be from the  min of all start codons for each ORF to the max end 
     
-    #with open(args.bed[0],"r") as regions: $$
-    with open("./test/accuracy/or.bed.json") as f:
+    #with open(args.bed_json[0],"r") as f: 
+    with open("./test/accuracy/data/reference/or.bed.json") as f: # %%
         regions=json.load(f)
         for segment in regions["genome"]:
             start = []
@@ -81,11 +82,19 @@ def main():
 
 # Here we will classify the variants 
 
+    for seg in sample_genome:
+        for ref_seg in regions["genome"]:
+            if seg == ref_seg["seg"]:
+                consensus_sequence = 
+                for orf in ref_seg["ORF"]:
+                    print orf
+
 
 
     i=0 # this is to make sure we handel the lase one correctly
     total = 0
 
+# output the results here will take some decoding
     for seg in ref_genome_main:
         total = total + ref_genome_main[seg][1]-ref_genome_main[seg][0]
     with open(args.output[0],'w') as out:

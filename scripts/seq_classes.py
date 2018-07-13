@@ -4,7 +4,7 @@ from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio.Alphabet import generic_dna
 from Bio.SeqRecord import SeqRecord
-from scripts.trim_to_coding import trim_to_regions
+from trim_to_coding import trim_to_regions
 
 
 def checkORF(seq):

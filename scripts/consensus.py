@@ -5,8 +5,9 @@ import yaml
 from Bio import SeqIO 
 from Bio.Seq import Seq
 from Bio.Alphabet import generic_dna
-from seq_classes import locus, segment, tally
+from seq_classes import locus, segment, tally, allele
 import argparse
+import json
 
 
 def main():
@@ -14,12 +15,14 @@ def main():
     and identifies the consensus file sequence of the sample.',
     usage ="python consensus.py reference.fa sample.bam sample.fa -maxDepth 1000")
     
-    parser.add_argument('bed', metavar='bed', nargs='+',
-                        help='a bed file with regions to compare. base 0 left inclusive right exclusive')
+    parser.add_argument('bed_json', metavar='bed_json', nargs='+',
+                        help='a json bed like file with regions to analyse')
     parser.add_argument('bam', metavar='bam', nargs='+',
                         help='The bam file of the sample')
     parser.add_argument('sample_fa', metavar='sample_fa', nargs='+',
                         help='the consensus sequence output file')
+    parser.add_argument('--all', dest = 'all', action='store_true', default= False,
+                            help= 'Analyse the whole segment not just  the regions containing the ORF')          
     parser.add_argument('--maxDepth', metavar='maxDepth', type=int,
                         help='the max depth to use for pileup default is 1000')
     parser.add_argument('--cutoff', metavar='cutoff', type=float,
@@ -38,17 +41,30 @@ def main():
     bam = pysam.AlignmentFile(args.bam[0],"rb")
     # set up reference dictions with key for each segment and value of [0,length]
     
-    ref_genome={}
-    with open(args.bed[0],"r") as regions:
-        for record in regions:
-            record = record.split("\t")
-            ref_genome.update({record[0]: [int(record[1]),int(record[2])]})
+    ref_genome_main={}
+    if args.all:
+        with open(args.bed_json[0],"r") as f: 
+            regions=json.load(f)
+            for segment in regions["genome"]:
+                ref_genome_main.update({segment["seg"]: [0,segment["size"]]})
+
+    else:
+        with open(args.bed_json[0],"r") as f: 
+            regions=json.load(f)
+            for segment in regions["genome"]:
+                start = []
+                stop = []
+                for orf in segment["ORF"]:
+                    for reading in orf["regions"]:
+                        start.append(reading["start"])
+                        stop.append(reading["stop"])
+                ref_genome_main.update({segment["seg"]: [min(start),max(stop)]})
     
     # tally up base counts for each segement
     sample_genome={}
-    for seg in ref_genome:
+    for seg in ref_genome_main:
         sample_genome.update({seg: tally(bamfile=bam,chr=seg,\
-        start = ref_genome[seg][0],stop = ref_genome[seg][1],maxDepth=maxDepth) })
+        start = ref_genome_main[seg][0],stop = ref_genome_main[seg][1],maxDepth=maxDepth) })
     
     # get consensus for each segment and save as seq in list
     consensus=[]

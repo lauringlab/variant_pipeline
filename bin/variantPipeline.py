@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(description='This is a wrapper to set up and ru
 parser.add_argument('pipeline',metavar = 'pipeline',nargs='+',
 					help = 'the name of the bpipe pipeline script to be run')
 parser.add_argument('input_files',metavar = 'input_files',nargs='+',
-					help = 'the relative path and wildcard to input files')
+					help = 'the relative path and wildcard to input files - MUST BE PLACED IN QUOTATIONS')
 parser.add_argument('output_dir',metavar = 'output_dir',nargs='+',
 					help = 'the directory to hold the outputs')
 parser.add_argument('options', metavar='options', nargs='+',
@@ -50,7 +50,7 @@ output_dir=os.path.abspath(args.output_dir[0])
 
 
 # options that need absolute paths
-path_options = ["REFERENCE","REFERENCE_FA","OPEN_READING","BEDFILE"]
+path_options = ["REFERENCE","REFERENCE_FA","OPEN_READING","BEDJSON"]
 
 # 
 #     

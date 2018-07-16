@@ -284,18 +284,19 @@ quality_report = {
 }
 
 consensus = {
-	doc "finds the consensus of each sample"
+	doc "finds the consensus of each sample read depth cutoff at default 1000"
 	output.dir = "consensus"
 	transform("fasta"){
-		exec " python ${SCRIPTS}/consensus.py ${BEDFILE} $input.bam $output.fasta --maxDepth ${MAXDEPTHCON}"
+		exec " python ${SCRIPTS}/consensus.py ${BEDJSON} $input.bam $output.fasta --all "
 		}
 	forward input.bam
 	}
 position_stats = {
-    doc "gets position stats"
+    doc "gets position stats required refernce file in consensus directory named as sample.removed.fasta"
     output.dir = "position-stats"
     def out = "./position-stats/"+file(input.bam).name.replace(".bam","")
+	def reference_fa = "./consensus/"+file(input.bam).name.replace(".bam",".fasta")
         transform("json"){
-        exec "python ${SCRIPTS}/position_data.py  ${BEDFILE} $input.bam  $output.json --maxDepth ${MAXDEPTH} -mqc"
+        exec "python ${SCRIPTS}/position_data.py  ${BEDJSON} ${reference_fa} $input.bam  $output.json --maxDepth ${MAXDEPTH} "
     }
 }

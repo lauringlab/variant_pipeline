@@ -304,3 +304,8 @@ We will also need to make an options file. To start you can copy the turtorial o
 
 Then just submit using qsub as before and sit back while the computer does the rest. :smiley:
 
+
+python ../bin/variantPipeline.py ../scripts/basic_pipeline.groovy "./data/fastq/*.fastq" results/basicnew_options.yaml
+
+python ../bin/variantPipeline.py ../scripts/python_pipeline.groovy "./results/basic/removed_duplicates/*.bam" results/variant_calls new_options.yaml
+

@@ -220,23 +220,28 @@ class locus(object):
             self.alleles[base].freq = self.alleles[base].count/self.coverage
             
     def calc_consensus(self,cutoff=None):
-        self.calc_freqs()
-        v=[y.freq for y  in self.alleles.values()] #values
-        k=list(self.alleles.keys()) # key
-        # check for cutoff method
-        if cutoff ==None:
-            # Return the most common base
-            return k[v.index(max(v))]
+        if self.coverage==0:
+            return '-'
         else:
-            # return the base that is above the cutoff
-            if type(cutoff)!=float or (cutoff>1 or cutoff<0.5):
-                raise ValueError('cutoff must be a float in [0.5,1.0] or nothing')
-            indexes = [index for index, value in enumerate(v) if value > cutoff]
-            if len(indexes)==1:
-                consensus = k[indexes[0]]
+            self.calc_freqs()
+            v=[y.freq for y  in self.alleles.values()] #values
+            k=list(self.alleles.keys()) # key
+            # check for cutoff method
+            if cutoff ==None:
+                # Return the most common base
+                return k[v.index(max(v))]
+            
+                    
             else:
-                consensus = "N"
-            return consensus
+                # return the base that is above the cutoff
+                if type(cutoff)!=float or (cutoff>1 or cutoff<0.5):
+                    raise ValueError('cutoff must be a float in [0.5,1.0] or nothing')
+                indexes = [index for index, value in enumerate(v) if value > cutoff]
+                if len(indexes)==1:
+                    consensus = k[indexes[0]]
+                else:
+                    consensus = "N"
+                return consensus
 
     def reprJSON(self): # https://stackoverflow.com/questions/5160077/encoding-nested-python-object-in-json
         d = dict()

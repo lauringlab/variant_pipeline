@@ -188,7 +188,7 @@ picard_markdups = {
 
 
 deepsnv = {
-	doc "Runs a basic deepSNV script to call variants in each sample saving the outputs as .Rdata files and csv of the summary output"
+	doc "Runs a basic deepSNV script to call variants in each sample"
 	output.dir = "deepSNV"
 	def in_bam=file(input).name
 	def control = file(CONTROL_BAM).name.replace(".bam","")

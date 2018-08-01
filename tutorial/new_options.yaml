@@ -1,9 +1,10 @@
 #YAML
+#Option for aligning pipeline 
+REFERENCE: ./data/reference/wsn33_wt_plasmid # 'The name of the reference files used for bowtie alignment' (no extension) Also there should be file with the same name but .fa extension
 
 
 # Options for calling variants
 #
-REFERENCE: ./data/reference/wsn33_wt_plasmid # 'The name of the reference files used for bowtie alignment' (no extension) Also there should be file with the same name but .fa extension
 #REFERENCE: ./wsn33_NS.fa # he name of the reference files used for bowtie alignment with extension
 #Options for DeepSNV analsys
 

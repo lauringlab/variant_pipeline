@@ -9,7 +9,7 @@ suppressMessages(library("plyr"))
 suppressMessages(library("deepSNV"))
 suppressMessages(library("reshape2"))
 suppressMessages(library("magrittr"))
-suppressMessages(library("tidyverse"))
+suppressMessages(library("tidyr"))
 
 #set seed to make distribiutions determinsitic
 set.seed(42)

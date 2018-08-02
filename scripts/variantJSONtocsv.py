@@ -37,10 +37,10 @@ def parseJson(data):
 def main():
 	parser = argparse.ArgumentParser(description='This scipts takes a json file as outputed by the pipeline and converts it to a csv file with one allele per line',
 	usage ="python jsonToCsv.py sample.json sample.csv")
-	parser.add_argument('json_file', meta='json_file', nargs='+',
+	parser.add_argument('json_file', metavar='json_file', nargs='+',
                         help='a json file from the pipeline')
 
-	parser.add_argument('output_csv', meta='output_csv',nargs='+',
+	parser.add_argument('output_csv', metavar='output_csv',nargs='+',
                             help = 'the output csv')
 
 	args = parser.parse_args()

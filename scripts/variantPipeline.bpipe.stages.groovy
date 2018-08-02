@@ -300,3 +300,10 @@ position_stats = {
         exec "python ${SCRIPTS}/position_data.py  ${BEDJSON} ${reference_fa} $input.bam  $output.json --maxDepth ${MAXDEPTH} "
     }
 }
+parseJson = {
+	doc "Parse the output json to a csv for working nicely in R"
+	output.dir = "position-stats-csv"
+	transform("csv"){
+		exec "python ${SCRIPTS}/variantJSONtocsv.py $input $output.csv"
+	}
+}

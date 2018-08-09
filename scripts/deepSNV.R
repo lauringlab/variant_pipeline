@@ -129,7 +129,7 @@ deepsnv.result<-deepsnv.result
 deepsnv_sum<-summary(deepsnv.result,sig.level=p.cut, adjust.method=method)
 # filter to stringent freq
 deepsnv_sum<-subset(deepsnv_sum,freq.var<stringent_freq)
-
+print("132")
 ###############################################################################
 ################### Calling non stringent variants ############################
 ###############################################################################
@@ -145,47 +145,56 @@ frequencies.df$row<-1:nrow(frequencies.df) # this row will be used to find the p
 
 frequencies.df %>% gather(var,freq.var,A:indel)->frequencies.df # long form
 subset(frequencies.df,freq.var>=stringent_freq & var!="indel")->less_stringent # subset to only those that qualify for nonstringency
+print("148")
+if(nrow(less_stringent)>0){ # if the stringent freq is set to 1 or higher than we don't do this and require deepSNV to call variants
+  less_stringent$var[less_stringent$var=="indel"]<- "-" # correct name
+  # Get the counts for the test and control samples - for all positions
+  test_counts<-test(deepsnv.result)
+  ctrl_counts<-control(deepsnv.result)
 
-less_stringent$var[less_stringent$var=="indel"]<- "-" # correct name
-# Get the counts for the test and control samples - for all positions
-test_counts<-test(deepsnv.result)
-ctrl_counts<-control(deepsnv.result)
+  less_stringent %>% adply(1,get_counts,test_counts,ctrl_counts) -> less_stringent.format # formatted like deepsnv df -  uses row column to find appropriate counts in test control matrices
 
-less_stringent %>% adply(1,get_counts,test_counts,ctrl_counts) -> less_stringent.format # formatted like deepsnv df -  uses row column to find appropriate counts in test control matrices
+  ## Now we get the reference base from the control matrix and process it to add chr and pos columns - this could also be do using consensusSequance - I have checked - they give the same results.
+  RF(control(deepsnv.result),total=T)->con.freq
+  df.con<-set_cord(deepsnv.result,con.freq)
 
-## Now we get the reference base from the control matrix and process it to add chr and pos columns - this could also be do using consensusSequance - I have checked - they give the same results.
-RF(control(deepsnv.result),total=T)->con.freq
-df.con<-set_cord(deepsnv.result,con.freq)
+  names(df.con)[ncol(df.con)]<-"indel"
+  df.con %>% gather(ref,freq.var,A:indel)->con.freqs
+  subset(con.freqs,freq.var>0.5,select=c(chr,pos,ref))->con.major # only want the major bases - consensus.
 
-names(df.con)[ncol(df.con)]<-"indel"
-df.con %>% gather(ref,freq.var,A:indel)->con.freqs
-subset(con.freqs,freq.var>0.5,select=c(chr,pos,ref))->con.major # only want the major bases - consensus.
-
-less_stringent.final<-join(less_stringent.format,con.major,by = c('chr','pos'),type = 'left') # join by chr and pos
-# Add NA to columns that deepSNV uses but these don't  - p.val sigma.freq.var ect.
-for(c in names(deepsnv_sum)){
-  if(c %in% names(less_stringent.final)==F){
-    less_stringent.final[,c]=NA
+  less_stringent.final<-join(less_stringent.format,con.major,by = c('chr','pos'),type = 'left') # join by chr and pos
+  # Add NA to columns that deepSNV uses but these don't  - p.val sigma.freq.var ect.
+  for(c in names(deepsnv_sum)){
+    if(c %in% names(less_stringent.final)==F){
+      less_stringent.final[,c]=NA
+    }
   }
+
+  less_stringent.final<-subset(less_stringent.final,select=-c(row)) # remove the row column
+  deepsnv_sum<-rbind(deepsnv_sum,less_stringent.final) # combine stringent and nonstringent column
 }
-
-less_stringent.final<-subset(less_stringent.final,select=-c(row)) # remove the row column
-deepsnv_sum<-rbind(deepsnv_sum,less_stringent.final) # combine stringent and nonstringent column
+print("176")
 deepsnv_sum<-deepsnv_sum[order(deepsnv_sum$chr,deepsnv_sum$pos),] # order the result
-
-deepsnv_sum$Id<-sample_name # set the sample name for csv
-deepsnv_sum<-subset(deepsnv_sum,!(var=="-" | ref =="-")) # removes the indels that are below the consensus level
-mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
+print("178")
+if(nrow(deepsnv_sum)>0){
+  print("180")
+  deepsnv_sum$Id<-sample_name # set the sample name for csv
+  deepsnv_sum<-subset(deepsnv_sum,!(var=="-" | ref =="-")) # removes the indels that are below the consensus level
+  mutate(deepsnv_sum,mutation=paste0(chr,"_",ref,pos,var))->deepsnv_sum
+}else{
+  deepsnv_sum$Id<-NULL
+  deepsnv_mutation<-NULL
+}
 
 
 ###############################################################################
 ########################## Consensus Sequences ################################
 ###############################################################################
-
+print("193")
 consensus_fa<-consensusSequence(test(deepsnv.result,total=T),vector=F,haploid=T)
 control_fa<-consensusSequence(control(deepsnv.result,total=T),vector=F,haploid=T)
 
-
+print('196')
 ###############################################################################
 ############################### Coverage ######################################
 ###############################################################################
@@ -213,7 +222,7 @@ cov.con.df=data.frame(coverage=cov.con,concat.pos=1:length(cov.con))
 cov.con.df<-set_cord(deepsnv.result,cov.con.df)
 names(cov.con.df)[names(cov.con.df)=="pos"]<-'chr.pos'
 cov.con.df$Id<-control_name # set the sample name for csv
-
+print("224")
 ###############################################################################
 ########################## Saving output ######################################
 ###############################################################################

@@ -127,8 +127,8 @@ for index, row in variants.iterrows():
         var = get_reference(row,bam,"var")
         inferred_qual=inferred_qual.append(var,ignore_index=True)
 ### Add meta data columns to rows that don't need them.
-print(no_inferred_qual.head())
-print(inferred_qual.head())
+#print(no_inferred_qual.head())
+#print(inferred_qual.head())
 
 no_inferred_qual["MapQ"]='NA'
 no_inferred_qual["Phred"]='NA'

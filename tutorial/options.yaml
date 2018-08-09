@@ -26,7 +26,7 @@ phred: 35 # The mean phred threshold
 p_cut: 0.01 # The p value cut off for the final analysis
 freq: 0.01 # The frequency cut off for the final analysis
 pos: [50, 200] # The average position in the read cut off in the final analysis
-STRINGENT_FREQ: 0.5 # If you are above this frequency then we cool
+STRINGENT_FREQ: 1.1 # If you are above this frequency then we cool
 muscle_path: /Users/jtmccrone/miniconda2/envs/variant-pipeline/bin/ # The path to the muscle exicutable on flux it is /sw/lsa/centos7/muscle/3.8.31/bin/
 run: Test # What run name should be added to the csv if not needed use  !!null ''    to signify 'None'
 meta: !!null '' # If there is a meta data sheet for these sample you can place that here if not needed use !!null ''    to signify 'None'

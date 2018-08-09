@@ -50,7 +50,7 @@ output_dir=os.path.abspath(args.output_dir[0])
 
 
 # options that need absolute paths
-path_options = ["REFERENCE","REFERENCE_FA","OPEN_READING","BEDJSON"]
+path_options = ["REFERENCE","REFERENCE_FA","OPEN_READING","BEDJSON","CONTROL_BAM"]
 
 # 
 #     
@@ -66,6 +66,7 @@ path_options = ["REFERENCE","REFERENCE_FA","OPEN_READING","BEDJSON"]
 
 bin_dir=os.path.dirname(os.path.realpath(__file__)) # The path to this file so we can find the scripts and lib
 script_dir=os.path.abspath(bin_dir+'/..'+'/scripts/')# The path to the scripts dir relative to this location
+R_lib=os.path.abspath(script_dir+'/../packrat/lib/*/*')
 lib_dir=os.path.abspath(bin_dir+'/..'+'/lib/') # The path to the lib dir relative to this location
 bpipe_command=lib_dir+'/bpipe-0.9.8.7/bin/bpipe' # The path to the bpipe command relative the lib dir.
 test=args.test
@@ -103,6 +104,8 @@ with open(config_file,'w') as config:
     config.write('//This pipeline was run on with commit : '+ version.decode() +'\n')
     config.write('LIBRARY_LOCATION='+ '\"'+lib_dir+'\"'+ '\n') # The library dir
     config.write('SCRIPTS='+ '\"'+script_dir+ '\"'+'\n') # The scripts dir 
+    config.write('R_LIB='+ '\"'+R_lib+ '\"'+'\n') # The library location for R dependencies
+    config.write('OPTIONS='+ '\"'+options_file+ '\"'+'\n')  # The options file
 
     for option in options:
         opt = options[option]

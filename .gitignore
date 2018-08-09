@@ -16,3 +16,7 @@ tutorial/data/fastq/renaming_log\.txt
 tutorial/new_look/
 test/
 *.DS_Store
+.Rproj.user
+packrat/lib*/
+packrat/src/
+.vscode/

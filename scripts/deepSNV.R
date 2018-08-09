@@ -4,22 +4,15 @@
 ################## Load packages and set up arguments #########################
 ###############################################################################
 
-suppressMessages(library("tools"))
-suppressMessages(library("plyr"))
-suppressMessages(library("deepSNV"))
-suppressMessages(library("reshape2"))
-suppressMessages(library("magrittr"))
-suppressMessages(library("tidyr"))
 
 #set seed to make distribiutions determinsitic
 set.seed(42)
 
 args <- commandArgs(TRUE)
-if (length(args) != 10) {
-    stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)} {p.val.cut} {c(fisher,average,max)}  {c(two.sided,one.sided,bin)} {stringent_freq} output.csv output.fa",sep=""), call.=FALSE)
+if (length(args) != 11) {
+    stop(paste("Usage:", "deepSNV.R" ," {reference.fasta} {test.bam} {control.bam} {c(BH,bonferroni)} {p.val.cut} {c(fisher,average,max)}  {c(two.sided,one.sided,bin)} {stringent_freq} output.csv output.fa package_library" ,sep=""), call.=FALSE)
  }
 #print(args)
-#library.location <- args[1]
 reference.fasta <- args[1]
 test.bam <- args[2]
 control.bam <- args[3]
@@ -30,6 +23,17 @@ disp<-args[7]
 stringent_freq<-as.numeric(args[8])
 csv<-args[9]
 fa<-args[10]
+library.location <- args[11]
+
+.libPaths(library.location)
+print(.libPaths())
+suppressMessages(library("tools"))
+suppressMessages(library("plyr"))
+suppressMessages(library("deepSNV"))
+suppressMessages(library("reshape2"))
+suppressMessages(library("magrittr"))
+suppressMessages(library("tidyr"))
+
 
 # handle the file names to be used now and later.
 test_file_prefix = basename(file_path_sans_ext(test.bam))
@@ -102,8 +106,8 @@ set_cord<-function(deepsnv.result,freqs){ # This funciton takes in a deepsnv res
 
 # Get regions from alignment reference
 cat(paste("loading regions from [", reference.fasta, "]...\n", sep=""))
-segments <- fasta.info(reference.fasta)
-regions.bed <- data.frame(chr = gsub("[ ].*","", names(segments)), start=1, stop=segments, row.names=NULL)
+fastaData<-readDNAStringSet(reference.fasta)
+regions.bed <- data.frame(chr = names(fastaData), start=1, stop=width(fastaData), row.names=NULL)
 cat(paste("loaded regions: ", paste(regions.bed$chr, collapse=","),"\n"))
 
 

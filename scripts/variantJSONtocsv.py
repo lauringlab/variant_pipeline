@@ -31,7 +31,7 @@ def parseJson(data):
 					"mutationalClass": genome[i]['seq'][j]['alleles'][key]['mutationalClass']
 				}
 				parsedDataSet.append(datapoint)
-		return(parsedDataSet)
+	return(parsedDataSet)
 
 
 def main():

@@ -196,7 +196,7 @@ deepsnv = {
 	println "test:" + test
 	println "control:" + control
 				transform("csv","fasta"){
-					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP} ${STRINGENT_FREQ} $output.csv $output.fasta"
+					exec "Rscript  --vanilla --slave ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP} ${STRINGENT_FREQ} $output.csv $output.fasta ${R_LIB}"
 				}
 
 }

@@ -7,7 +7,7 @@ import numpy as np
 import yaml 
 
 
-parser = argparse.ArgumentParser(description='This script is designed to read in a csv of putative variant calls from deepSNV and query the bam file for the number of reads matching the reference base at that position. If the reference base is the minor allele it is added. Average quality metrics are added for variants below the stringent_freq cut off in the yaml file. ',usage ="python reciprocal_variants.py sample.bam sample.csv")
+parser = argparse.ArgumentParser(description='This script is designed to read in a csv of putative variant calls from deepSNV and query the bam file for the number of reads matching the reference base at that position. If the reference base is the minor allele it is added. Average quality metrics are added for variants below the STRINGENT_FREQ cut off in the yaml file. ',usage ="python reciprocal_variants.py sample.bam sample.csv")
 
 parser.add_argument('bam', metavar='bam', nargs='+',
                     help='The bam file of the sample')
@@ -116,14 +116,14 @@ no_inferred_qual=pd.DataFrame()
 
 for index, row in variants.iterrows():
     
-    if row["freq.var"]>=options["stringent_freq"] and row["ref"]==row["var"]: # if the allele is not subject to stringent measures and it is the reference base we move on saving it for later.
+    if row["freq.var"]>=options["STRINGENT_FREQ"] and row["ref"]==row["var"]: # if the allele is not subject to stringent measures and it is the reference base we move on saving it for later.
         no_inferred_qual =  no_inferred_qual.append(row,ignore_index=True)
-    elif row["freq.var"]>=options["stringent_freq"] and row["ref"]!=row["var"]: # if the allele is not subject to stringent measures and it differs from the reference base then we look for the reference base in the stringent fraction as deepSNV.R would not have looked there 
+    elif row["freq.var"]>=options["STRINGENT_FREQ"] and row["ref"]!=row["var"]: # if the allele is not subject to stringent measures and it differs from the reference base then we look for the reference base in the stringent fraction as deepSNV.R would not have looked there 
         no_inferred_qual =  no_inferred_qual.append(row,ignore_index=True)
         ref=get_reference(row,bam,"ref")
-        if ref["freq.var"]<options["stringent_freq"] and ref["freq.var"]>0: # ensures we only add it if the frequency puts it in the stringent fractor.
+        if ref["freq.var"]<options["STRINGENT_FREQ"] and ref["freq.var"]>0: # ensures we only add it if the frequency puts it in the stringent fractor.
            inferred_qual =  inferred_qual.append(ref,ignore_index=True)
-    elif row["freq.var"]<options["stringent_freq"]:
+    elif row["freq.var"]<options["STRINGENT_FREQ"]:
         var = get_reference(row,bam,"var")
         inferred_qual=inferred_qual.append(var,ignore_index=True)
 ### Add meta data columns to rows that don't need them.

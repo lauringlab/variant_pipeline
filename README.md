@@ -8,15 +8,22 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 -   bin
     _ variantPipeline.py : a python wrapper that runs a provided bpipe pipeline
     _ variant_pipeline.pbs : an example pbs script used to implement the Pipeline
--   doc \* workflow diagram, examples
--   lib \* supporting libraries - picard and bpipe live here
--   packrat \* The R dependencies are listed in the lock file. Also the packages will be downloaded here on set up
+-   doc
+    -   workflow diagram, examples
+-   lib
+    -   supporting libraries - picard and bpipe live here
+-   packrat
+    -   The R dependencies are listed in the lock file. Also the packages will be downloaded here on set up
 -   scripts
     _ supporting scripts (bpipe, python, R)
-    _ some of these are old and not used others are helpful for downstream analysis but are not used by the current stages \* most have been written to provide a useage message when called with the -h flag
--   test \* automated tests (mostly python testing the python pipeline)
+    _ some of these are old and not used others are helpful for downstream analysis but are not used by the current stages
+    -   most have been written to provide a useage message when called with the -h flag
+-   test
 
--   tutorial \* The directories and instructions needed to run the tutorial. Instructions can be found in the tutorial readme
+    -   automated tests (mostly python testing the python pipeline)
+
+-   tutorial
+    -   The directories and instructions needed to run the tutorial. Instructions can be found in the tutorial readme
 
 ## bin/variantPipeline.py
 
@@ -34,25 +41,36 @@ There are 3 main pipelines that can be run. All of the stages for the pipelines 
 
 ### Basic alinging scripts/aligning_pipeline.groovy
 
--   cutadapt \* the trimmed fastq files - these are trimmed based on NEBnext primers which is hard coded in the stage
--   fastqc \* fastqc data on samples
--   align \* The aligned bam and sorted sam files
--   removed_duplicated \* bam files with duplicate reads removed
+-   cutadapt
+    -   the trimmed fastq files - these are trimmed based on NEBnext primers which is hard coded in the stage
+-   fastqc
+    -   fastqc data on samples
+-   align
+    -   The aligned bam and sorted sam files
+-   removed_duplicated
+    -   bam files with duplicate reads removed
 
 ### DeepSNV pipeline scripts/deepsnv_pipeline.groovy
 
 Runing this pipeline after the one above is the same as the old single pipeline.
 
--   deepSNV \* csv summary files, coverage files and fasta files from deepSNV
--   parsed_fa \* deepSNV outputs a concatenated fasta file. The parsed ones are here.
--   Variants \* csv files containing all variants and additional qualty data about each one. (Mapq, phred, read position ect.)
--   Filter Variants \* csv files containing variants that meet quality thresholds
--   Final Variants \* csv files containing variants that meet quality thresholds including amino acid information
+-   deepSNV
+    -   csv summary files, coverage files and fasta files from deepSNV
+-   parsed_fa
+    -   deepSNV outputs a concatenated fasta file. The parsed ones are here.
+-   Variants
+    -   csv files containing all variants and additional qualty data about each one. (Mapq, phred, read position ect.)
+-   Filter Variants
+    -   csv files containing variants that meet quality thresholds
+-   Final Variants
+    -   csv files containing variants that meet quality thresholds including amino acid information
 
 ### python pipeline to call all variants and sequencing errors scripts/python_pipeline.groovy
 
--   consensus \* The consesus seqeunce of each sample
--   position-stats \* JSON files with all bases called at every position including amino acid designation
+-   consensus
+    -   The consesus seqeunce of each sample
+-   position-stats
+    -   JSON files with all bases called at every position including amino acid designation
 
 ## Dependencies
 

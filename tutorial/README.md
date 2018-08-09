@@ -68,21 +68,11 @@ Now it is possible to keep your version up to date with the master copy by using
 git pull upstream master
 ```
 
-Now the code for the variant pipeline is installed in your home directory in a sub-directory called variant_pipeline. We are ready to begin the tutorial. Let's go there now, by moving to the tutorial subdirectoy within the variant_pipeline directory.
-
-```
-cd tutorial
-```
-
-The variant pipeline runs in two stages. The first aligns and processes the fastq files. The second identifies variants. Each stage is defined by a bpipe pipeline that can be initiated using bin/variantPipeline.py.
-
-There are two options to call variants. The first relies on the R package deepSNV to calulcate a base specific error rate using a plasmid control. Putative variants can then be filtered based on average phred score, average mapping quality, frequency and average position in the read. This pipeline outputs a deepSNV csv file for containing all variant calls. **NOTE: the variant calles from this pipeline are from deepSNV and are base 1. i.e. the first position of each segment is 1.**
-
-The second variant calling pipeline uses python scripts to identify all alleles present in the bam file. It does not provide a p.value or any measurement of certainty for each variant. The output from this pipeline is a json file containing mimum meta data for each file and all vatiant call. **NOTE: the variant calles from this pipeline are from python and are base 0. i.e. the first position of each segment is 0 not 1.**
-
 ## 0.1) Dependencies
 
-All the depedencies required, except R, are handled by conda. Install conda by following the tutorial [here](https://conda.io/docs/user-guide/overview.html).
+To run these all pipelines you must have the java developer kit installed. It can be installed from [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html). If bpipe doesn't run this is the first place to start.
+
+All the other depedencies, except R and the R packages, are handled by conda. Install conda by following the tutorial [here](https://conda.io/docs/user-guide/overview.html).
 
 We can install the conda environment with the following command (run from the variant_pipeline/ directory)
 
@@ -103,11 +93,29 @@ module load muscle
 module load bowtie2
 module load python-anaconda2/201704
 module load fastqc
+module load R
 ```
 
-For those not on flux a list of how to install dependencies can be found below in the appendix.
+The R modules are managed by packrat. I am using R 3.5.0. From the main directory run
 
-Ok, now that everything is set up, let's get down to business.
+```
+R
+packrat::restore()
+```
+
+to download the needed dependencies. They should be placed the packrat/lib directory. This is important since the R script will look for them there. You may need to install packrat first if you don't have it.
+
+Now the code is installed and the dependencies are sorted, we are ready to begin the tutorial. Let's go there now, by moving to the tutorial subdirectoy within the variant_pipeline directory.
+
+```
+cd tutorial
+```
+
+The variant pipeline runs in two stages. The first aligns and processes the fastq files. The second identifies variants. Each stage is defined by a bpipe pipeline that can be initiated using bin/variantPipeline.py.
+
+There are two options to call variants. The first relies on the R package deepSNV to calulcate a base specific error rate using a plasmid control. Putative variants can then be filtered based on average phred score, average mapping quality, frequency and average position in the read. This pipeline outputs a deepSNV csv file for containing all variant calls. **NOTE: the variant calles from this pipeline are from deepSNV and are base 1. i.e. the first position of each segment is 1.**
+
+The second variant calling pipeline uses python scripts to identify all alleles present in the bam file. It does not provide a p.value or any measurement of certainty for each variant. The output from this pipeline is a json file containing mimum meta data for each file and all vatiant call. **NOTE: the variant calles from this pipeline are from python and are base 0. i.e. the first position of each segment is 0 not 1.**
 
 <a name="fastq-setup"/>
 
@@ -169,6 +177,12 @@ python ../bin/variantPipeline.py ../scripts/aligning_pipeline.groovy "./data/fas
 
 ## 3a) Calling variants using deepSNV
 
+We can call variants using deepSNV in the following pipeline. This pipeline call variants, checks their average mapq,phred, and read position. It also identifies nonsynonymous and synonymous variants and filters putative variants according to the provided thresholds.
+
+In the tutorial I have set up the options to require deepSNV to identify the variants and to call NS/S relative to the plasmid control since the tutorial tests a single point mutatant made from the plasmid control. These might not be the settings you require. In practice we infered variants when the plasmid control differed from the sample at the consensus level, called NS/S relative to the sample consensus, and only required minority variants (frequency<0.5) to be identified by deepSNV and meet the filtering thresholds.
+
+You will have to make sure the muscle path in the tutorial is correct for your machine.
+
 ```
 python ../bin/variantPipeline.py ../scripts/deepsnv_pipeline.groovy "./data/aligned_output/removed_duplicates/*.bam" ./data/deepSNV_pipeline/ ./options.yaml
 ```
@@ -176,6 +190,8 @@ python ../bin/variantPipeline.py ../scripts/deepsnv_pipeline.groovy "./data/alig
 _If you expect a high level of pcr errors then use a two sided distribution. Set the disp option to two.sided_
 
 ## 3b) Calling all variants with python pipeline
+
+This pipeline tallies all bases at all positions. It outputs a JSON file, without filtering and calls NS/S relative to a the positions in a JSON input file. **The positions given by this pipeline are in python-speak and are base 0. They will be 1 position behind those given by the deepSNV pipeline which is base 1.**
 
 ```
 python ../bin/variantPipeline.py ../scripts/python_pipeline.groovy "./data/aligned_output/removed_duplicates/*.bam" ./data/all_variants ./options.yaml
@@ -269,13 +285,6 @@ python ../bin/variantPipeline.py ../scripts/basic_pipeline.groovy "./data/fastq/
 python ../bin/variantPipeline.py ../scripts/python_pipeline.groovy "./results/basic/removed_duplicates/\*.bam" results/variant_calls new_options.yaml
 
 ## Appendix
-
-### Dependencies
-
-To run these all pipelines you must have the java developer kit installed. It can be installed from [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html). This is also a good opportunity to
-set up a python environment with the required dependencies. You can use the environment.yml provided in the scripts directory and conda to download the python dependencies and the dependencies required by the pipelines below. [This](https://conda.io/docs/user-guide/tasks/manage-environments.html) is a good tutorial for how to set up a python environment using conda. We will use conda and bioconda to install all other dependencies.
-
-#### align_pipeline
 
 ### Using a pbs script to run the pipeline
 

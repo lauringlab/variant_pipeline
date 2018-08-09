@@ -3,7 +3,7 @@
 #PBS -A alauring_fluxm
 #PBS -N test_tutorial
 #PBS -q fluxm
-#PBS -M mccrone@umich.edu
+#PBS -M 
 #PBS -m abe
 #PBS -j oe
 #PBS -V
@@ -13,18 +13,9 @@ echo Running job name $PBS_JOBNAME with ID $PBS_JOBID on host $PBS_O_HOST;
 echo Working directory is $PBS_O_WORKDIR
 echo Start time: `date`;
 
-module add med
-module add fastqc
-module add java
-module add bowtie2
-module add samtools
-module add python
-module add R/3.1.1
-module add pysam/0.8.2.1
-
 
 cd $PBS_O_WORKDIR
 
-python ../bin/variantPipeline.py -i data/fastq/ -o processed -r data/reference/wsn33_wt_plasmid -p Plasmid_control -a 0.05 -m fisher -d two.sided
+python ../bin/variantPipeline.py ../scripts/aligning_pipeline.groovy "./data/fastq/*fastq" ./data/aligned_output ./options.yaml
 
 echo Finish time: `date`

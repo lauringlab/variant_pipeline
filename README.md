@@ -1,94 +1,99 @@
 # Lauring Variant Pipeline
 
 Nominates candidate variants by comparing the sequences in a test sample to those found in a plasmid control.
-The Pipeline runs as one phase which takes in fastq files and outputs putative variants as well as all base call above a set frequency.  It is then up to the user to filter the putative variants based on the characteristics provided.
+The Pipeline runs as one phase which takes in fastq files and outputs putative variants as well as all base call above a set frequency. It is then up to the user to filter the putative variants based on the characteristics provided.
 
 ## Directory list
-* bin
-	* variantPipeline.py : align reads, sort, call variants using deepSNV, and characterize putative variants.
-	* variant_pipeline.pbs : an example pbs script used to implement the Pipeline
-* doc
-	* workflow diagram, examples
-* lib
-	* supporting libraries (mostly R libraries)
-* scripts
-	* supporting scripts (bpipe, python, R)
-	* note that variantPipeline.bpipe.config holds several default config variables
-* test
-	* automated tests (mostly python)
 
-* tutorial
-	* The directories and instructions needed to run the tutorial. Instructions can be found in tutorial.html.
+-   bin
+    _ variantPipeline.py : a python wrapper that runs a provided bpipe pipeline
+    _ variant_pipeline.pbs : an example pbs script used to implement the Pipeline
+-   doc \* workflow diagram, examples
+-   lib \* supporting libraries - picard and bpipe live here
+-   packrat \* The R dependencies are listed in the lock file. Also the packages will be downloaded here on set up
+-   scripts
+    _ supporting scripts (bpipe, python, R)
+    _ some of these are old and not used others are helpful for downstream analysis but are not used by the current stages \* most have been written to provide a useage message when called with the -h flag
+-   test \* automated tests (mostly python testing the python pipeline)
+
+-   tutorial \* The directories and instructions needed to run the tutorial. Instructions can be found in the tutorial readme
 
 ## bin/variantPipeline.py
- This script is a thin python wrapper around a bpipe pipeline which in turn calls fastqc, pydmx-al, bowtie, picard. Whenever this is launched, the bpipe scripts are overwrittem from the scripts directory and stored in the output directory as a log of what was run.
 
-##UPDATE THESE HERE ##
+This script is a thin python wrapper that takes in a bpipe pipeline, input files, output directory and an options yaml. Whenever this is launched, the bpipe scripts are copied from the scripts directory and stored in the output directory as a log of what was run. the output directory will be made if it doesn't exist.
 
-Usage: variantPipeline.py -i {input_dir} -o {output_dir} -r {reference} -p {plasmid control name} -a {p.val cutoff} -m {fisher,max,average} -d {one.sided,two.sided}
+Usage: python variantPipeline.py -h
 
+    See the tutorial for more information.
 
-* Inputs:  
-	* -i dir containing left fastq, right fastq named as sample.read_direction[1,2].#.fastq
-		* the python scripts change_names* can be used as a fast means of renaming fastq to this format.
-	* -r path to the reference genome for alignment made using
+    *NOTE: Your fasta is used in the variant calling step and needs to end in .fa*
 
-	```bash
-	bowtie2-build WSN33.fa WSN33
-	```
-	Where WSN33.fa is your fasta file
-	* -p plasmid control : the sample name of the plasmid control fastq.
-	* -a alpha : The p value cut off to used in the final output. Any variant with a p.val>a will be removed
-	* -m method : The method used to combine the p value from each strand "fisher","average","max".
-	* -t test :Boolean switch to run program in test mode. Everything will be set up but bpipe will run in test mode
-	* -d Dispersion : Dispersion estimation to be used in deepSNV. Options are c("two.sided","one.sided","bin"). Anything other 	than two.sided or one.sided will yield a binomial distribution. "two.sided" and "one.sided" estimate dispersion and use a beta binomial to model nucleotide counts. "two.sided" uses a two sided test and is most conservative and appropriate when dealing with high number of  PCR cycles.
-	* -bam bam : Boolean switch. Sometimes it is useful to rerun the deepSNV variant calling with different parameters (e.g. dispersion, p.combine). Activating this  takes bam files as inputs so you don\'t have to rerun the alignment and sorting. In this case the input directory should contain the bam files.
+## Outputs
 
+There are 3 main pipelines that can be run. All of the stages for the pipelines are held in ./scripts/variantPipeline.bpipe.stages.groovy
 
+### Basic alinging scripts/aligning_pipeline.groovy
 
-	See the tutorial for more information.
+-   cutadapt \* the trimmed fastq files - these are trimmed based on NEBnext primers which is hard coded in the stage
+-   fastqc \* fastqc data on samples
+-   align \* The aligned bam and sorted sam files
+-   removed_duplicated \* bam files with duplicate reads removed
 
-	*NOTE: Your fasta is used in the variant calling step and needs to end in .fa*
+### DeepSNV pipeline scripts/deepsnv_pipeline.groovy
 
+Runing this pipeline after the one above is the same as the old single pipeline.
 
-* Outputs:
-	* __01_fastqc__ : zips containing a brief summary report on quality of input fastqs
-	* __03_align__ : bam files from bowtie2 alignment
-	* __04_remove_duplicates__ : bam files with duplicates marked by picard
-	* __Variants__ : sum.csv files made by adding mapping quality, read position, and phred information to the putative variants found in the variant output, and reads.csv containing similar information for each read responsible for a variant
-	* __deepSNV__ : csv files of the deepSNV variant calls (bonferroni p<0.1), coverage data for each sample (*.cov.csv) .fa consensus sequences
-		* an empty csv is made for the plasmid control in order to appease bpipe.
-		* the variant csvs in this directory does not include data concerning read position, mapQ, or Phred information.  That can be foun in the Variants dir.
-	* Variants and deepSNV contain files begining in "all" these files contain the output for each sample concatenated into one file for your viewing and analyzing pleasure.
-	* __doc__ : Bpipe makes a cool/qausi-useful html report in doc/index.html
-	* __.bpipe__: a hidden directory that contains information bpipe uses to restart failed runs.  *Note: It is sometimes useful to delete this and start fresh*
+-   deepSNV \* csv summary files, coverage files and fasta files from deepSNV
+-   parsed_fa \* deepSNV outputs a concatenated fasta file. The parsed ones are here.
+-   Variants \* csv files containing all variants and additional qualty data about each one. (Mapq, phred, read position ect.)
+-   Filter Variants \* csv files containing variants that meet quality thresholds
+-   Final Variants \* csv files containing variants that meet quality thresholds including amino acid information
 
+### python pipeline to call all variants and sequencing errors scripts/python_pipeline.groovy
+
+-   consensus \* The consesus seqeunce of each sample
+-   position-stats \* JSON files with all bases called at every position including amino acid designation
 
 ## Dependencies
 
-Note : *Flux is the name of the computing core used by our lab at the Univeristy of Michigan. Some of the directions may be specific to those working on this platform*
+Note : _Flux is the name of the computing core used by our lab at the Univeristy of Michigan. Some of the directions may be specific to those working on this platform_
 
-The pipeline comes with many of the required programs (bpipe and pycard); however, bowtie2, samtools and certain R  and python libraries are required by the variant calling.
+The pipeline comes with many of the required programs (bpipe and pycard); however, bowtie2, samtools and certain R and python libraries are required by the variant calling.
 
-Note: *The R package deepSNV may need to be installed under your username on Flux.  The other dependencies are simply added as modules.*
+To run these all pipelines you must have the java developer kit installed. It can be installed from [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html). If bpipe doesn't run this is the first place to start.
 
-To open R on flux simply type
+All the other depedencies, except R and the R packages, are handled by conda. Install conda by following the tutorial [here](https://conda.io/docs/user-guide/overview.html).
+
+We can install the conda environment with the following command (run from the variant_pipeline/ directory)
+
 ```
-module load med
-module load R/3.1.1
+conda env create -f scripts/environment.yml
+```
+
+We have to activate the environment before running the commands below.
+
+```
+conda activate variant-pipeline
+```
+
+On flux we can achieve an equivalent environment by loading the following modules
+
+```
+module load muscle
+module load bowtie2
+module load python-anaconda2/201704
+module load fastqc
+module load R
+```
+
+The R modules are managed by packrat. I am using R 3.5.0. From the main directory run
+
+```
 R
+packrat::restore()
 ```
 
-
-This can be done from any directory.
-* deepSNV
-
-```
-source("http://bioconductor.org/biocLite.R")
-biocLite("deepSNV")
-```
-
-You will be prompted to install in a local directory beginning with ~/. This means you are installing in your home directory and the library will be available just to you.  Installation should take a while.
+to download the needed dependencies. They should be placed the packrat/lib directory. This is important since the R script will look for them there. You may need to install packrat first if you don't have it.
 
 Adapted and developed by JT McCrone based on work done by
 Chris Gates/Peter Ulintz

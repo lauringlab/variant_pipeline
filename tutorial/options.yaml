@@ -1,33 +1,33 @@
 #YAML
 
-#Option for aligning pipeline
-REFERENCE: ./data/reference/wsn33_wt_plasmid # 'The name of the reference files used for bowtie alignment' (no extension) Also there should be file with the same name but .fa extension
+# --------- Options for aligning pipeline --------- #
 
-# Options for python variant analysis
-MAXDEPTH: 100000
-BEDJSON: ./data/reference/or.bed.json
+REFERENCE: ./data/reference/wsn33_wt_plasmid # 'The name of the reference files used for bowtie2 alignment' (no extension) The bowtie2 alignment files should be in the same directory with the same base name
 
-# Options for calling variants with DeepSNV
-#
+# --------- Options for python variant analysis --------- #
+
+MAXDEPTH: 100000 # The maximum pileup depth to use in determining the consensus sequence
+BEDJSON: ./data/reference/or.bed.json # A json file with the open reading frames relative to the aligment reference. base 0 left inclusive right exclusive [0,5) -> 0,1,2,3,4
+
+# --------- Options for calling variants with DeepSNV --------- #
 
 output_dir: ./deepSNV # 'The final directory that will hold the output. If it does\'t exsit it will be made')
-REFERENCE_FA: ./data/reference/wsn33_wt_plasmid.fa # the fasta file used for alignments it will be used to get regions in deepSNV
-CONTROL_BAM: ./data/aligned_output/removed_duplicates/Plasmid_control.removed.bam # The path to the plasma control bam file sample name of the plasmid control used for varinat calling relative to where the script is run
-P_CUT: 0.1 # 'The p value cut off to used. Any variant with a p.val>a will be removed at the variant calling step'
+REFERENCE_FA: ./data/reference/wsn33_wt_plasmid.fa # the fasta file used for alignments it will be used to get regions to analyse in deepSNV
+CONTROL_BAM: ./data/aligned_output/removed_duplicates/Plasmid_control.removed.bam # The path to the plasma control bam file sample name of the plasmid control used for varinat calling relative to where the wrapper script is run
+P_CUT: 0.1 # 'The p value cut off to used. Any variant with a p.val>a will be removed at the variant calling step - this limits the size of the files at this point a more stringent cut off can be applied later.
 P_COM_METH: fisher # 'The method used to combine the p value from each strand "fisher","average","max".'
 DISP: one.sided # Dispersion estimation to be used in deepSNV. options are c("two.sided","one.sided","bin"). Anything other than two.sided or one.sided will yield a binomial distribution'
 
-# Options for filtering and classifyting variants in DeepSNV pipeline
+# --------- Options for filtering and classifyting variants in DeepSNV pipeline --------- #
 
-open_reading: ../reference/wsn33.OR.fa # a file fasta file that contains the open reading frames of the the genome.The path is from inside output ddir Each open reading frame ID should contain the ID of the appropriate chromosome in the reference fasta file
-#classify_var : reference # Classify nonsynomyous and synomymous variants against the sample reference or the reference used to call variants options are  'sample' or 'reference'
+open_reading: ../reference/wsn33.OR.fa # a file fasta file that contains the open reading frames of the the genome.The path is from inside output dir Each open reading frame ID should contain the ID of the appropriate chromosome in the reference fasta file. The reference fasta file is aligned to these OR using muscle and the coding regions are determined from this alignemnt
 mapping: 30 # The mean mapping quality threshold
 phred: 35 # The mean phred threshold
 p_cut: 0.01 # The p value cut off for the final analysis
 freq: 0.01 # The frequency cut off for the final analysis
 pos: [50, 200] # The average position in the read cut off in the final analysis
-STRINGENT_FREQ: 1.1 # If you are above this frequency then we cool
-muscle_path: /Users/jtmccrone/miniconda2/envs/variant-pipeline/bin/ # The path to the muscle exicutable on flux it is /sw/lsa/centos7/muscle/3.8.31/bin/
+STRINGENT_FREQ: 1.1 # Variants above this frequency will not be filtered based on deepSNV or the above metrics they will recieve an NA in those columns. This is usually set to 50% when working with patient samples
+muscle_path: /Users/jtmccrone/miniconda2/envs/variant-pipeline/bin/ # The path to the muscle exicutable on flux it is /sw/lsa/centos7/muscle/3.8.31/bin/ (find it by typing 'which muscle' in the terminal)
 run: Test # What run name should be added to the csv if not needed use  !!null ''    to signify 'None'
 meta: !!null '' # If there is a meta data sheet for these sample you can place that here if not needed use !!null ''    to signify 'None'
 classification: control # sample or control - should nonsynonymous and syn. mutations be called relative to the control or the sample consensus?

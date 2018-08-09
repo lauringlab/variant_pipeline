@@ -80,14 +80,29 @@ There are two options to call variants. The first relies on the R package deepSN
 
 The second variant calling pipeline uses python scripts to identify all alleles present in the bam file. It does not provide a p.value or any measurement of certainty for each variant. The output from this pipeline is a json file containing mimum meta data for each file and all vatiant call. **NOTE: the variant calles from this pipeline are from python and are base 0. i.e. the first position of each segment is 0 not 1.**
 
-On flux we will load the required modules with
+## 0.1) Dependencies
+
+All the depedencies required, except R, are handled by conda. Install conda by following the tutorial [here](https://conda.io/docs/user-guide/overview.html).
+
+We can install the conda environment with the following command (run from the variant_pipeline/ directory)
+
+```
+conda env create -f scripts/environment.yml
+```
+
+We have to activate the environment before running the commands below.
+
+```
+conda activate variant-pipeline
+```
+
+On flux we can achieve an equivalent environment by loading the following modules
 
 ```
 module load muscle
 module load bowtie2
 module load python-anaconda2/201704
 module load fastqc
-module load R/3.4.1
 ```
 
 For those not on flux a list of how to install dependencies can be found below in the appendix.
@@ -155,7 +170,7 @@ python ../bin/variantPipeline.py ../scripts/aligning_pipeline.groovy "./data/fas
 ## 3a) Calling variants using deepSNV
 
 ```
-python ../bin/variantPipeline.py ../scripts/deepsnv_pipeline.groovy "./data/aligned_output/removed_duplicates/*.bam" ./data/deepSNV_pipeline ./options.yaml
+python ../bin/variantPipeline.py ../scripts/deepsnv_pipeline.groovy "./data/aligned_output/removed_duplicates/*.bam" ./data/deepSNV_pipeline/ ./options.yaml
 ```
 
 _If you expect a high level of pcr errors then use a two sided distribution. Set the disp option to two.sided_
@@ -213,7 +228,7 @@ mkdir scripts
 
 You can now navigate through the exp_label directory and sub-directories to see that there is a directory called "data" that contains sub-directories for fastq files and reference files. There is also a sub-directory called "scripts" that you will rarely access.
 
-_Note you may have to make a reference file for bowtie to align to. I like to keep mine in data/reference. You can use the command in the readme file to make your reference so long as you already have a fasta file. **IT MUST END IN .fa FOR THE VARIANT CALLER TO RECOGNIZE IT**_
+_Note you may have to make a reference file for bowtie2 to align to. I like to keep mine in data/reference. You can use the command in the readme file to make your reference so long as you already have a fasta file._
 
 ### 4.2 Running
 

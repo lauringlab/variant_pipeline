@@ -2,9 +2,7 @@
 .bpipe/*
 commandlog.txt
 test/data/
-scripts/s1_ref
 tutorial/data/*
-scripts/\.Rhistory
 
 *.pyc
 

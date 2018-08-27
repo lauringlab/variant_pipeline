@@ -6,8 +6,8 @@ The Pipeline runs as one phase which takes in fastq files and outputs putative v
 ## Directory list
 
 -   bin
-    _ variantPipeline.py : a python wrapper that runs a provided bpipe pipeline
-    _ variant_pipeline.pbs : an example pbs script used to implement the Pipeline
+    - variantPipeline.py : a python wrapper that runs a provided bpipe pipeline
+    - variant_pipeline.pbs : an example pbs script used to implement the Pipeline
 -   doc
     -   workflow diagram, examples
 -   lib

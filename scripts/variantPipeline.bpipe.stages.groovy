@@ -3,8 +3,8 @@
 // output: two *_fastqc.zip files
 fastqc = {
     doc "Run FASTQC to generate QC metrics for the fastq files"
-    output.dir = "01_fastqc"
-    output_dir = "01_fastqc"
+    output.dir = "fastqc"
+    output_dir = "fastqc"
     if(input.input.size == 2){
     	produce("${output_dir}/*_fastqc.zip") {
         	exec "fastqc -o ${output_dir} --noextract -f fastq $input1"
@@ -41,14 +41,36 @@ fastqc = {
         	exec "fastqc -o ${output_dir} --noextract -f fastq $input8"
     		}
 	}
+	forward input1,input2
 }
 
 samtools_mapq_filter ={
 	doc " remove the reads that fail a mapping quality cut off"
-	output.dir = "02_filter"
+	output.dir = "filter"
 	filter("filtered"){
 		exec "samtools view -Shq 30 $input > $output"
 	}
+}
+
+// Cutadapt will remove adapters trim to end bases below Q 25 and 
+// remove any remaining reads that are less than 20 bases long.
+// NEBNEXT ADAPTOR AGATCGGAAGAGCACACGTCTGAACTCCAGTC 
+cutadapt = {
+	doc " Cutadapt will remove adapters trim to end bases below Q 25 and  remove any remaining reads that are less than 20 bases long"
+	output.dir = "cutadapt"
+	def out_1 = './cutadapt/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.1.1.trimmed.fastq'
+	def out_2 = './cutadapt/'+file(input2).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.2.1.trimmed.fastq'
+	def log_file = './cutadapt/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+	filter("trimmed"){
+		exec """
+		cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTC -A AGATCGGAAGAGCACACGTCTGAACTCCAGTC -q 25 -m 20 
+    		-o ${out_1} -p ${out_2} 
+    		$input1.fastq $input2.fastq 
+    		> ${log_file}
+		"""
+	}
+	forward out_1, out_2
+
 }
 
 // pydmx generates a directory of demultiplexed fastqs named using the specified barcode file
@@ -73,41 +95,41 @@ pydmx = {
 // output: a *.sam file
 //bowtie2_M= {
 //    doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
-//    output.dir = "03_align"
-//    produce ("03_align/*.sam") {
-//        exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./03_align/" + new File(input1).name.split("\\.[12]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
+//    output.dir = "align"
+//    produce ("align/*.sam") {
+//        exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ./align/" + new File(input1).name.split("\\.[12]\\.fastq")[0] + 'sam' 2> new File(input1).name.split("\.[12]\.[0-9]\.fastq")[0] + '.log'
 //    }
 //}
 bowtie2 = {
     doc "Aligns using Bowtie, generating a SAM file.  Note, this file may be very large."
-    output.dir = "03_align"
+    output.dir = "align"
     if(input.input.size == 2){
- 	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
-	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+ 	def sam_out='./align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.trimmed.fastq")[0]+ '.sam'
+	def log_file = './align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.trimmed.fastq")[0]+ '.log'
 	//println "expected outout " + sam_out
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1 -2 $input2 -S ${sam_out} 2> ${log_file}"
+            exec "bowtie2 --seed 42 --sensitive-local -x ${REFERENCE} -1 $input1 -2 $input2 -S ${sam_out} 2> ${log_file}"
         }
     }
     if(input.input.size == 4){
-        def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
-        def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+        def sam_out='./align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
+        def log_file = './align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ${sam_out} 2> ${log_file}"
+            exec "bowtie2 --seed 42 --sensitive-local -x ${REFERENCE} -1 $input1,$input2 -2 $input3,$input4 -S ${sam_out} 2> ${log_file}"
         }
     }
     if(input.input.size == 6){
- 	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
-	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+ 	def sam_out='./align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
+	def log_file = './align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ${sam_out} 2> ${log_file}"
+            exec "bowtie2 --seed 42 --sensitive-local -x ${REFERENCE} -1 $input1,$input2,$input3 -2 $input4,$input5,$input6 -S ${sam_out} 2> ${log_file}"
         }
     }
     if(input.input.size == 8){
- 	def sam_out='./03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
-	def log_file = './03_align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
+ 	def sam_out='./align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.sam'
+	def log_file = './align/'+file(input1).name.split("\\.[12]\\.[0-9]\\.fastq")[0]+ '.log'
 	produce(sam_out) {
-            exec "bowtie2 --seed 42 --sensitive -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S 2> ${log_file}"
+            exec "bowtie2 --seed 42 --sensitive-local -x ${REFERENCE} -1 $input1,$input2,$input3,$input4 -2 $input5,$input6,$input7,$input8 -S 2> ${log_file}"
         }
     }
 }
@@ -115,7 +137,7 @@ bowtie2 = {
 picard_sortsam = {
     doc "Sort SAM file so that its in reference order and convert to BAM."
     tmp_dir    = "./tmp"
-    output.dir = "03_align"
+    output.dir = "align"
     transform("bam") {
         exec """
             java -Xmx4g -Djava.io.tmpdir=$tmp_dir -jar ${LIBRARY_LOCATION}/picard-tools-1.133/picard.jar SortSam
@@ -132,7 +154,7 @@ picard_sortsam = {
 picard_removedups = {
     doc "Remove duplicates"
     tmp_dir    = "./tmp"
-    output.dir = "04_removed_duplicates"
+    output.dir = "removed_duplicates"
     filter("removed") {
         exec """
             java -Xmx2g -Djava.io.tmpdir=$tmp_dir -jar ${LIBRARY_LOCATION}/picard-tools-1.133/picard.jar MarkDuplicates
@@ -149,7 +171,7 @@ picard_removedups = {
 picard_markdups = {
     doc "Mark  duplicates"
     tmp_dir    = "./tmp"
-    output.dir = "04_marked_duplicates"
+    output.dir = "marked_duplicates"
     filter("marked") {
         exec """
             java -Xmx1g -Djava.io.tmpdir=$tmp_dir -jar ${LIBRARY_LOCATION}/picard-tools-1.115/MarkDuplicates.jar
@@ -164,26 +186,9 @@ picard_markdups = {
 }
 
 
-//Get the name of the control file. to use in deepSNV
-get_control={
-new File('04_removed_duplicates').eachFileRecurse{
-         if(it.name=~/.*$CONTROL.*bam$/){
-			CONTROL_BAM=it.getPath()
-			println "found control $CONTROL_BAM"
-		}
-	}
-}
-get_control.post_align={
-new File(INPUT_DIR).eachFileRecurse{ // I\m not groovy with groovy and may need to play with how this input_dir variable is called
-         if(it.name=~/.*$CONTROL.*bam$/){
-                        CONTROL_BAM=it.getPath()
-                        println "found control $CONTROL_BAM"
-                }
-        }
-}
 
 deepsnv = {
-	doc "Runs a basic deepSNV script to call variants in each sample saving the outputs as .Rdata files and csv of the summary output"
+	doc "Runs a basic deepSNV script to call variants in each sample"
 	output.dir = "deepSNV"
 	def in_bam=file(input).name
 	def control = file(CONTROL_BAM).name.replace(".bam","")
@@ -191,7 +196,7 @@ deepsnv = {
 	println "test:" + test
 	println "control:" + control
 				transform("csv","fasta"){
-					exec "Rscript  ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP} ${STRINGENT_FREQ} $output.csv $output.fasta"
+					exec "Rscript  --vanilla --slave ${SCRIPTS}/deepSNV.R ${REFERENCE_FA} $input1 $CONTROL_BAM bonferroni ${P_CUT} ${P_COM_METH} ${DISP} ${STRINGENT_FREQ} $output.csv $output.fasta ${R_LIB}"
 				}
 
 }
@@ -278,4 +283,27 @@ quality_report = {
 	exec "multiqc ./"
 }
 
-
+consensus = {
+	doc "finds the consensus of each sample read depth cutoff at default 1000"
+	output.dir = "consensus"
+	transform("fasta"){
+		exec " python ${SCRIPTS}/consensus.py ${BEDJSON} $input.bam $output.fasta --all "
+		}
+	forward input.bam
+	}
+position_stats = {
+    doc "gets position stats required refernce file in consensus directory named as sample.removed.fasta"
+    output.dir = "position-stats"
+    def out = "./position-stats/"+file(input.bam).name.replace(".bam","")
+	def reference_fa = "./consensus/"+file(input.bam).name.replace(".bam",".fasta")
+        transform("json"){
+        exec "python ${SCRIPTS}/position_data.py  ${BEDJSON} ${reference_fa} $input.bam  $output.json --maxDepth ${MAXDEPTH} "
+    }
+}
+parseJson = {
+	doc "Parse the output json to a csv for working nicely in R"
+	output.dir = "position-stats-csv"
+	transform("csv"){
+		exec "python ${SCRIPTS}/variantJSONtocsv.py $input $output.csv"
+	}
+}

@@ -42,7 +42,6 @@ muscle_path = options["muscle_path"]
 OR = options["open_reading"]
 classification = options["classification"]
 
-
 def findOccurences_base1(s, ch):
     return [i+1 for i, letter in enumerate(s) if letter == ch]
     

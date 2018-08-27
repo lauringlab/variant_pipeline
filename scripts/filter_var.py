@@ -29,7 +29,7 @@ freq = options['freq']
 pos = options['pos']
 pval = options['p_cut']
 run= options['run']
-stringent_freq = options['stringent_freq']
+stringent_freq = options['STRINGENT_FREQ']
 out_csv= opts.out_csv[0]
 
 

@@ -1,0 +1,15 @@
+# Other MultiQC config stuff here
+ custom_data:
+     coverage:
+        file_format: 'csv'
+        section_name: 'Coverage'
+        description: 'This plot comes from files acommpanied by a mutliqc_config.yaml file for configuration'
+        plot_type: 'linegraph'
+        pconfig:
+            id: 'coverage_lineplot'
+            title: 'Coverage'
+            ylab: 'Coverage'
+            xlab: 'Genome Position'
+ sp:
+    coverage:
+        fn: '*.cov.csv'

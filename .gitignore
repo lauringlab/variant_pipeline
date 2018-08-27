@@ -1,15 +1,20 @@
 *.fastq*
 .bpipe/*
 commandlog.txt
-
-scripts/s1_ref
-
-scripts/\.Rhistory
+test/data/
+tutorial/data/*
 
 *.pyc
 
 *.groovy
 
 tutorial/yaml_testing/
-
+*.bpipe*
 tutorial/data/fastq/renaming_log\.txt
+tutorial/new_look/
+test/
+*.DS_Store
+.Rproj.user
+packrat/lib*/
+packrat/src/
+.vscode/

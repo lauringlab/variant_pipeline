@@ -86,17 +86,13 @@ We have to activate the environment before running the commands below.
 conda activate variant-pipeline
 ```
 
-On flux we can achieve an equivalent environment by loading the following modules
+On flux we can achieve an equivalent environment with a few commands. First run:
 
 ```
-module load muscle
-module load bowtie2
-module load python-anaconda2/201704
-module load fastqc
-module load R
+module load muscle bowtie2 fastqc R/3.5.0
 ```
 
-The R modules are managed by packrat. I am using R 3.5.0. From the main directory run
+Now we need to set up the R modules. The R modules are managed by packrat. I am using R 3.5.0. From the main directory run
 
 ```
 R
@@ -104,6 +100,14 @@ packrat::restore()
 ```
 
 to download the needed dependencies. They should be placed the packrat/lib directory. This is important since the R script will look for them there. You may need to install packrat first if you don't have it.
+
+After the R dependencies are loaded, exit the R session by calling q(). Now finish loading the modules with the following command:
+
+```
+module load python-anaconda2/201704
+```
+
+We should now have an equivalent environment set up on flux. (Note that in variant_pipeline/bin/variantPipeline.py, we specify the R_lib path to use R version 3.5.0. This would need to be modified for newer versions of R.) 
 
 Now the code is installed and the dependencies are sorted, we are ready to begin the tutorial. Let's go there now, by moving to the tutorial subdirectoy within the variant_pipeline directory.
 

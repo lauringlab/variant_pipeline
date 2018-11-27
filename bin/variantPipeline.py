@@ -66,7 +66,7 @@ path_options = ["REFERENCE","REFERENCE_FA","OPEN_READING","BEDJSON","CONTROL_BAM
 
 bin_dir=os.path.dirname(os.path.realpath(__file__)) # The path to this file so we can find the scripts and lib
 script_dir=os.path.abspath(bin_dir+'/..'+'/scripts/')# The path to the scripts dir relative to this location
-R_lib=os.path.abspath(script_dir+'/../packrat/lib/*/*')
+R_lib=os.path.abspath(script_dir+'/../packrat/lib/*/3.5.0')
 lib_dir=os.path.abspath(bin_dir+'/..'+'/lib/') # The path to the lib dir relative to this location
 bpipe_command=lib_dir+'/bpipe-0.9.8.7/bin/bpipe' # The path to the bpipe command relative the lib dir.
 test=args.test
